@@ -1,4 +1,5 @@
-import Server, { PageParams } from '..';
+import type { PageParams } from '..';
+import Server from '..';
 
 /**
  * @name: nfts
@@ -43,11 +44,11 @@ export const getNftList = function (params: PageParams & INftReq) {
 export interface IAddNft {
   categoryId: string;
   name: string;
-  files: string[];
+  files?: string[];
   desc: string;
   serialNumber: string;
-  total: number;
-  price: number;
+  total?: number;
+  price?: number;
 }
 
 /**

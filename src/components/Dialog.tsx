@@ -94,7 +94,7 @@ export default class Dialog extends React.Component<IProps> {
           title={title}
           visible={visible}
           onOk={() => {
-            if (type === 'from') {
+            if (type === 'from' || this.props.footer !== null) {
               this.node?.submit?.();
             } else {
               this.setState({ visible: false });

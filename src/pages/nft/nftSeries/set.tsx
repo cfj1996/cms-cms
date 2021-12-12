@@ -4,12 +4,21 @@
  * @date: 2021/12/11 22:30
  */
 import React, { forwardRef, useImperativeHandle } from 'react';
-import { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import {
+  ProFormDigit,
+  ProFormMoney,
+  ProFormSelect,
+  ProFormText,
+  ProFormTextArea,
+  ProFormUploadDragger,
+} from '@ant-design/pro-form';
 import { Form } from 'antd';
 import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
-import type { IAddNftType, INftType } from '@/services/nft/nftType';
-import { getNftType } from '@/services/nft/nftType';
+import { getAllNftType } from '@/services/nft/nftType';
+import { upFile } from '@/services/user/login';
+import type { IAddNft, INft } from '@/services/nft/nfts';
+import { getNft } from '@/services/nft/nfts';
 
 const formItemLayout = {
   labelCol: {
@@ -22,16 +31,39 @@ const formItemLayout = {
 interface IProps {
   id?: string;
 }
-const Set = forwardRef(function (props: IProps & PageService<INftType>, ref) {
+const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
+  const { id } = props;
+  let defaultFileList;
   const [form] = Form.useForm();
-  const initialValues: IAddNftType = {
-    categoryTitle: '',
-    categoryDesc: '',
+  const initialValues: IAddNft = {
+    categoryId: '',
+    name: '',
+    desc: '',
+    price: undefined,
+
+    files: undefined,
+    serialNumber: '',
+    total: undefined,
   };
-  if (props.id && props.data) {
+  if (id && props.data) {
     const { data } = props.data;
-    initialValues.categoryTitle = data.categoryTitle;
-    initialValues.categoryDesc = data.categoryDesc;
+    initialValues.categoryId = data.categoryId;
+    initialValues.name = data.name;
+    initialValues.desc = data.desc;
+    initialValues.serialNumber = data.serialNumber;
+    initialValues.price = Number(data.price);
+    initialValues.total = Number(data.total);
+    if (data.files?.length > 0) {
+      initialValues.files = data.files;
+      defaultFileList = data.files.map((i) => ({
+        uid: i,
+        name: i,
+        percent: 100,
+        status: 'success',
+        url: i,
+      }));
+    }
+    console.log(data);
   }
   useImperativeHandle(ref, () => ({
     submit() {
@@ -40,20 +72,67 @@ const Set = forwardRef(function (props: IProps & PageService<INftType>, ref) {
   }));
   return (
     <Form form={form} initialValues={initialValues} {...formItemLayout}>
+      <ProFormSelect
+        name={'categoryId'}
+        label={'nft分类'}
+        required={true}
+        rules={[{ required: true }]}
+        request={() =>
+          getAllNftType().then((res) =>
+            res.data.map((i) => ({ value: i.id, label: i.categoryTitle })),
+          )
+        }
+      />
       <ProFormText
-        name="categoryTitle"
-        label="标题"
-        placeholder="请输入标题"
+        disabled={!!id}
+        name="serialNumber"
+        label="系列ID"
+        placeholder="请输入系列ID"
         required={true}
         rules={[{ required: true }]}
       />
-      <ProFormTextArea name="categoryDesc" label="描述" placeholder="请输入描述" />
+      <ProFormText
+        name="name"
+        label="nft名称"
+        placeholder="请输入名称"
+        required={true}
+        rules={[{ required: true }]}
+      />
+      <ProFormDigit
+        disabled={!!id}
+        name="total"
+        label="总数"
+        placeholder="请输入总数"
+        fieldProps={{ precision: 0 }}
+        required={true}
+        rules={[{ required: true }]}
+      />
+      <ProFormMoney
+        name="price"
+        label="单价"
+        locale={'zh-CN'}
+        placeholder="请输入单价"
+        min={0}
+        required={true}
+        rules={[{ required: true }]}
+        fieldProps={{ precision: 2 }}
+      />
+      <ProFormUploadDragger
+        fieldProps={{
+          defaultFileList: defaultFileList as any,
+          multiple: true,
+        }}
+        disabled={!!id}
+        name={'files'}
+        required={true}
+        rules={[{ required: true }]}
+        label="源文件"
+        action={(file) => upFile(file).then((res) => res.data)}
+      />
+      <ProFormTextArea name="desc" label="NFT描述" placeholder="请输入描述" />
     </Form>
   );
 });
 
 export const AddSet = Set;
-export const EditSet = withServers(
-  getNftType,
-  (props: IProps) => props.id,
-)(Set) as React.FC<IProps>;
+export const EditSet = withServers(getNft, (props: IProps) => props.id)(Set) as React.FC<IProps>;

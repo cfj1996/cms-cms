@@ -56,3 +56,16 @@ export interface IUserInfo {
 export function userGetInfo() {
   return Server.get<IAccess>('/user/getInfo');
 }
+
+export function upFile(file: File) {
+  console.log('file', file);
+  return Server.post<string>(
+    '/upload/file',
+    { file: file },
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
+  );
+}

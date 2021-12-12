@@ -62,18 +62,23 @@ export type RequestConfig = RequestOptionsInit & {
 };
 
 class Core {
-  private auth = true;
+  private config: RequestConfig = {
+    auth: true,
+  };
   private _source: CancelTokenSource;
   private instance: RequestMethod;
   private url: string;
   private method: Methods;
   get headers(): HeadersInit {
-    if (this.auth) {
+    if (this.config.auth) {
       return {
         token: getToken(),
+        ...this.config.headers,
       };
     } else {
-      return {};
+      return {
+        ...this.config.headers,
+      };
     }
   }
 
@@ -86,8 +91,10 @@ class Core {
   }
 
   request<T>(data?: Record<string, any>, config?: RequestConfig): Bluebird<Resolve<T>> {
-    const { auth = true, ...other } = config || {};
-    this.auth = auth;
+    if (config) {
+      Object.assign(this.config, config);
+    }
+    const { ...other } = this.config;
     return new Promise((resolve, reject, onCancel) => {
       this.instance(this.url, {
         ...other,

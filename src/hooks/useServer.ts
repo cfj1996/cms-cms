@@ -3,7 +3,6 @@ import { useImmer } from 'use-immer';
 import type { IServer, Resolve } from '@/services';
 import type Bluebird from 'bluebird';
 
-console.log('useImmer', useImmer);
 interface IOptions<S, T> {
   manual?: boolean;
   params?: S;

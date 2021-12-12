@@ -71,4 +71,9 @@ export default {
       });
     }
   },
+  'POST /api/upload/file': {
+    status: 200,
+    success: true,
+    data: Random.url(),
+  },
 };
