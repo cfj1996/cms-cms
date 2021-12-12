@@ -56,10 +56,12 @@ export default {
         status: 200,
         success: true,
         data: {
-          username: Random.name(),
           id: mock('@guid'),
-          createdTime: new Date().getTime(),
-          avatar: Random.image('200x200'),
+          account: Random.name(),
+          role: 'admin',
+          isDisable: false,
+          createAt: Random.datetime(),
+          updateAt: Random.datetime(),
         },
       });
     } else {

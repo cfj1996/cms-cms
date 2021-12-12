@@ -7,5 +7,6 @@ module.exports = {
   },
   rules: {
     '@typescript-eslint/no-shadow': 'off',
+    'react/no-array-index-key': 'off',
   },
 };

@@ -6,6 +6,7 @@
 
 import Server from '..';
 import { removeToken } from '@/utils';
+import type { IAccess } from '@/services/Account';
 
 export interface ILoginReq {
   username: string;
@@ -42,14 +43,16 @@ export function logout() {
 }
 
 export interface IUserInfo {
-  username: string;
   id: string;
-  createdTime: string;
-  avatar: string;
+  account: string;
+  role: string;
+  isDisable: boolean;
+  createAt: string;
+  updateAt: string;
 }
 /**
  * 过去用户信息
  */
 export function userGetInfo() {
-  return Server.get<IUserInfo>('/user/getInfo');
+  return Server.get<IAccess>('/user/getInfo');
 }

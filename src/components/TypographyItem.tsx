@@ -18,7 +18,7 @@ const TypographyItem = function (props: IProps) {
       <Typography.Text className={styles.label} strong>
         {label}
       </Typography.Text>
-      <Typography className={styles.value}>{value}</Typography>
+      <Typography className={styles.value}>{value || '--'}</Typography>
     </div>
   );
 };

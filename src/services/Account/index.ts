@@ -6,6 +6,21 @@
 import type { PageParams } from '@/services';
 import Server from '@/services';
 
+export enum Role {
+  admin = '管理员',
+}
+export const roleEnum = Object.keys(Role).map((key) => ({
+  value: key,
+  label: Role[key],
+}));
+export interface IAccess {
+  id: string;
+  account: string;
+  role: string;
+  isDisable: boolean;
+  createAt: string;
+  updateAt: string;
+}
 /**
  * 查询用户列表
  */
@@ -14,21 +29,15 @@ interface IAccessListReq {
   startTime: number;
   endTime: number;
 }
-export interface IAccessListRes {
-  username: string;
-  id: string;
-  createdTime: string;
-  avatar: string;
-}
 export const getAccountList = function (params: PageParams & IAccessListReq) {
-  return Server.get<IAccessListRes[]>('/accounts', params);
+  return Server.get<IAccess[]>('/accounts', params);
 };
 /**
  * 获取单个用户信息
  * @param id
  */
 export const getAccount = function (id: string) {
-  return Server.get<IAccessListRes>('/accounts/' + id);
+  return Server.get<IAccess>('/accounts/' + id);
 };
 
 /**
@@ -36,9 +45,10 @@ export const getAccount = function (id: string) {
  * @param data
  */
 export interface IAddAccountReq {
-  username: string;
+  account: string;
   password: string;
-  avatar?: string;
+  role: string;
+  isDisable: boolean;
 }
 export const addAccount = function (data: IAddAccountReq) {
   return Server.post<boolean>('/accounts', data);
@@ -47,9 +57,10 @@ export const addAccount = function (data: IAddAccountReq) {
 /**
  * 修改用户
  */
-interface IUpdateAccountReq {
-  username: string;
-  avatar: string;
+export interface IUpdateAccountReq {
+  account: string;
+  role: string;
+  isDisable: boolean;
 }
 export const updateAccount = function (id: string, data: IUpdateAccountReq) {
   return Server.put(`/accounts/${id}`, data);

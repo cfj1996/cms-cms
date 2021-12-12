@@ -6,34 +6,51 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type { IAccessListRes, IAddAccountReq } from '@/services/Account';
-import { addAccount, deleteAccount, getAccountList, updateAccount } from '@/services/Account';
-import { Button, message, Popconfirm } from 'antd';
+import type { IAccess, IAddAccountReq, IUpdateAccountReq } from '@/services/Account';
+import {
+  addAccount,
+  deleteAccount,
+  getAccountList,
+  roleEnum,
+  updateAccount,
+} from '@/services/Account';
+import { Badge, Button, message, Popconfirm } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { AddSet, EditSet } from '@/pages/Account/set';
+import { AddSet, EditSet } from './set';
 import Dialog from '@/components/Dialog';
 import { useRef } from 'react';
-import Detail from '@/pages/Account/detail';
+import Detail from './detail';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
-  function createUser() {
+  function create() {
     Dialog.open({
       title: '新增用户',
       content: <AddSet />,
       async onOK(name, info) {
-        await addAccount(info?.values as IAddAccountReq);
+        const values = info!.values as IAddAccountReq;
+        await addAccount({
+          account: values.account,
+          role: values.role,
+          password: values.password,
+          isDisable: values.isDisable,
+        });
         message.success('添加成功');
         actionRef.current?.reload();
       },
     });
   }
-  function updateUser(id: string) {
+  function update(id: string) {
     Dialog.open({
       title: '修改用户',
       content: <EditSet id={id} />,
       async onOK(name, info) {
-        await updateAccount(id, { username: info?.values.username, avatar: info?.values.avatar });
+        const values = info!.values as IUpdateAccountReq;
+        await updateAccount(id, {
+          account: values.account,
+          role: values.role,
+          isDisable: values.isDisable,
+        });
         message.success('修改成功');
         actionRef.current?.reload();
       },
@@ -47,14 +64,38 @@ const Index = function () {
       footer: null,
     });
   }
-  const columns: ProColumns<IAccessListRes>[] = [
+  const columns: ProColumns<IAccess>[] = [
     {
-      dataIndex: 'username',
+      dataIndex: 'account',
       title: '用户名',
-      key: 'username',
+      key: 'account',
     },
     {
-      dataIndex: 'createdTime',
+      dataIndex: 'role',
+      title: '角色',
+      key: 'role',
+      valueType: 'select',
+      fieldProps: {
+        options: roleEnum,
+      },
+    },
+    {
+      dataIndex: 'isDisable',
+      title: '是否禁用',
+      valueType: 'radio',
+      initialValue: undefined,
+      render(text, row) {
+        return <Badge text={text} status={row.isDisable ? 'error' : 'success'} />;
+      },
+      fieldProps: {
+        options: [
+          { value: true, label: '已禁用', status: 'Success' },
+          { value: false, label: '启用', status: 'Error' },
+        ],
+      },
+    },
+    {
+      dataIndex: 'createAt',
       title: '创建时间',
       valueType: 'dateTime',
       sorter: true,
@@ -62,7 +103,7 @@ const Index = function () {
     },
     {
       title: '创建时间',
-      dataIndex: 'createdTime',
+      dataIndex: 'createAt',
       valueType: 'dateRange',
       hideInTable: true,
       search: {
@@ -83,7 +124,7 @@ const Index = function () {
           <a
             key="editable"
             onClick={() => {
-              updateUser(record.id);
+              update(record.id);
             }}
           >
             编辑
@@ -110,13 +151,10 @@ const Index = function () {
   ];
   return (
     <PageContainer>
-      <ProTable<IAccessListRes>
+      <ProTable<IAccess>
         actionRef={actionRef}
         columns={columns}
-        request={async (params = {}, sort, filter) => {
-          console.log('params', params);
-          console.log('sort', sort);
-          console.log('filter', filter);
+        request={async (params = {}) => {
           return getAccountList(params as any);
         }}
         columnsState={{
@@ -133,7 +171,7 @@ const Index = function () {
         dateFormatter="number"
         headerTitle="用户表格"
         toolBarRender={() => [
-          <Button key="button" icon={<PlusOutlined />} type="primary" onClick={() => createUser()}>
+          <Button key="button" icon={<PlusOutlined />} type="primary" onClick={() => create()}>
             新建
           </Button>,
         ]}

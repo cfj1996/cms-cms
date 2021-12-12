@@ -4,13 +4,12 @@
  * @date: 2021/12/11 22:30
  */
 import React, { forwardRef, useImperativeHandle } from 'react';
-import { ProFormText } from '@ant-design/pro-form';
-import { Button, Form, Upload } from 'antd';
+import { ProFormSelect, ProFormSwitch, ProFormText } from '@ant-design/pro-form';
+import { Form } from 'antd';
 import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
-import type { IAccessListRes, IAddAccountReq } from '@/services/Account';
-import { getAccount } from '@/services/Account';
-import { UploadOutlined } from '@ant-design/icons';
+import type { IAccess } from '@/services/Account';
+import { getAccount, roleEnum } from '@/services/Account';
 
 const formItemLayout = {
   labelCol: {
@@ -23,17 +22,21 @@ const formItemLayout = {
 interface IProps {
   id?: string;
 }
-const Set = forwardRef(function (props: IProps & PageService<IAccessListRes>, ref) {
-  const initialValues: IAddAccountReq = {
-    username: '',
+const Set = forwardRef(function (props: IProps & PageService<IAccess>, ref) {
+  const initialValues = {
+    account: '',
     password: '',
-    avatar: '',
+    secondPassword: '',
+    role: '',
+    isDisable: false,
   };
   if (props.id && props.data) {
     const { data } = props.data;
-    initialValues.username = data.username;
-    initialValues.password = '********';
-    initialValues.avatar = data.avatar;
+    initialValues.account = data.account;
+    initialValues.password = '';
+    initialValues.secondPassword = '';
+    initialValues.role = data.role;
+    initialValues.isDisable = data.isDisable;
   }
   const [form] = Form.useForm();
   useImperativeHandle(ref, () => ({
@@ -47,6 +50,20 @@ const Set = forwardRef(function (props: IProps & PageService<IAccessListRes>, re
         name="username"
         label="用户名"
         placeholder="请输入名称"
+        required={true}
+        rules={[{ required: true }]}
+      />
+      <ProFormSelect
+        name="role"
+        label="角色"
+        placeholder="请选择角色"
+        required={true}
+        options={roleEnum}
+        rules={[{ required: true }]}
+      />
+      <ProFormSwitch
+        name="isDisable"
+        label="是否关闭"
         required={true}
         rules={[{ required: true }]}
       />
@@ -82,11 +99,6 @@ const Set = forwardRef(function (props: IProps & PageService<IAccessListRes>, re
           />
         </>
       )}
-      <Form.Item label={'用户图像'}>
-        <Upload>
-          <Button icon={<UploadOutlined />}>Upload</Button>
-        </Upload>
-      </Form.Item>
     </Form>
   );
 });

@@ -7,20 +7,18 @@ import React from 'react';
 import { Col, Row } from 'antd';
 import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
-import type { IAccess } from '@/services/Account';
-import { getAccount } from '@/services/Account';
+import type { INftType } from '@/services/nft/nftType';
+import { getNftType } from '@/services/nft/nftType';
 import TypographyItem from '@/components/TypographyItem';
 
 interface IProps {
   id: string;
 }
-const Detail = function (props: IProps & PageService<IAccess>) {
+const Detail = function (props: IProps & PageService<INftType>) {
   const { data } = props.data!;
   const list = [
-    { label: '用户名：', value: data.account },
-    { label: '用户名：', value: data.account },
-    { label: '角色：', value: data.role },
-    { label: '是否禁用：', value: data.isDisable ? '禁用' : '启用' },
+    { label: '标题：', value: data.categoryTitle },
+    { label: '描述：', value: data.categoryDesc },
     { label: '创建时间：', value: data.createAt },
     { label: '更新时间：', value: data.updateAt },
   ];
@@ -35,4 +33,4 @@ const Detail = function (props: IProps & PageService<IAccess>) {
   );
 };
 
-export default withServers(getAccount, (props: IProps) => props.id)(Detail) as React.FC<IProps>;
+export default withServers(getNftType, (props: IProps) => props.id)(Detail) as React.FC<IProps>;

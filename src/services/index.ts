@@ -12,19 +12,26 @@ const loginPath = '/user/login';
 Promise.config({
   cancellation: true,
 });
-type Methods = 'post' | 'get' | 'delete' | 'put';
-
+// 请求方法
+export type Methods = 'post' | 'get' | 'delete' | 'put';
+// 列表查询
 export interface PageParams {
+  // 当前页面
   current: number;
+  // 分页大小
   pageSize: number;
 }
+// 响应数据结构
 export interface Resolve<T> {
   data: T;
+  // 操作是否成功
   success: boolean;
+  // 额外的状态码 做特殊处理 成功返回200
   status: number;
+  // 错误消息
   message?: string;
-  total: number;
-  page: number;
+  // 列表查询总数
+  total?: number;
 }
 export type IServer<S = any, T = any> = (page?: S) => Bluebird<Resolve<T>>;
 
