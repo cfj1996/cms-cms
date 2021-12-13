@@ -1,6 +1,6 @@
 import { getValue, removeValue, setValue } from './storage';
 
-const tokeKey = 'token';
+const tokeKey = 'Jwtsessiontoken';
 export const setToken = function (value: string) {
   setValue(tokeKey, value, -1);
 };

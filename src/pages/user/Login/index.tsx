@@ -41,8 +41,8 @@ const Login: React.FC = () => {
       // 登录
       const data = await login(values);
       console.log('data', data);
-      if (data.status) {
-        setToken(data.data);
+      if (data.success) {
+        setToken(data.data.token);
         message.success('登录成功');
         await fetchUserInfo();
         if (!history) return;
@@ -66,16 +66,19 @@ const Login: React.FC = () => {
           subTitle={'Ant Design'}
           initialValues={{
             autoLogin: true,
-            username: 'admin',
-            password: '123456',
+            email: 'setup@tiancai.pro',
+            password: 'tiancai001',
           }}
           onFinish={async (values: ILoginReq) => {
-            await handleSubmit(values);
+            await handleSubmit({
+              email: values.email,
+              password: values.password,
+            });
           }}
         >
           {loginError && <LoginMessage content={'账户或密码错误(admin/ant.design)'} />}
           <ProFormText
-            name="username"
+            name="email"
             fieldProps={{
               size: 'large',
               prefix: <UserOutlined className={styles.prefixIcon} />,

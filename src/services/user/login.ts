@@ -9,7 +9,7 @@ import { removeToken } from '@/utils';
 import type { IAccess } from '@/services/Account';
 
 export interface ILoginReq {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -18,7 +18,7 @@ export interface ILoginReq {
  * @param data
  */
 export function login(data: ILoginReq) {
-  return Server.post<string>('/login', data, { auth: false });
+  return Server.post<{ token: string }>('/auth/login', data, { auth: false });
 }
 
 export interface IRegisterReq {

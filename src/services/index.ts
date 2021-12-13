@@ -12,6 +12,8 @@ const loginPath = '/user/login';
 Promise.config({
   cancellation: true,
 });
+export type DefaultResolve<T> = { code: string; data: T; msg: string };
+export type DefaultDataFilter<T> = (res: DefaultResolve<T>) => Resolve<T> | DefaultResolve<T>;
 // 请求方法
 export type Methods = 'post' | 'get' | 'delete' | 'put';
 // 列表查询
@@ -26,8 +28,6 @@ export interface Resolve<T> {
   data: T;
   // 操作是否成功
   success: boolean;
-  // 额外的状态码 做特殊处理 成功返回200
-  status: number;
   // 错误消息
   message?: string;
   // 列表查询总数
@@ -36,7 +36,7 @@ export interface Resolve<T> {
 export type IServer<S = any, T = any> = (page?: S) => Bluebird<Resolve<T>>;
 
 const Request = extend({
-  prefix: '/api',
+  prefix: '/api/v1/admin',
   timeout: 60 * 1000,
 });
 Request.interceptors.response.use(async (response) => {
@@ -59,9 +59,10 @@ Request.interceptors.response.use(async (response) => {
 });
 export type RequestConfig = RequestOptionsInit & {
   auth?: boolean;
+  dataFilter?: DefaultDataFilter<any> | null;
 };
 
-class Core {
+class Core<T> {
   private config: RequestConfig = {
     auth: true,
   };
@@ -81,16 +82,26 @@ class Core {
       };
     }
   }
-
-  constructor(url: string, method: Methods) {
+  constructor(url: string, method: Methods, dataFilter?: DefaultDataFilter<T> | null) {
     this.url = url;
     this.method = method;
     this.instance = Request;
     const CancelToken = this.instance.CancelToken;
     this._source = CancelToken.source();
+    if (dataFilter !== null) {
+      this.instance.use(async (ctx, next) => {
+        await next();
+        ctx.res = dataFilter ? dataFilter(ctx.res) : this.dataFilter(ctx.res);
+      });
+    }
   }
-
-  request<T>(data?: Record<string, any>, config?: RequestConfig): Bluebird<Resolve<T>> {
+  private dataFilter: DefaultDataFilter<T> = function (res) {
+    if (Object.prototype.toString.call(res) === '[object Object]') {
+      return { success: res.code === 'ok', data: res.data, message: res.msg };
+    }
+    return res;
+  };
+  request(data?: Record<string, any>, config?: RequestConfig): Bluebird<Resolve<T>> {
     if (config) {
       Object.assign(this.config, config);
     }
@@ -114,19 +125,19 @@ class Core {
 
 export default class Server {
   static get<T>(url: string, params?: Record<string, any>, config?: RequestConfig) {
-    const core = new Core(url, 'get');
-    return core.request<T>(params, config);
+    const core = new Core<T>(url, 'get', config?.dataFilter);
+    return core.request(params, config);
   }
   static delete<T>(url: string, params?: Record<string, any>, config?: RequestConfig) {
-    const core = new Core(url, 'delete');
-    return core.request<T>(params, config);
+    const core = new Core<T>(url, 'delete', config?.dataFilter);
+    return core.request(params, config);
   }
   static post<T>(url: string, data?: Record<string, any>, config?: RequestConfig) {
-    const core = new Core(url, 'post');
-    return core.request<T>(data, config);
+    const core = new Core<T>(url, 'post', config?.dataFilter);
+    return core.request(data, config);
   }
   static put<T>(url: string, data?: Record<string, any>, config?: RequestConfig) {
-    const core = new Core(url, 'put');
-    return core.request<T>(data, config);
+    const core = new Core<T>(url, 'put', config?.dataFilter);
+    return core.request(data, config);
   }
 }

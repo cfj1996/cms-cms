@@ -11,7 +11,10 @@ export enum NftState {
   onsale = '上架',
   offsale = '下架',
 }
-
+export const nftStateEnum = Object.keys(NftState).map((key) => ({
+  value: key,
+  label: NftState[key],
+}));
 export interface INft {
   id: string;
   name: string;

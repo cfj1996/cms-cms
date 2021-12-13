@@ -5,10 +5,17 @@
  */
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
+import ProTable, { TableDropdown } from '@ant-design/pro-table';
 import type { IAddNft, INft } from '@/services/nft/nfts';
-import { addNft, getNftList, updateNft } from '@/services/nft/nfts';
-import { Button, message } from 'antd';
+import {
+  addNft,
+  getNftList,
+  NftState,
+  nftStateEnum,
+  updateNft,
+  updateNftState,
+} from '@/services/nft/nfts';
+import { Button, message, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { AddSet, EditSet } from './set';
 import Dialog from '@/components/Dialog';
@@ -63,6 +70,15 @@ const Index = function () {
       key: 'name',
     },
     {
+      dataIndex: 'state',
+      title: '状态',
+      key: 'state',
+      valueType: 'select',
+      fieldProps: {
+        options: nftStateEnum,
+      },
+    },
+    {
       dataIndex: 'serialNumber',
       title: '系列ID',
       key: 'serialNumber',
@@ -74,7 +90,7 @@ const Index = function () {
     },
     {
       dataIndex: 'total',
-      title: '剩余数量=总数-售卖',
+      title: '剩余数量',
       renderText(text, record) {
         return `${record.total - record.sale}=${record.total}-${record.sale}`;
       },
@@ -114,25 +130,36 @@ const Index = function () {
           >
             编辑
           </a>,
-          <a
-            key="heat"
-            onClick={() => {
-              update(record.id);
-            }}
-          >
-            修改热度
-          </a>,
-          <a
-            key="keyWords"
-            onClick={() => {
-              update(record.id);
-            }}
-          >
-            添加关键词
-          </a>,
           <a target="_blank" onClick={() => show(record.id)} rel="noopener noreferrer" key="view">
             查看
           </a>,
+          <TableDropdown
+            key="action"
+            onSelect={(key) => {
+              console.log('key', key);
+              if (key === '3') {
+                Modal.confirm({
+                  title: '确定上架吗?',
+                  async onOk() {
+                    await updateNftState(record.id, NftState.onsale);
+                  },
+                });
+              } else if (key === '4') {
+                Modal.confirm({
+                  title: '确定下架吗?',
+                  async onOk() {
+                    await updateNftState(record.id, NftState.offsale);
+                  },
+                });
+              }
+            }}
+            menus={[
+              { key: '1', name: '修改热度' },
+              { key: '2', name: '添加关键词' },
+              { key: '3', name: '上架' },
+              { key: '4', name: '下架' },
+            ]}
+          />,
         ];
       },
     },

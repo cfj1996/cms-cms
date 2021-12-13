@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { mock, Random } from 'mockjs';
 
-const USERNAME = 'admin';
-const PASSWORD = '123456';
+const USERNAME = 'setup@tiancai.pro';
+const PASSWORD = 'tiancai001';
 const LOGS: string[] = [];
 function createToken() {
   return mock('@guid') + '&' + (new Date().getTime() + 10000 * 1000);
@@ -17,9 +17,9 @@ export function parsingToken(token: string) {
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 export default {
   // 登录获取token
-  'POST /api/login': (req: Request, res: Response) => {
-    const { password, username } = req.body;
-    if (password === PASSWORD && username === USERNAME) {
+  'POST /auth/login': (req: Request, res: Response) => {
+    const { password, email } = req.body;
+    if (password === PASSWORD && email === USERNAME) {
       const token = createToken();
       LOGS.push(token);
       res.send({
