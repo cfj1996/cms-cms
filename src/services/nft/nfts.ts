@@ -44,11 +44,12 @@ export const getNftList = function (params: PageParams & INftReq) {
 export interface IAddNft {
   categoryId: string;
   name: string;
+  fileSource?: { url: string }[];
   files?: string[];
   desc: string;
   serialNumber: string;
-  total?: number;
-  price?: number;
+  total: number;
+  price: number;
 }
 
 /**

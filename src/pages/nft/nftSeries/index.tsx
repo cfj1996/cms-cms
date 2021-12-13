@@ -6,7 +6,7 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type { IAddNft, INft, IUpdateNft } from '@/services/nft/nfts';
+import type { IAddNft, INft } from '@/services/nft/nfts';
 import { addNft, getNftList, updateNft } from '@/services/nft/nfts';
 import { Button, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -22,7 +22,10 @@ const Index = function () {
       title: '新增nft',
       content: <AddSet />,
       async onOK(name, info) {
-        await addNft(info?.values as IAddNft);
+        const values = info?.values as IAddNft;
+        values.files = values.fileSource?.map((i) => i.url);
+        values.fileSource = undefined;
+        await addNft(values);
         message.success('添加成功');
         actionRef.current?.reload();
       },
@@ -33,7 +36,13 @@ const Index = function () {
       title: '修改nft',
       content: <EditSet id={id} />,
       async onOK(name, info) {
-        await updateNft(id, info?.values as IUpdateNft);
+        const values = info?.values as IAddNft;
+        await updateNft(id, {
+          categoryId: values.categoryId,
+          name: values.name,
+          desc: values.desc,
+          price: values.price,
+        });
         message.success('修改成功');
         actionRef.current?.reload();
       },

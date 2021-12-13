@@ -59,13 +59,12 @@ export function userGetInfo() {
 
 export function upFile(file: File) {
   console.log('file', file);
-  return Server.post<string>(
-    '/upload/file',
-    { file: file },
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+  const formData = new FormData();
+  formData.append('files', file);
+  return Server.post<string>('/upload/file', formData, {
+    prefix: 'http://localhost:3000',
+    headers: {
+      'Content-Type': 'multipart/form-data',
     },
-  );
+  });
 }

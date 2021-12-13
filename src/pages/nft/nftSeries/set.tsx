@@ -16,9 +16,11 @@ import { Form } from 'antd';
 import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
 import { getAllNftType } from '@/services/nft/nftType';
-import { upFile } from '@/services/user/login';
+// import { upFile } from '@/services/user/login';
 import type { IAddNft, INft } from '@/services/nft/nfts';
 import { getNft } from '@/services/nft/nfts';
+import type { UploadFile } from 'antd/es/upload/interface';
+import type { Resolve } from '@/services';
 
 const formItemLayout = {
   labelCol: {
@@ -35,16 +37,15 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
   const { id } = props;
   let defaultFileList;
   const [form] = Form.useForm();
-  const initialValues: IAddNft = {
+  const initialValues = {
     categoryId: '',
     name: '',
     desc: '',
     price: undefined,
-
-    files: undefined,
+    fileSource: undefined,
     serialNumber: '',
     total: undefined,
-  };
+  } as unknown as IAddNft;
   if (id && props.data) {
     const { data } = props.data;
     initialValues.categoryId = data.categoryId;
@@ -54,7 +55,6 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
     initialValues.price = Number(data.price);
     initialValues.total = Number(data.total);
     if (data.files?.length > 0) {
-      initialValues.files = data.files;
       defaultFileList = data.files.map((i) => ({
         uid: i,
         name: i,
@@ -62,6 +62,7 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         status: 'success',
         url: i,
       }));
+      initialValues.fileSource = defaultFileList;
     }
     console.log(data);
   }
@@ -119,15 +120,21 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
       />
       <ProFormUploadDragger
         fieldProps={{
-          defaultFileList: defaultFileList as any,
           multiple: true,
+          defaultFileList: undefined,
+        }}
+        normalize={(value: UploadFile<Resolve<string>>[]) => {
+          return value.map((item) => ({
+            url: item.response?.data,
+            ...item,
+          }));
         }}
         disabled={!!id}
-        name={'files'}
+        name={'fileSource'}
         required={true}
         rules={[{ required: true }]}
         label="源文件"
-        action={(file) => upFile(file).then((res) => res.data)}
+        action={'http://localhost:3000/upload/file'}
       />
       <ProFormTextArea name="desc" label="NFT描述" placeholder="请输入描述" />
     </Form>
