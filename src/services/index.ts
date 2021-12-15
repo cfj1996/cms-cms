@@ -2,7 +2,7 @@ import type Bluebird from 'bluebird';
 import Promise from 'bluebird';
 import type { CancelTokenSource, RequestMethod, RequestOptionsInit } from 'umi-request';
 import { extend } from 'umi-request';
-import { getToken } from '@/utils';
+import { getToken, tokeKey } from '@/utils';
 import { history } from '@@/core/history';
 import { stringify } from 'querystring';
 import { logout } from '@/services/user/login';
@@ -26,17 +26,15 @@ export interface PageParams {
 // 响应数据结构
 export interface Resolve<T> {
   data: T;
-  // 操作是否成功
-  success: boolean;
-  // 错误消息
-  message?: string;
-  // 列表查询总数
-  total?: number;
+  msg: string;
+  code: string;
 }
+export type PageResolve<T> = Resolve<{ list: T[]; total: number }>;
+
 export type IServer<S = any, T = any> = (page?: S) => Bluebird<Resolve<T>>;
 
 const Request = extend({
-  prefix: '/api/v1/admin',
+  prefix: '/api/v1',
   timeout: 60 * 1000,
 });
 Request.interceptors.response.use(async (response) => {
@@ -59,7 +57,6 @@ Request.interceptors.response.use(async (response) => {
 });
 export type RequestConfig = RequestOptionsInit & {
   auth?: boolean;
-  dataFilter?: DefaultDataFilter<any> | null;
 };
 
 class Core<T> {
@@ -73,7 +70,7 @@ class Core<T> {
   get headers(): HeadersInit {
     if (this.config.auth) {
       return {
-        token: getToken(),
+        [tokeKey]: getToken(),
         ...this.config.headers,
       };
     } else {
@@ -82,26 +79,14 @@ class Core<T> {
       };
     }
   }
-  constructor(url: string, method: Methods, dataFilter?: DefaultDataFilter<T> | null) {
+  constructor(url: string, method: Methods) {
     this.url = url;
     this.method = method;
     this.instance = Request;
     const CancelToken = this.instance.CancelToken;
     this._source = CancelToken.source();
-    if (dataFilter !== null) {
-      this.instance.use(async (ctx, next) => {
-        await next();
-        ctx.res = dataFilter ? dataFilter(ctx.res) : this.dataFilter(ctx.res);
-      });
-    }
   }
-  private dataFilter: DefaultDataFilter<T> = function (res) {
-    if (Object.prototype.toString.call(res) === '[object Object]') {
-      return { success: res.code === 'ok', data: res.data, message: res.msg };
-    }
-    return res;
-  };
-  request(data?: Record<string, any>, config?: RequestConfig): Bluebird<Resolve<T>> {
+  request(data?: Record<string, any>, config?: RequestConfig): Bluebird<T> {
     if (config) {
       Object.assign(this.config, config);
     }
@@ -125,19 +110,19 @@ class Core<T> {
 
 export default class Server {
   static get<T>(url: string, params?: Record<string, any>, config?: RequestConfig) {
-    const core = new Core<T>(url, 'get', config?.dataFilter);
+    const core = new Core<T>(url, 'get');
     return core.request(params, config);
   }
   static delete<T>(url: string, params?: Record<string, any>, config?: RequestConfig) {
-    const core = new Core<T>(url, 'delete', config?.dataFilter);
+    const core = new Core<T>(url, 'delete');
     return core.request(params, config);
   }
   static post<T>(url: string, data?: Record<string, any>, config?: RequestConfig) {
-    const core = new Core<T>(url, 'post', config?.dataFilter);
+    const core = new Core<T>(url, 'post');
     return core.request(data, config);
   }
   static put<T>(url: string, data?: Record<string, any>, config?: RequestConfig) {
-    const core = new Core<T>(url, 'put', config?.dataFilter);
+    const core = new Core<T>(url, 'put');
     return core.request(data, config);
   }
 }

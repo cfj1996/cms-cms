@@ -8,10 +8,10 @@ import Server from '..';
  */
 export interface INftType {
   id: string;
-  categoryTitle: string;
-  categoryDesc: string;
-  createAt: string;
-  updateAt: string;
+  category_title: string;
+  category_desc: string;
+  create_at: string;
+  update_at: string;
 }
 interface IGetTypeReq {
   categoryTitle: string;
@@ -33,7 +33,13 @@ export const getAllNftType = function () {
  * @param params
  */
 export const getNftTypeList = function (params: PageParams & IGetTypeReq) {
-  return Server.get<INftType[]>('/nftTypes', params);
+  return Server.get<PageResolve<INftType>>('/nft/category/search', params).then((res) => {
+    return {
+      success: res.code === 'ok',
+      data: res.data.list,
+      total: res.data.total,
+    };
+  });
 };
 
 /**
@@ -41,11 +47,11 @@ export const getNftTypeList = function (params: PageParams & IGetTypeReq) {
  * @param data
  */
 export interface IAddNftType {
-  categoryTitle: string;
-  categoryDesc: string;
+  category_title: string;
+  category_desc: string;
 }
 export const addNftType = function (data: IAddNftType) {
-  return Server.post<boolean>('/nftTypes', data);
+  return Server.post<boolean>('/nft/category/add', data);
 };
 /**
  * 获取单个nftType详情

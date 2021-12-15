@@ -49,51 +49,21 @@ const Index = function () {
   }
   const columns: ProColumns<INftType>[] = [
     {
-      dataIndex: 'categoryTitle',
+      dataIndex: 'category_title',
       title: '分类标题',
-      key: 'categoryTitle',
+      key: 'keywords',
     },
     {
-      dataIndex: 'createAt',
+      dataIndex: 'create_at',
       title: '创建时间',
       valueType: 'dateTime',
-      sorter: true,
       hideInSearch: true,
     },
     {
-      title: '创建时间',
-      dataIndex: 'createAt',
-      valueType: 'dateRange',
-      hideInTable: true,
-      search: {
-        transform: (value) => {
-          return {
-            createStartTime: value[0],
-            createEndTime: value[1],
-          };
-        },
-      },
-    },
-    {
-      dataIndex: 'updateAt',
+      dataIndex: 'update_at',
       title: '更新时间',
       valueType: 'dateTime',
-      sorter: true,
       hideInSearch: true,
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'updateAt',
-      valueType: 'dateRange',
-      hideInTable: true,
-      search: {
-        transform: (value) => {
-          return {
-            updateStartTime: value[0],
-            updateEndTime: value[1],
-          };
-        },
-      },
     },
     {
       title: '操作',

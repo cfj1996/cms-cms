@@ -4,9 +4,9 @@
  * @date: 2021/12/11 18:21
  */
 
+import type { Resolve } from '..';
 import Server from '..';
 import { removeToken } from '@/utils';
-import type { IAccess } from '@/services/Account';
 
 export interface ILoginReq {
   email: string;
@@ -18,7 +18,15 @@ export interface ILoginReq {
  * @param data
  */
 export function login(data: ILoginReq) {
-  return Server.post<{ token: string }>('/auth/login', data, { auth: false });
+  return Server.post<Resolve<{ token: string }>>('/admin/auth/login', data, { auth: false }).then(
+    (res) => {
+      return {
+        success: res.code === 'ok',
+        data: res.data,
+        message: res.msg,
+      };
+    },
+  );
 }
 
 export interface IRegisterReq {
@@ -44,21 +52,23 @@ export function logout() {
 
 export interface IUserInfo {
   id: string;
-  account: string;
+  full_name: string;
   role: string;
-  isDisable: boolean;
-  createAt: string;
-  updateAt: string;
+  is_disable: boolean;
 }
 /**
  * 过去用户信息
  */
 export function userGetInfo() {
-  return Server.get<IAccess>('/user/getInfo');
+  return Server.get<IUserInfo>('/admin/auth/info').then((res) => {
+    return {
+      success: true,
+      data: res,
+    };
+  });
 }
 
 export function upFile(file: File) {
-  console.log('file', file);
   const formData = new FormData();
   formData.append('files', file);
   return Server.post<string>('/upload/file', formData, {
