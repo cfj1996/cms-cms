@@ -1,4 +1,4 @@
-import type { PageParams } from '..';
+import type { PageParams, PageResolve } from '..';
 import Server from '..';
 
 /**
