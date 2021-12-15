@@ -17,10 +17,10 @@ interface IProps {
 const Detail = function (props: IProps & PageService<INftType>) {
   const { data } = props.data!;
   const list = [
-    { label: '标题：', value: data.categoryTitle },
-    { label: '描述：', value: data.categoryDesc },
-    { label: '创建时间：', value: data.createAt },
-    { label: '更新时间：', value: data.updateAt },
+    { label: '标题：', value: data.category_title },
+    { label: '描述：', value: data.category_desc },
+    { label: '创建时间：', value: data.create_at },
+    { label: '更新时间：', value: data.update_at },
   ];
   return (
     <Row gutter={24}>

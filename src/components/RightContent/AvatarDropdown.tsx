@@ -16,7 +16,7 @@ export type GlobalHeaderRightProps = {
  * 退出登录，并且将当前的 url 保存
  */
 const loginOut = async () => {
-  await logout();
+  logout().catch(() => {});
   const { query = {}, search, pathname } = history.location;
   const { redirect } = query;
   // Note: There may be security issues, please note
@@ -32,7 +32,6 @@ const loginOut = async () => {
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
-  console.log('initialState', initialState);
   const onMenuClick = useCallback(
     (event: MenuInfo) => {
       const { key } = event;
@@ -64,7 +63,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = () => {
 
   const { currentUser } = initialState;
 
-  if (!currentUser || !currentUser.account) {
+  if (!currentUser || !currentUser.full_name) {
     return loading;
   }
 
@@ -80,7 +79,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = () => {
     <HeaderDropdown overlay={menuHeaderDropdown}>
       <span className={`${styles.action} ${styles.account}`}>
         <Avatar size="small" className={styles.avatar} alt="avatar" />
-        <span className={`${styles.name} anticon`}>{currentUser.account}</span>
+        <span className={`${styles.name} anticon`}>{currentUser.full_name}</span>
       </span>
     </HeaderDropdown>
   );

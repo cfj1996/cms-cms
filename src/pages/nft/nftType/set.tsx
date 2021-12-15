@@ -25,13 +25,13 @@ interface IProps {
 const Set = forwardRef(function (props: IProps & PageService<INftType>, ref) {
   const [form] = Form.useForm();
   const initialValues: IAddNftType = {
-    categoryTitle: '',
-    categoryDesc: '',
+    category_title: '',
+    category_desc: '',
   };
   if (props.id && props.data) {
     const { data } = props.data;
-    initialValues.categoryTitle = data.categoryTitle;
-    initialValues.categoryDesc = data.categoryDesc;
+    initialValues.category_title = data.category_title;
+    initialValues.category_desc = data.category_desc;
   }
   useImperativeHandle(ref, () => ({
     submit() {

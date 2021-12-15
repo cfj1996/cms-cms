@@ -42,7 +42,10 @@ export interface INftReq {
  * @param params
  */
 export const getNftList = function (params: PageParams & INftReq) {
-  return Server.get<INft[]>('/nft', params);
+  return Server.get<INft[]>('/nft', params).then((res) => {
+    console.log('getNftList', getNftList);
+    return res;
+  });
 };
 export interface IAddNft {
   categoryId: string;
