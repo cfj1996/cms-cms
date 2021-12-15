@@ -3,6 +3,7 @@
  * @user: cfj
  * @date: 2021/12/11 22:30
  */
+
 import React, { forwardRef, useImperativeHandle } from 'react';
 import { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import { Form } from 'antd';
@@ -10,6 +11,7 @@ import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
 import type { IAddNftType, INftType } from '@/services/nft/nftType';
 import { getNftType } from '@/services/nft/nftType';
+import type { Resolve } from '@/services';
 
 const formItemLayout = {
   labelCol: {
@@ -22,16 +24,21 @@ const formItemLayout = {
 interface IProps {
   id?: string;
 }
-const Set = forwardRef(function (props: IProps & PageService<INftType>, ref) {
+const Set = forwardRef(function (props: IProps & PageService<Resolve<INftType>>, ref) {
   const [form] = Form.useForm();
+
   const initialValues: IAddNftType = {
-    category_title: '',
-    category_desc: '',
+    name: '',
+    symbol: '',
+    desc: '',
   };
   if (props.id && props.data) {
-    const { data } = props.data;
-    initialValues.category_title = data.category_title;
-    initialValues.category_desc = data.category_desc;
+    const {
+      data: { data },
+    } = props.data;
+    initialValues.name = data.name;
+    initialValues.symbol = data.symbol;
+    initialValues.desc = data.desc;
   }
   useImperativeHandle(ref, () => ({
     submit() {
@@ -47,7 +54,14 @@ const Set = forwardRef(function (props: IProps & PageService<INftType>, ref) {
         required={true}
         rules={[{ required: true }]}
       />
-      <ProFormTextArea name="categoryDesc" label="描述" placeholder="请输入描述" />
+      <ProFormText
+        name="symbol"
+        label="简称"
+        placeholder="请输入简称"
+        required={true}
+        rules={[{ required: true }]}
+      />
+      <ProFormTextArea name="desc" label="描述" placeholder="请输入描述" />
     </Form>
   );
 });

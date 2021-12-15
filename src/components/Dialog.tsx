@@ -9,7 +9,7 @@ import { Form, Modal } from 'antd';
 import type { FormFinishInfo } from 'rc-field-form/lib/FormContext';
 import type { ModalProps } from 'antd/lib/modal/Modal';
 
-type IProps = {
+export type IProps = {
   type?: 'form' | 'view';
   title: string;
   content: React.ReactElement;
@@ -20,28 +20,31 @@ let id = 0;
 export default class Dialog extends React.Component<IProps> {
   static dialogs = new Map<React.Key, Dialog | null>();
 
-  static open(options: IProps) {
+  static open(options: IProps, onUnmount: () => void): [number, React.ReactPortal] {
     id++;
     const div = document.createElement('div');
     const dom = document.documentElement.appendChild(div);
     let dialogRef: Dialog | null = null;
-    ReactDOM.render(
+    const PortalDom = ReactDOM.createPortal(
       <Dialog
         ref={(ref) => {
           dialogRef = ref;
         }}
         afterClose={() => {
+          onUnmount();
           document.documentElement.removeChild(dom);
         }}
         {...options}
       />,
       dom,
     );
+    console.log('dialogRef', dialogRef);
     Dialog.dialogs.set(id, dialogRef);
-    return id;
+    return [id, PortalDom];
   }
 
   static close(dialogID: React.Key) {
+    console.log(Dialog.dialogs.get(dialogID));
     Dialog.dialogs.get(dialogID)?.onCancel();
   }
 
@@ -58,7 +61,12 @@ export default class Dialog extends React.Component<IProps> {
     iSFinish: false,
     loading: false,
   };
+  componentWillUnmount() {
+    console.log(1111111);
+  }
+
   onCancel() {
+    console.log(1111111111111111111);
     this.setState({
       visible: false,
     });

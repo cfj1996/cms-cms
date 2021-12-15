@@ -1,4 +1,4 @@
-import type { PageParams, PageResolve } from '..';
+import type { PageParams, PageResolve, Resolve } from '..';
 import Server from '..';
 
 /**
@@ -8,8 +8,9 @@ import Server from '..';
  */
 export interface INftType {
   id: string;
-  category_title: string;
-  category_desc: string;
+  name: string;
+  symbol: string;
+  desc: string;
   create_at: string;
   update_at: string;
 }
@@ -47,8 +48,9 @@ export const getNftTypeList = function (params: PageParams & IGetTypeReq) {
  * @param data
  */
 export interface IAddNftType {
-  category_title: string;
-  category_desc: string;
+  name: string;
+  symbol: string;
+  desc: string;
 }
 export const addNftType = function (data: IAddNftType) {
   return Server.post<boolean>('/nft/category/add', data);
@@ -58,7 +60,7 @@ export const addNftType = function (data: IAddNftType) {
  * @param id
  */
 export const getNftType = function (id: string) {
-  return Server.get<INftType>('/nftTypes/' + id);
+  return Server.get<Resolve<INftType>>('/nftTypes/' + id);
 };
 /**
  * 修改nftType
