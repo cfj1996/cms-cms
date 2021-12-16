@@ -79,9 +79,7 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         required={true}
         rules={[{ required: true }]}
         request={() =>
-          getAllNftType().then((res) =>
-            res.data.map((i) => ({ value: i.id, label: i.categoryTitle })),
-          )
+          getAllNftType().then((res) => res.data.map((i) => ({ value: i.id, label: i.name })))
         }
       />
       <ProFormText

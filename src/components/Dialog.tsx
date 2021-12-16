@@ -5,12 +5,14 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Form, Modal } from 'antd';
+import { ConfigProvider, Form, Modal } from 'antd';
 import type { FormFinishInfo } from 'rc-field-form/lib/FormContext';
 import type { ModalProps } from 'antd/lib/modal/Modal';
+import zhCN from 'antd/lib/locale/zh_CN';
 
 export type IProps = {
   type?: 'form' | 'view';
+  dialogRef: (ref: Dialog) => void;
   title: string;
   content: React.ReactElement;
   onOK?: (name?: string, info?: FormFinishInfo) => Promise<void> | void;
@@ -20,27 +22,25 @@ let id = 0;
 export default class Dialog extends React.Component<IProps> {
   static dialogs = new Map<React.Key, Dialog | null>();
 
-  static open(options: IProps, onUnmount: () => void): [number, React.ReactPortal] {
+  static open(options: Omit<IProps, 'dialogRef'>) {
     id++;
     const div = document.createElement('div');
     const dom = document.documentElement.appendChild(div);
     let dialogRef: Dialog | null = null;
-    const PortalDom = ReactDOM.createPortal(
+    ReactDOM.render(
       <Dialog
-        ref={(ref) => {
+        {...options}
+        dialogRef={(ref) => {
           dialogRef = ref;
         }}
         afterClose={() => {
-          onUnmount();
           document.documentElement.removeChild(dom);
         }}
-        {...options}
       />,
       dom,
     );
-    console.log('dialogRef', dialogRef);
     Dialog.dialogs.set(id, dialogRef);
-    return [id, PortalDom];
+    return id;
   }
 
   static close(dialogID: React.Key) {
@@ -72,6 +72,10 @@ export default class Dialog extends React.Component<IProps> {
     });
   }
 
+  componentDidMount() {
+    this.props.dialogRef(this);
+  }
+
   render() {
     const { type = 'from', title, content, onOK, onCancel, afterClose, ...other } = this.props;
     const { visible, loading, iSFinish } = this.state;
@@ -80,45 +84,47 @@ export default class Dialog extends React.Component<IProps> {
         ? React.cloneElement(content, { ref: (node: any) => (this.node = node) })
         : content;
     return (
-      <Form.Provider
-        onFormFinish={async (name: string, info: FormFinishInfo) => {
-          try {
-            this.setState({ loading: true, iSFinish: true });
-            await onOK?.(name, info);
-            this.setState({
-              loading: false,
-              visible: false,
-            });
-          } catch (e) {
-            this.setState({
-              loading: false,
-            });
-          }
-        }}
-      >
-        <Modal
-          {...other}
-          afterClose={afterClose}
-          title={title}
-          visible={visible}
-          onOk={() => {
-            if (type === 'from' || this.props.footer !== null) {
-              this.node?.submit?.();
-            } else {
-              this.setState({ visible: false });
-              onOK?.();
+      <ConfigProvider locale={zhCN}>
+        <Form.Provider
+          onFormFinish={async (name: string, info: FormFinishInfo) => {
+            try {
+              this.setState({ loading: true, iSFinish: true });
+              await onOK?.(name, info);
+              this.setState({
+                loading: false,
+                visible: false,
+              });
+            } catch (e) {
+              this.setState({
+                loading: false,
+              });
             }
           }}
-          destroyOnClose
-          confirmLoading={loading}
-          onCancel={() => {
-            onCancel?.(iSFinish);
-            this.onCancel?.();
-          }}
         >
-          {Content}
-        </Modal>
-      </Form.Provider>
+          <Modal
+            {...other}
+            afterClose={afterClose}
+            title={title}
+            visible={visible}
+            onOk={() => {
+              if (type === 'from' || this.props.footer !== null) {
+                this.node?.submit?.();
+              } else {
+                this.setState({ visible: false });
+                onOK?.();
+              }
+            }}
+            destroyOnClose
+            confirmLoading={loading}
+            onCancel={() => {
+              onCancel?.(iSFinish);
+              this.onCancel?.();
+            }}
+          >
+            {Content}
+          </Modal>
+        </Form.Provider>
+      </ConfigProvider>
     );
   }
 }

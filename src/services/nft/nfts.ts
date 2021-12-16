@@ -1,4 +1,4 @@
-import type { PageParams } from '..';
+import type { PageParams, Resolve } from '..';
 import Server from '..';
 
 /**
@@ -43,7 +43,6 @@ export interface INftReq {
  */
 export const getNftList = function (params: PageParams & INftReq) {
   return Server.get<INft[]>('/nft', params).then((res) => {
-    console.log('getNftList', getNftList);
     return res;
   });
 };
@@ -110,5 +109,5 @@ export const updateNftKeyWords = function (id: string, keyWords: string[]) {
  * @param id
  */
 export const getNft = function (id: string) {
-  return Server.get<INft>(`/nft/${id}`);
+  return Server.get<Resolve<INft>>(`/nft/${id}`);
 };

@@ -39,6 +39,7 @@
         path: 'nftSeries',
         component: './nft/nftSeries',
       },
+      { exact: true, redirect: '/nft/nftType' },
     ],
   },
   {
@@ -51,6 +52,7 @@
         path: 'contentReview',
         component: './review/contentReview',
       },
+      { exact: true, redirect: '/review/contentReview' },
     ],
   },
   {
@@ -63,6 +65,7 @@
         path: 'platformUsers',
         component: './platformUser',
       },
+      { exact: true, redirect: '/users/platformUsers' },
     ],
   },
   {
@@ -75,31 +78,8 @@
         path: 'nftOrder',
         component: './order',
       },
+      { exact: true, redirect: '/nftOrder/ProfileOutlined' },
     ],
-  },
-  {
-    path: '/admin',
-    name: 'admin',
-    icon: 'crown',
-    access: 'canAdmin',
-    component: './Admin',
-    routes: [
-      {
-        path: '/admin/sub-page',
-        name: 'sub-page',
-        icon: 'smile',
-        component: './Welcome',
-      },
-      {
-        component: './404',
-      },
-    ],
-  },
-  {
-    name: '我的表格',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
   },
   {
     path: '/',

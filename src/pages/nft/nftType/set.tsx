@@ -48,7 +48,7 @@ const Set = forwardRef(function (props: IProps & PageService<Resolve<INftType>>,
   return (
     <Form form={form} initialValues={initialValues} {...formItemLayout}>
       <ProFormText
-        name="categoryTitle"
+        name="name"
         label="标题"
         placeholder="请输入标题"
         required={true}
@@ -61,7 +61,13 @@ const Set = forwardRef(function (props: IProps & PageService<Resolve<INftType>>,
         required={true}
         rules={[{ required: true }]}
       />
-      <ProFormTextArea name="desc" label="描述" placeholder="请输入描述" />
+      <ProFormTextArea
+        name="desc"
+        label="描述"
+        placeholder="请输入描述"
+        required={true}
+        rules={[{ required: true }]}
+      />
     </Form>
   );
 });

@@ -26,7 +26,7 @@ interface IGetTypeReq {
  * 获取所有nft类型
  */
 export const getAllNftType = function () {
-  return Server.get<INftType[]>('/nftTypes/all');
+  return Server.get<Resolve<INftType[]>>('/nftTypes/all');
 };
 
 /**
