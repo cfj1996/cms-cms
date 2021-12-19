@@ -16,9 +16,9 @@ export default {
   },
   pre: {
     '/api/': {
-      target: 'your pre url',
+      target: 'https://p4010174-u848-6abfd459.api.tiancai.run',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
+      secure: false,
     },
   },
 };

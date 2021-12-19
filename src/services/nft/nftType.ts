@@ -11,15 +11,12 @@ export interface INftType {
   name: string;
   symbol: string;
   desc: string;
-  create_at: string;
-  update_at: string;
+  contract_address: string;
+  created_at: string;
+  updated_at: string;
 }
 interface IGetTypeReq {
-  categoryTitle: string;
-  createStartTime: number;
-  createEndTime: number;
-  updateStartTime: number;
-  updateEndTime: number;
+  keywords: string;
 }
 
 /**
@@ -51,6 +48,7 @@ export interface IAddNftType {
   name: string;
   symbol: string;
   desc: string;
+  contract_address?: string;
 }
 export const addNftType = function (data: IAddNftType) {
   return Server.post<boolean>('/nft/category/add', data);

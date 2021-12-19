@@ -47,14 +47,15 @@ export const getNftList = function (params: PageParams & INftReq) {
   });
 };
 export interface IAddNft {
-  categoryId: string;
+  category_id: string;
   name: string;
-  fileSource?: { url: string }[];
-  files?: string[];
+  title: string;
   desc: string;
-  serialNumber: string;
-  total: number;
-  price: number;
+  transaction_hash: string;
+  images?: string[];
+  token_id?: number;
+  total?: number;
+  price?: number;
 }
 
 /**
@@ -62,7 +63,7 @@ export interface IAddNft {
  * @param data
  */
 export const addNft = function (data: IAddNft) {
-  return Server.post<boolean>('/nft', data);
+  return Server.post<boolean>('/nft/create', data);
 };
 export interface IUpdateNft {
   categoryId: string;
@@ -110,4 +111,24 @@ export const updateNftKeyWords = function (id: string, keyWords: string[]) {
  */
 export const getNft = function (id: string) {
   return Server.get<Resolve<INft>>(`/nft/${id}`);
+};
+/**
+ * 获取合约地址
+ */
+export const getContractAddress = function () {
+  return Server.get<Resolve<{ contract_address: string }>>('/nft/contract/deploy').then(
+    (res) => res.data.contract_address,
+  );
+};
+
+/**
+ * 铸币
+ */
+export interface IPlatform {
+  category_id: string;
+  token_id: string;
+  total?: number;
+}
+export const platform = function (data: IPlatform) {
+  return Server.post<Resolve<{ transaction_hash: string }>>('/nft/mint/platform', data);
 };

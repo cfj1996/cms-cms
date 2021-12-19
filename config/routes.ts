@@ -30,12 +30,12 @@
     icon: 'PayCircleOutlined',
     routes: [
       {
-        name: 'NFT类型',
+        name: 'NFT系列',
         path: 'nftType',
         component: './nft/nftType',
       },
       {
-        name: 'NFT系列',
+        name: 'NFT作品',
         path: 'nftSeries',
         component: './nft/nftSeries',
       },

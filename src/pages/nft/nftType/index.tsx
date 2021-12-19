@@ -13,6 +13,8 @@ import { PlusOutlined } from '@ant-design/icons';
 import { AddSet } from './set';
 import { useRef } from 'react';
 import Dialog from '@/components/Dialog';
+import { getContractAddress } from '@/services/nft/nfts';
+import GlobalLoad from '@/components/GlobalLoad';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
@@ -21,12 +23,17 @@ const Index = function () {
       title: '新增nft系列',
       content: <AddSet />,
       async onOK(name, info) {
+        const values = info?.values;
+        const id = GlobalLoad.open({ tip: 'nft系列创建中，请稍后....' });
         try {
-          await addNftType(info?.values as IAddNftType);
-          message.success('添加成功');
+          const address = await getContractAddress();
+          await addNftType({ contract_address: address, ...values } as IAddNftType);
+          GlobalLoad.close(id);
+          message.success('创建成功');
           actionRef.current?.reload();
         } catch (e) {
-          console.log(e);
+          message.error('创建失败,稍后重试。');
+          GlobalLoad.close(id);
           return Promise.reject(e);
         }
       },
@@ -66,13 +73,20 @@ const Index = function () {
       hideInSearch: true,
     },
     {
-      dataIndex: 'create_at',
+      dataIndex: 'contract_address',
+      title: '合约地址',
+      hideInSearch: true,
+      ellipsis: true,
+      copyable: true,
+    },
+    {
+      dataIndex: 'created_at',
       title: '创建时间',
       valueType: 'dateTime',
       hideInSearch: true,
     },
     {
-      dataIndex: 'update_at',
+      dataIndex: 'updated_at',
       title: '更新时间',
       valueType: 'dateTime',
       hideInSearch: true,

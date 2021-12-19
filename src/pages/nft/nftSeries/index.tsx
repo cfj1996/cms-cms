@@ -12,15 +12,16 @@ import {
   getNftList,
   NftState,
   nftStateEnum,
-  updateNft,
+  platform,
   updateNftState,
 } from '@/services/nft/nfts';
 import { Button, message, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { AddSet, EditSet } from './set';
+import { AddSet } from './set';
 import Dialog from '@/components/Dialog';
 import { useRef } from 'react';
 import Detail from './detail';
+import GlobalLoad from '@/components/GlobalLoad';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
@@ -29,29 +30,27 @@ const Index = function () {
       title: '新增nft',
       content: <AddSet />,
       async onOK(name, info) {
-        const values = info?.values as IAddNft;
-        values.files = values.fileSource?.map((i) => i.url);
-        values.fileSource = undefined;
-        await addNft(values);
-        message.success('添加成功');
-        actionRef.current?.reload();
-      },
-    });
-  }
-  function update(id: string) {
-    Dialog.open({
-      title: '修改nft',
-      content: <EditSet id={id} />,
-      async onOK(name, info) {
-        const values = info?.values as IAddNft;
-        await updateNft(id, {
-          categoryId: values.categoryId,
-          name: values.name,
-          desc: values.desc,
-          price: values.price,
-        });
-        message.success('修改成功');
-        actionRef.current?.reload();
+        const id = GlobalLoad.open();
+        try {
+          const values = info?.values as IAddNft;
+          const { data } = await platform({
+            category_id: values.category_id,
+            token_id: values.token_id,
+            total: values.total,
+          });
+          if (data.transaction_hash) {
+            await addNft(Object.assign({ transaction_hash: data.transaction_hash }, values));
+            message.success('添加成功');
+            actionRef.current?.reload();
+          } else {
+            message.error('铸币失败，请稍后再试');
+          }
+          GlobalLoad.close(id);
+        } catch (e) {
+          GlobalLoad.close(id);
+          message.error('创建失败,稍后重试。');
+          return Promise.reject();
+        }
       },
     });
   }
@@ -122,14 +121,6 @@ const Index = function () {
       valueType: 'option',
       render(text, record) {
         return [
-          <a
-            key="editable"
-            onClick={() => {
-              update(record.id);
-            }}
-          >
-            编辑
-          </a>,
           <a target="_blank" onClick={() => show(record.id)} rel="noopener noreferrer" key="view">
             查看
           </a>,

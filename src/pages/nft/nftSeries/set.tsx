@@ -15,8 +15,7 @@ import {
 import { Form } from 'antd';
 import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
-import { getAllNftType } from '@/services/nft/nftType';
-// import { upFile } from '@/services/user/login';
+import { getNftTypeList } from '@/services/nft/nftType';
 import type { IAddNft, INft } from '@/services/nft/nfts';
 import { getNft } from '@/services/nft/nfts';
 import type { UploadFile } from 'antd/es/upload/interface';
@@ -35,37 +34,17 @@ interface IProps {
 }
 const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
   const { id } = props;
-  let defaultFileList;
   const [form] = Form.useForm();
-  const initialValues = {
-    categoryId: '',
+  const initialValues: Omit<IAddNft, 'transaction_hash'> = {
+    category_id: '',
     name: '',
+    title: '',
     desc: '',
-    price: undefined,
-    fileSource: undefined,
-    serialNumber: '',
+    images: [],
+    token_id: undefined,
     total: undefined,
-  } as unknown as IAddNft;
-  if (id && props.data) {
-    const { data } = props.data;
-    initialValues.categoryId = data.categoryId;
-    initialValues.name = data.name;
-    initialValues.desc = data.desc;
-    initialValues.serialNumber = data.serialNumber;
-    initialValues.price = Number(data.price);
-    initialValues.total = Number(data.total);
-    if (data.files?.length > 0) {
-      defaultFileList = data.files.map((i) => ({
-        uid: i,
-        name: i,
-        percent: 100,
-        status: 'success',
-        url: i,
-      }));
-      initialValues.fileSource = defaultFileList;
-    }
-    console.log(data);
-  }
+    price: undefined,
+  };
   useImperativeHandle(ref, () => ({
     submit() {
       form.submit();
@@ -74,21 +53,19 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
   return (
     <Form form={form} initialValues={initialValues} {...formItemLayout}>
       <ProFormSelect
-        name={'categoryId'}
+        name={'category_id'}
         label={'nft分类'}
         required={true}
         rules={[{ required: true }]}
-        request={() =>
-          getAllNftType().then((res) => res.data.map((i) => ({ value: i.id, label: i.name })))
-        }
-      />
-      <ProFormText
-        disabled={!!id}
-        name="serialNumber"
-        label="系列ID"
-        placeholder="请输入系列ID"
-        required={true}
-        rules={[{ required: true }]}
+        fieldProps={{
+          filterOption: false,
+        }}
+        request={(params) => {
+          console.log('params', params);
+          return getNftTypeList({ current: 1, pageSize: 100000, keywords: '' }).then((res) =>
+            res.data.map((i) => ({ value: i.id, label: i.name })),
+          );
+        }}
       />
       <ProFormText
         name="name"
@@ -96,6 +73,21 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         placeholder="请输入名称"
         required={true}
         rules={[{ required: true }]}
+      />
+      <ProFormText
+        name="title"
+        label="nft标题"
+        placeholder="请输入标题"
+        required={true}
+        rules={[{ required: true }]}
+      />
+      <ProFormText
+        name="token_id"
+        label="nft id"
+        placeholder="请输 id"
+        required={true}
+        normalize={(value) => (isNaN(value) ? value : Number(value))}
+        rules={[{ required: true }, { type: 'number' }]}
       />
       <ProFormDigit
         disabled={!!id}
