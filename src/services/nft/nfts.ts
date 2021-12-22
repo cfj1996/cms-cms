@@ -1,5 +1,5 @@
 import type { PageParams, Resolve } from '..';
-import Server from '..';
+import Server, { PageResolve } from '..';
 
 /**
  * @name: nfts
@@ -7,30 +7,41 @@ import Server from '..';
  * @date: 2021/12/12 16:00
  */
 export enum NftState {
-  draft = '草稿',
+  draf = '草稿',
   onsale = '上架',
   offsale = '下架',
 }
-export const nftStateEnum = Object.keys(NftState).map((key) => ({
-  value: key,
-  label: NftState[key],
-}));
+export const nftStateEnum = {
+  draf: {
+    text: '草稿',
+    status: 'Default',
+  },
+  onsale: {
+    text: '上架',
+    status: 'Success',
+  },
+  offsale: {
+    text: '下架',
+    status: 'Error',
+  },
+};
 export interface INft {
   id: string;
   name: string;
   title: string;
-  serialNumber: string;
-  categoryId: string;
-  files: string[];
-  price: string;
+  category_id: string;
+  category_name: string;
+  images: string[];
+  price: number;
+  state: string;
+  token_id: number;
   total: number;
   sale: number;
   desc: string;
   heat: number;
-  blockChainMsg: string;
-  state: string;
-  createAt: string;
-  updateAt: string;
+  transaction_hash: string;
+  created_at: string;
+  updated_at: string;
 }
 export interface INftReq {
   name: string;
@@ -42,8 +53,12 @@ export interface INftReq {
  * @param params
  */
 export const getNftList = function (params: PageParams & INftReq) {
-  return Server.get<INft[]>('/nft', params).then((res) => {
-    return res;
+  return Server.get<PageResolve<INft>>('/nft/search', params).then((res) => {
+    return {
+      success: res.code === 'ok',
+      data: res.data.list,
+      total: res.data.total,
+    };
   });
 };
 export interface IAddNft {
@@ -66,27 +81,27 @@ export const addNft = function (data: IAddNft) {
   return Server.post<boolean>('/nft/create', data);
 };
 export interface IUpdateNft {
-  categoryId: string;
+  nft_id: string;
   name: string;
+  price: string;
   desc: string;
-  price: number;
+  title: string;
 }
 
 /**
  * 修改nft基本信息
- * @param id
  * @param data
  */
-export const updateNft = function (id: string, data: IUpdateNft) {
-  return Server.put(`/nft/${id}`, data);
+export const updateNft = function (data: IUpdateNft) {
+  return Server.post(`/nft/edit`, data);
 };
 /**
  * 修改nft状态
  * @param id
  * @param state
  */
-export const updateNftState = function (id: string, state: NftState) {
-  return Server.put(`/nft/${id}`, { state: state });
+export const updateNftState = function (id: string, state: string) {
+  return Server.post(`/nft/state/update`, { nft_id: id, state: state });
 };
 /**
  * 修改nft 热度
@@ -110,7 +125,7 @@ export const updateNftKeyWords = function (id: string, keyWords: string[]) {
  * @param id
  */
 export const getNft = function (id: string) {
-  return Server.get<Resolve<INft>>(`/nft/${id}`);
+  return Server.get<Resolve<INft>>('/nft/info', { nft_id: id });
 };
 /**
  * 获取合约地址
@@ -126,7 +141,7 @@ export const getContractAddress = function () {
  */
 export interface IPlatform {
   category_id: string;
-  token_id: string;
+  token_id?: number;
   total?: number;
 }
 export const platform = function (data: IPlatform) {

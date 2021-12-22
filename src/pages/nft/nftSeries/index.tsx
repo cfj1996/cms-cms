@@ -10,14 +10,14 @@ import type { IAddNft, INft } from '@/services/nft/nfts';
 import {
   addNft,
   getNftList,
-  NftState,
   nftStateEnum,
   platform,
+  updateNft,
   updateNftState,
 } from '@/services/nft/nfts';
 import { Button, message, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { AddSet } from './set';
+import { AddSet, EditSet } from './set';
 import Dialog from '@/components/Dialog';
 import { useRef } from 'react';
 import Detail from './detail';
@@ -25,12 +25,13 @@ import GlobalLoad from '@/components/GlobalLoad';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
+
   function create() {
     Dialog.open({
       title: '新增nft',
       content: <AddSet />,
       async onOK(name, info) {
-        const id = GlobalLoad.open();
+        const id = GlobalLoad.open({ tip: '铸币中，请稍后....' });
         try {
           const values = info?.values as IAddNft;
           const { data } = await platform({
@@ -54,6 +55,30 @@ const Index = function () {
       },
     });
   }
+
+  function edit(id: string) {
+    Dialog.open({
+      title: '编辑nft',
+      content: <EditSet id={id} />,
+      async onOK(name, info) {
+        const values = info?.values as IAddNft;
+        console.log('values', values);
+        await updateNft({
+          nft_id: id,
+          name: values.name,
+          desc: values.desc,
+          title: values.title,
+          price: String(values.price!),
+        }).catch((err) => {
+          message.error('修改失败,稍后重试。');
+          throw err;
+        });
+        message.success('修改成功');
+        actionRef.current?.reload();
+      },
+    });
+  }
+
   function show(id: string) {
     Dialog.open({
       type: 'view',
@@ -62,28 +87,34 @@ const Index = function () {
       footer: null,
     });
   }
+
   const columns: ProColumns<INft>[] = [
     {
       dataIndex: 'name',
       title: '名称',
       key: 'name',
+      hideInSearch: true,
+      ellipsis: true,
+    },
+    {
+      dataIndex: 'title',
+      title: 'title',
+      hideInSearch: true,
     },
     {
       dataIndex: 'state',
       title: '状态',
       key: 'state',
       valueType: 'select',
-      fieldProps: {
-        options: nftStateEnum,
-      },
+      valueEnum: nftStateEnum,
     },
     {
-      dataIndex: 'serialNumber',
-      title: '系列ID',
-      key: 'serialNumber',
+      dataIndex: 'category_name',
+      title: '系列名称',
+      hideInSearch: true,
     },
     {
-      dataIndex: 'serialNumber',
+      dataIndex: 'price',
       title: '价格',
       hideInSearch: true,
     },
@@ -96,59 +127,76 @@ const Index = function () {
       hideInSearch: true,
     },
     {
-      dataIndex: 'heat',
-      title: '热度',
+      title: '交易哈希',
+      dataIndex: 'transaction_hash',
+      ellipsis: true,
+      copyable: true,
       hideInSearch: true,
-      sorter: true,
     },
     {
-      dataIndex: 'createAt',
+      title: '热度',
+      dataIndex: 'heat',
+      hideInSearch: true,
+      valueType: {
+        type: 'progress',
+      },
+    },
+    {
+      dataIndex: 'created_at',
       title: '创建时间',
       valueType: 'dateTime',
-      sorter: true,
       hideInSearch: true,
     },
     {
-      dataIndex: 'updateAt',
+      dataIndex: 'updated_at',
       title: '更新时间',
       valueType: 'dateTime',
-      sorter: true,
       hideInSearch: true,
     },
     {
       title: '操作',
       align: 'right',
+      dataIndex: 'state',
       valueType: 'option',
       render(text, record) {
         return [
-          <a target="_blank" onClick={() => show(record.id)} rel="noopener noreferrer" key="view">
+          <a key={'onsale'} onClick={() => show(record.id)}>
             查看
           </a>,
           <TableDropdown
             key="action"
             onSelect={(key) => {
               console.log('key', key);
-              if (key === '3') {
+              if (key === '2') {
+                edit(record.id);
+              } else if (key === '3') {
                 Modal.confirm({
                   title: '确定上架吗?',
                   async onOk() {
-                    await updateNftState(record.id, NftState.onsale);
+                    await updateNftState(record.id, 'onsale').catch((error) => {
+                      message.error('操作失败,稍后重试。');
+                      throw error;
+                    });
+                    actionRef.current?.reload();
                   },
                 });
               } else if (key === '4') {
                 Modal.confirm({
                   title: '确定下架吗?',
                   async onOk() {
-                    await updateNftState(record.id, NftState.offsale);
+                    await updateNftState(record.id, 'offsale').catch((error) => {
+                      message.error('操作失败,稍后重试。');
+                      throw error;
+                    });
+                    actionRef.current?.reload();
                   },
                 });
               }
             }}
             menus={[
-              { key: '1', name: '修改热度' },
-              { key: '2', name: '添加关键词' },
-              { key: '3', name: '上架' },
-              { key: '4', name: '下架' },
+              { key: '2', name: '编辑', disabled: record.state === 'onsale' },
+              { key: '3', name: '上架', disabled: record.state !== 'draf' },
+              { key: '4', name: '下架', disabled: record.state !== 'onsale' },
             ]}
           />,
         ];

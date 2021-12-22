@@ -34,6 +34,8 @@ interface IProps {
 }
 const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
   const { id } = props;
+  const disabled = !!id;
+  let initialImages: UploadFile[] = [];
   const [form] = Form.useForm();
   const initialValues: Omit<IAddNft, 'transaction_hash'> = {
     category_id: '',
@@ -45,23 +47,40 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
     total: undefined,
     price: undefined,
   };
+  if (id && props.data?.data) {
+    const data = props.data?.data;
+    initialValues.category_id = data.category_id;
+    initialValues.name = data.name;
+    initialValues.title = data.title;
+    initialValues.desc = data.title;
+    initialImages = data.images.map((i) => ({
+      uid: i,
+      name: i,
+      status: 'success',
+      url: i,
+    }));
+    initialValues.token_id = data.token_id;
+    initialValues.total = data.total;
+    initialValues.price = data.price;
+  }
   useImperativeHandle(ref, () => ({
     submit() {
       form.submit();
     },
   }));
+  console.log('form');
   return (
     <Form form={form} initialValues={initialValues} {...formItemLayout}>
       <ProFormSelect
         name={'category_id'}
         label={'nft分类'}
+        disabled={disabled}
         required={true}
         rules={[{ required: true }]}
         fieldProps={{
           filterOption: false,
         }}
-        request={(params) => {
-          console.log('params', params);
+        request={() => {
           return getNftTypeList({ current: 1, pageSize: 100000, keywords: '' }).then((res) =>
             res.data.map((i) => ({ value: i.id, label: i.name })),
           );
@@ -82,6 +101,7 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         rules={[{ required: true }]}
       />
       <ProFormText
+        disabled={disabled}
         name="token_id"
         label="nft id"
         placeholder="请输 id"
@@ -90,7 +110,7 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         rules={[{ required: true }, { type: 'number' }]}
       />
       <ProFormDigit
-        disabled={!!id}
+        disabled={disabled}
         name="total"
         label="总数"
         placeholder="请输入总数"
@@ -101,7 +121,6 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
       <ProFormMoney
         name="price"
         label="单价"
-        locale={'zh-CN'}
         placeholder="请输入单价"
         min={0}
         required={true}
@@ -109,9 +128,11 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         fieldProps={{ precision: 2 }}
       />
       <ProFormUploadDragger
+        disabled={disabled}
+        initialValue={initialImages}
         fieldProps={{
           multiple: true,
-          defaultFileList: undefined,
+          defaultFileList: initialImages,
         }}
         normalize={(value: UploadFile<Resolve<string>>[]) => {
           return value.map((item) => ({
@@ -119,7 +140,6 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
             ...item,
           }));
         }}
-        disabled={!!id}
         name={'fileSource'}
         required={true}
         rules={[{ required: true }]}
