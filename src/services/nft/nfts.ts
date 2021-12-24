@@ -32,7 +32,7 @@ export interface INft {
   category_id: string;
   category_name: string;
   images: string[];
-  price: number;
+  price: string;
   state: string;
   token_id: number;
   total: number;
@@ -70,7 +70,7 @@ export interface IAddNft {
   images?: string[];
   token_id?: number;
   total?: number;
-  price?: number;
+  price?: string;
 }
 
 /**

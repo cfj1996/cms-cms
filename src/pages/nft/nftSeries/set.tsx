@@ -10,7 +10,6 @@ import {
   ProFormSelect,
   ProFormText,
   ProFormTextArea,
-  ProFormUploadDragger,
 } from '@ant-design/pro-form';
 import { Form } from 'antd';
 import type { PageService } from '@/hoc/withServers';
@@ -18,8 +17,7 @@ import { withServers } from '@/hoc/withServers';
 import { getNftTypeList } from '@/services/nft/nftType';
 import type { IAddNft, INft } from '@/services/nft/nfts';
 import { getNft } from '@/services/nft/nfts';
-import type { UploadFile } from 'antd/es/upload/interface';
-import type { Resolve } from '@/services';
+import Upload from '@/components/upload';
 
 const formItemLayout = {
   labelCol: {
@@ -29,13 +27,14 @@ const formItemLayout = {
     xs: { span: 20 },
   },
 };
+
 interface IProps {
   id?: string;
 }
+
 const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
   const { id } = props;
   const disabled = !!id;
-  let initialImages: UploadFile[] = [];
   const [form] = Form.useForm();
   const initialValues: Omit<IAddNft, 'transaction_hash'> = {
     category_id: '',
@@ -53,16 +52,12 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
     initialValues.name = data.name;
     initialValues.title = data.title;
     initialValues.desc = data.title;
-    initialImages = data.images.map((i) => ({
-      uid: i,
-      name: i,
-      status: 'success',
-      url: i,
-    }));
+    initialValues.images = data.images;
     initialValues.token_id = data.token_id;
     initialValues.total = data.total;
     initialValues.price = data.price;
   }
+  console.log('images', initialValues.images);
   useImperativeHandle(ref, () => ({
     submit() {
       form.submit();
@@ -127,25 +122,9 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         rules={[{ required: true }]}
         fieldProps={{ precision: 2 }}
       />
-      <ProFormUploadDragger
-        disabled={disabled}
-        initialValue={initialImages}
-        fieldProps={{
-          multiple: true,
-          defaultFileList: initialImages,
-        }}
-        normalize={(value: UploadFile<Resolve<string>>[]) => {
-          return value.map((item) => ({
-            url: item.response?.data,
-            ...item,
-          }));
-        }}
-        name={'fileSource'}
-        required={true}
-        rules={[{ required: true }]}
-        label="源文件"
-        action={'http://localhost:3000/upload/file'}
-      />
+      <Form.Item name="images" label={'源文件'} required={true} rules={[{ required: true }]}>
+        <Upload multiple={true} />
+      </Form.Item>
       <ProFormTextArea name="desc" label="NFT描述" placeholder="请输入描述" />
     </Form>
   );

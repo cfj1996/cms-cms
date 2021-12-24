@@ -7,7 +7,7 @@
 import type { Resolve } from '..';
 import Server from '..';
 import { removeToken } from '@/utils';
-
+import request from 'umi-request';
 export interface ILoginReq {
   email: string;
   password: string;
@@ -56,6 +56,7 @@ export interface IUserInfo {
   role: string;
   is_disable: boolean;
 }
+
 /**
  * 过去用户信息
  */
@@ -68,13 +69,31 @@ export function userGetInfo() {
   });
 }
 
-export function upFile(file: File) {
-  const formData = new FormData();
-  formData.append('files', file);
-  return Server.post<string>('/upload/file', formData, {
-    prefix: 'http://localhost:3000',
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
+export interface IFileView {
+  uploadURL: string;
+  viewingURL: string;
+}
+
+export function upFile(mimeType: string, size: number, name: string) {
+  console.log(name);
+  return Server.post<{ images: IFileView[] }>('/files/imagepost/uploadurl', {
+    images: [
+      {
+        mimeType: mimeType,
+        fileSize: size,
+      },
+    ],
+  }).then((res) => {
+    console.log('res', res);
+    return res.images[0];
   });
+}
+
+export function upFile2(mimeType: string, size: number, name: string) {
+  return request
+    .get(`http://localhost:3008/upload/file?name=${name}&ContentType=${mimeType}`)
+    .then((res) => ({
+      uploadURL: res.data.uploadUrl,
+      viewingURL: res.data.url,
+    }));
 }

@@ -34,13 +34,22 @@ const Index = function () {
         const id = GlobalLoad.open({ tip: '铸币中，请稍后....' });
         try {
           const values = info?.values as IAddNft;
+          const { total, ...other } = values;
           const { data } = await platform({
             category_id: values.category_id,
             token_id: values.token_id,
-            total: values.total,
+            total: total,
           });
           if (data.transaction_hash) {
-            await addNft(Object.assign({ transaction_hash: data.transaction_hash }, values));
+            await addNft(
+              Object.assign(
+                { transaction_hash: data.transaction_hash },
+                {
+                  ...other,
+                  price: String(other.price),
+                },
+              ),
+            );
             message.success('添加成功');
             actionRef.current?.reload();
           } else {
@@ -63,6 +72,7 @@ const Index = function () {
       async onOK(name, info) {
         const values = info?.values as IAddNft;
         console.log('values', values);
+        return Promise.reject();
         await updateNft({
           nft_id: id,
           name: values.name,
