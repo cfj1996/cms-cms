@@ -52,12 +52,13 @@ const Upload = function (props: UploadProps & IProps) {
         }
       }}
       fileList={fileList}
-      onChange={({ fileList }) => {
+      onChange={({ file, fileList }) => {
+        if (file.response?.url) {
+          file.url = file.response.url;
+        }
         setFileList(fileList as any);
         console.log('fileList', fileList);
-        const urls = fileList
-          .filter((i) => i.url || i.response?.url)
-          .map((i) => i.url || i.response?.url);
+        const urls = fileList.filter((i) => i.url).map((i) => i.url!);
         if (urls.length) {
           console.log('urls', urls);
           onChange?.(urls);
