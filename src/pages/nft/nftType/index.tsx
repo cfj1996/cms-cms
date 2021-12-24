@@ -18,6 +18,7 @@ import GlobalLoad from '@/components/GlobalLoad';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
+
   function create() {
     Dialog.open({
       title: '新增nft系列',
@@ -39,6 +40,7 @@ const Index = function () {
       },
     });
   }
+
   // function update(id: string) {
   //   Dialog.open({
   //     title: '修改nft系列',
@@ -121,7 +123,7 @@ const Index = function () {
           return getNftTypeList(params as any);
         }}
         columnsState={{
-          persistenceKey: 'pro-table-singe-demos',
+          persistenceKey: 'pro-table-singe-demos-1',
           persistenceType: 'localStorage',
         }}
         rowKey="id"

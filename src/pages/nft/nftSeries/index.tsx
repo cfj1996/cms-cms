@@ -71,8 +71,6 @@ const Index = function () {
       content: <EditSet id={id} />,
       async onOK(name, info) {
         const values = info?.values as IAddNft;
-        console.log('values', values);
-        return Promise.reject();
         await updateNft({
           nft_id: id,
           name: values.name,
@@ -131,7 +129,7 @@ const Index = function () {
     {
       dataIndex: 'total',
       title: '剩余数量',
-      renderText(text, record) {
+      renderText(text: any, record: { total: number; sale: number }) {
         return `${record.total - record.sale}=${record.total}-${record.sale}`;
       },
       hideInSearch: true,
@@ -166,7 +164,6 @@ const Index = function () {
     {
       title: '操作',
       align: 'right',
-      dataIndex: 'state',
       valueType: 'option',
       render(text, record) {
         return [
@@ -222,7 +219,7 @@ const Index = function () {
           return getNftList(params as any);
         }}
         columnsState={{
-          persistenceKey: 'pro-table-singe-demos',
+          persistenceKey: 'pro-table-singe-demos-4',
           persistenceType: 'localStorage',
         }}
         rowKey="id"

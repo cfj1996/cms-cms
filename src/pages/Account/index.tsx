@@ -23,6 +23,7 @@ import Detail from './detail';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
+
   function create() {
     Dialog.open({
       title: '新增用户',
@@ -40,6 +41,7 @@ const Index = function () {
       },
     });
   }
+
   function update(id: string) {
     Dialog.open({
       title: '修改用户',
@@ -56,6 +58,7 @@ const Index = function () {
       },
     });
   }
+
   function show(id: string) {
     Dialog.open({
       type: 'view',
@@ -64,6 +67,7 @@ const Index = function () {
       footer: null,
     });
   }
+
   const columns: ProColumns<IAccess>[] = [
     {
       dataIndex: 'account',
@@ -158,7 +162,7 @@ const Index = function () {
           return getAccountList(params as any);
         }}
         columnsState={{
-          persistenceKey: 'pro-table-singe-demos',
+          persistenceKey: 'pro-table-singe-demos-1',
           persistenceType: 'localStorage',
         }}
         rowKey="id"

@@ -3,11 +3,22 @@
  * @user: cfj
  * @date: 2021/12/16 15:46
  */
-import Server, { PageParams, PageResolve } from '@/services';
+import type { PageParams, PageResolve } from '@/services';
+import Server from '@/services';
 
 export interface IContent {
   id: string;
   state: string;
+  content: string;
+  images: string[];
+  link: string;
+  nft_id: string;
+  nft_number: string;
+  price: string;
+  title: string;
+  user_id: string;
+  updated_at: string;
+  created_at: string;
 }
 
 export const ContentStateEnum = {
@@ -22,10 +33,15 @@ export const ContentStateEnum = {
 export interface IContentReq {
   state: string;
 }
+
 export const getContentList = function (params: PageParams & IContentReq) {
   return Server.get<PageResolve<IContent>>('/audit/search', params).then((res) => ({
     success: res.code === 'ok',
     data: res.data.list,
     total: res.data.total,
   }));
+};
+
+export const updateContent = function (id: string, state: 'passed' | 'offsell') {
+  return Server.post('/audit/state/update', { audit_id: id, state });
 };

@@ -39,6 +39,11 @@
         path: 'nftSeries',
         component: './nft/nftSeries',
       },
+      {
+        name: '热点关键词',
+        path: 'keyword',
+        component: './nft/keyword',
+      },
       { exact: true, redirect: '/nft/nftType' },
     ],
   },

@@ -5,12 +5,11 @@
  */
 
 import { PageContainer } from '@ant-design/pro-layout';
-import { getContentList } from '@/services/Review/content';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { useRef } from 'react';
 import type { IOrder } from '@/services/oredr';
-import { OrderStatusEnum } from '@/services/oredr';
+import { getOrderList, OrderStatusEnum } from '@/services/oredr';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
@@ -21,6 +20,18 @@ const Index = function () {
       dataIndex: 'state',
 
       valueEnum: OrderStatusEnum,
+    },
+    {
+      dataIndex: 'created_at',
+      title: '创建时间',
+      valueType: 'dateTime',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'updated_at',
+      title: '更新时间',
+      valueType: 'dateTime',
+      hideInSearch: true,
     },
     {
       title: '操作',
@@ -35,9 +46,9 @@ const Index = function () {
       <ProTable<IOrder>
         actionRef={actionRef}
         columns={columns}
-        request={(params: any) => getContentList(params)}
+        request={(params: any) => getOrderList(params)}
         columnsState={{
-          persistenceKey: 'pro-table-singe-demos',
+          persistenceKey: 'pro-table-singe-demos-5',
           persistenceType: 'localStorage',
         }}
         rowKey="id"

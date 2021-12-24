@@ -8,7 +8,11 @@ import Server from '@/services';
 
 export interface IPlat {
   id: string;
-  name: string;
+  nick_name: string;
+  open_id: string;
+  session_key: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface IPlatReq {

@@ -24,7 +24,7 @@ export interface IOrderReq {
   state: string;
 }
 export const getOrderList = function (params: PageParams & IOrder) {
-  return Server.get<PageResolve<IOrderReq>>('/orders/search', params).then((res) => ({
+  return Server.get<PageResolve<IOrder>>('/orders/search', params).then((res) => ({
     success: res.code === 'ok',
     data: res.data.list,
     total: res.data.total,
