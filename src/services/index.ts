@@ -37,7 +37,7 @@ export type PageResolve<T> = Resolve<{ list: T[]; total: number }>;
 export type IServer<S = any, T = any> = (page?: S) => Bluebird<Resolve<T>>;
 
 const Request = extend({
-  prefix: '/api/v1',
+  prefix: 'https://p4010174-u848-6abfd459.api.tiancai.run/api/v1',
   timeout: 120 * 1000,
 });
 Request.interceptors.response.use(async (response) => {
