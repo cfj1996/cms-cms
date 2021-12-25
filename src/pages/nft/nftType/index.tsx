@@ -27,15 +27,24 @@ const Index = function () {
         const values = info?.values;
         const id = GlobalLoad.open({ tip: 'nft系列创建中，请稍后....' });
         try {
-          const address = await getContractAddress();
-          await addNftType({ contract_address: address, ...values } as IAddNftType);
+          const { data, code, msg } = await getContractAddress();
+          if (code === 'ok') {
+            const address = data.contract_address;
+            if (address) {
+              await addNftType({ contract_address: address, ...values } as IAddNftType);
+              message.success('创建成功');
+              GlobalLoad.close(id);
+              actionRef.current?.reload();
+            } else {
+              throw new Error('未获取到地址');
+            }
+          } else {
+            throw new Error(msg);
+          }
+        } catch (error: any) {
           GlobalLoad.close(id);
-          message.success('创建成功');
-          actionRef.current?.reload();
-        } catch (e) {
-          message.error('创建失败,稍后重试。');
-          GlobalLoad.close(id);
-          return Promise.reject(e);
+          message.error(error.message || '创建失败,稍后重试。');
+          return Promise.reject(error);
         }
       },
     });

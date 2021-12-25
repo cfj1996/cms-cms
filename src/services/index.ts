@@ -16,6 +16,7 @@ export type DefaultResolve<T> = { code: string; data: T; msg: string };
 export type DefaultDataFilter<T> = (res: DefaultResolve<T>) => Resolve<T> | DefaultResolve<T>;
 // 请求方法
 export type Methods = 'post' | 'get' | 'delete' | 'put';
+
 // 列表查询
 export interface PageParams {
   // 当前页面
@@ -23,19 +24,21 @@ export interface PageParams {
   // 分页大小
   pageSize: number;
 }
+
 // 响应数据结构
 export interface Resolve<T> {
   data: T;
   msg: string;
   code: string;
 }
+
 export type PageResolve<T> = Resolve<{ list: T[]; total: number }>;
 
 export type IServer<S = any, T = any> = (page?: S) => Bluebird<Resolve<T>>;
 
 const Request = extend({
   prefix: '/api/v1',
-  timeout: 60 * 1000,
+  timeout: 120 * 1000,
 });
 Request.interceptors.response.use(async (response) => {
   if (response.status === 401 || response.status === 403) {
@@ -67,6 +70,7 @@ class Core<T> {
   private instance: RequestMethod;
   private url: string;
   private method: Methods;
+
   get headers(): HeadersInit {
     if (this.config.auth) {
       return {
@@ -79,6 +83,7 @@ class Core<T> {
       };
     }
   }
+
   constructor(url: string, method: Methods) {
     this.url = url;
     this.method = method;
@@ -86,6 +91,7 @@ class Core<T> {
     const CancelToken = this.instance.CancelToken;
     this._source = CancelToken.source();
   }
+
   request(data?: Record<string, any>, config?: RequestConfig): Bluebird<T> {
     if (config) {
       Object.assign(this.config, config);
@@ -113,14 +119,17 @@ export default class Server {
     const core = new Core<T>(url, 'get');
     return core.request(params, config);
   }
+
   static delete<T>(url: string, params?: Record<string, any>, config?: RequestConfig) {
     const core = new Core<T>(url, 'delete');
     return core.request(params, config);
   }
+
   static post<T>(url: string, data?: Record<string, any>, config?: RequestConfig) {
     const core = new Core<T>(url, 'post');
     return core.request(data, config);
   }
+
   static put<T>(url: string, data?: Record<string, any>, config?: RequestConfig) {
     const core = new Core<T>(url, 'put');
     return core.request(data, config);

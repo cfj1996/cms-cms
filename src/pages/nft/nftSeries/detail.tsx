@@ -8,18 +8,21 @@ import { Col, Row } from 'antd';
 import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
 import TypographyItem from '@/components/TypographyItem';
-import { getNft, INft, NftState } from '@/services/nft/nfts';
+import type { INft } from '@/services/nft/nfts';
+import { getNft, NftState } from '@/services/nft/nfts';
 import { dateFormat } from '@/utils';
 
 interface IProps {
   id: string;
 }
+
 const Detail = function (props: IProps & PageService<INft>) {
   const { data } = props.data!;
   const list = [
     { label: '名称：', value: data.name },
     { label: '标题：', value: data.title },
     { label: '类别名称：', value: data.category_name },
+    { label: '作品id：', value: data.token_id },
     {
       label: '源文件地址：',
       value: (

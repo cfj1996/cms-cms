@@ -1,5 +1,5 @@
-import type { PageParams, Resolve } from '..';
-import Server, { PageResolve } from '..';
+import type { PageParams, Resolve, PageResolve } from '..';
+import Server from '..';
 
 /**
  * @name: nfts
@@ -11,6 +11,7 @@ export enum NftState {
   onsale = '上架',
   offsale = '下架',
 }
+
 export const nftStateEnum = {
   draf: {
     text: '草稿',
@@ -25,6 +26,7 @@ export const nftStateEnum = {
     status: 'Error',
   },
 };
+
 export interface INft {
   id: string;
   name: string;
@@ -43,6 +45,7 @@ export interface INft {
   created_at: string;
   updated_at: string;
 }
+
 export interface INftReq {
   name: string;
   categoryId: string;
@@ -61,6 +64,7 @@ export const getNftList = function (params: PageParams & INftReq) {
     };
   });
 };
+
 export interface IAddNft {
   category_id: string;
   name: string;
@@ -80,6 +84,7 @@ export interface IAddNft {
 export const addNft = function (data: IAddNft) {
   return Server.post<boolean>('/nft/create', data);
 };
+
 export interface IUpdateNft {
   nft_id: string;
   name: string;
@@ -131,9 +136,7 @@ export const getNft = function (id: string) {
  * 获取合约地址
  */
 export const getContractAddress = function () {
-  return Server.get<Resolve<{ contract_address: string }>>('/nft/contract/deploy').then(
-    (res) => res.data.contract_address,
-  );
+  return Server.get<Resolve<{ contract_address: string }>>('/nft/contract/deploy');
 };
 
 /**
@@ -144,6 +147,7 @@ export interface IPlatform {
   token_id?: number;
   total?: number;
 }
+
 export const platform = function (data: IPlatform) {
   return Server.post<Resolve<{ transaction_hash: string }>>('/nft/mint/platform', data);
 };

@@ -35,30 +35,34 @@ const Index = function () {
         try {
           const values = info?.values as IAddNft;
           const { total, ...other } = values;
-          const { data } = await platform({
+          const { data, code, msg } = await platform({
             category_id: values.category_id,
             token_id: values.token_id,
             total: total,
           });
-          if (data.transaction_hash) {
-            await addNft(
-              Object.assign(
-                { transaction_hash: data.transaction_hash },
-                {
-                  ...other,
-                  price: String(other.price),
-                },
-              ),
-            );
-            message.success('添加成功');
-            actionRef.current?.reload();
+          if (code === 'ok') {
+            if (data.transaction_hash) {
+              await addNft(
+                Object.assign(
+                  { transaction_hash: data.transaction_hash },
+                  {
+                    ...other,
+                    price: String(other.price),
+                  },
+                ),
+              );
+              GlobalLoad.close(id);
+              message.success('添加成功');
+              actionRef.current?.reload();
+            } else {
+              throw new Error(`铸币失败, 为获取到hash`);
+            }
           } else {
-            message.error('铸币失败，请稍后再试');
+            throw new Error(`铸币失败,${msg}`);
           }
+        } catch (error: any) {
           GlobalLoad.close(id);
-        } catch (e) {
-          GlobalLoad.close(id);
-          message.error('创建失败,稍后重试。');
+          message.error(error.message || '创建失败,稍后重试。');
           return Promise.reject();
         }
       },
@@ -103,6 +107,11 @@ const Index = function () {
       key: 'name',
       hideInSearch: true,
       ellipsis: true,
+    },
+    {
+      dataIndex: 'token_id',
+      title: '作品id',
+      hideInSearch: false,
     },
     {
       dataIndex: 'title',
