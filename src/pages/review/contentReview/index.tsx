@@ -4,7 +4,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { useRef } from 'react';
-import { message, Modal } from 'antd';
+import { Button, Dropdown, Menu, message, Modal } from 'antd';
 
 /**
  * @name: index
@@ -61,14 +61,56 @@ const Index = function () {
       hideInSearch: true,
     },
     {
+      title: '文件地址',
+      dataIndex: 'images',
+      hideInSearch: true,
+      render(text, row) {
+        const menu = (
+          <Menu>
+            {row?.images.map((i, k) => (
+              <Menu.Item key={k}>
+                <a target="_blank" href={i}>
+                  文件{k + 1}
+                </a>
+              </Menu.Item>
+            ))}
+          </Menu>
+        );
+        if (row.images?.length) {
+          return (
+            <Dropdown overlay={menu} placement="bottomLeft" arrow>
+              <Button type={'link'}>文件</Button>
+            </Dropdown>
+          );
+        }
+        return '-';
+      },
+    },
+    {
+      dataIndex: 'link',
+      title: '主页',
+      hideInSearch: true,
+      ellipsis: true,
+      render(text, row) {
+        return (
+          <a href={row.link} target={'_blank'}>
+            {row.link}
+          </a>
+        );
+      },
+    },
+    {
       title: '操作',
       align: 'right',
       valueType: 'option',
       hideInSearch: true,
       render(text, row) {
         return [
-          <a
+          <Button
+            style={{ padding: 0 }}
+            type="link"
             key={1}
+            disabled={row.state !== 'pending'}
             onClick={() => {
               Modal.confirm({
                 title: '确定通过吗?',
@@ -84,9 +126,12 @@ const Index = function () {
             }}
           >
             通过
-          </a>,
-          <a
+          </Button>,
+          <Button
+            style={{ padding: 0 }}
+            type="link"
             key={2}
+            disabled={row.state !== 'pending'}
             onClick={() => {
               Modal.confirm({
                 title: '确定下架吗?',
@@ -102,7 +147,7 @@ const Index = function () {
             }}
           >
             下架
-          </a>,
+          </Button>,
         ];
       },
     },
