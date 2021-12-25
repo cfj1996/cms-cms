@@ -8,14 +8,14 @@
  */
 export default {
   dev: {
-    '/api/': {
+    '/api': {
       target: 'https://p4010174-u848-6abfd459.api.tiancai.run',
       changeOrigin: true,
       secure: false,
     },
   },
   pre: {
-    '/api/': {
+    '/api': {
       target: 'https://p4010174-u848-6abfd459.api.tiancai.run',
       changeOrigin: true,
       secure: false,

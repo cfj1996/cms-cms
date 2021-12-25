@@ -1,0 +1,13 @@
+{
+  "name": "githook",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "pm2 start ./app.js"
+  },
+  "dependencies": {
+    "express": "^4.17.2",
+    "shelljs": "^0.8.4"
+  }
+}
