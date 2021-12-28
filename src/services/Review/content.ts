@@ -22,12 +22,11 @@ export interface IContent {
 }
 
 export const ContentStateEnum = {
-  created: { text: '创建', status: 'Default' },
   pending: { text: '待审核:', status: 'Processing' },
   passed: { text: '已通过', status: 'Success' },
   failed: { text: '未通过', status: 'Warning' },
   offsell: { text: '下架', status: 'Error' },
-  canceled: { text: '用户取消:', status: 'Error' },
+  canceled: { text: '用户取消', status: 'Error' },
 };
 
 export interface IContentReq {

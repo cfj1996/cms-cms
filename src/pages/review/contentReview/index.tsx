@@ -131,7 +131,7 @@ const Index = function () {
             style={{ padding: 0 }}
             type="link"
             key={2}
-            disabled={row.state !== 'pending'}
+            disabled={row.state !== 'passed'}
             onClick={() => {
               Modal.confirm({
                 title: '确定下架吗?',
