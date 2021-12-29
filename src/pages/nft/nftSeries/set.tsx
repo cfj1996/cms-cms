@@ -91,6 +91,7 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
       <ProFormText
         name="title"
         label="nft标题"
+        disabled={disabled}
         placeholder="请输入标题"
         required={true}
         rules={[{ required: true }]}

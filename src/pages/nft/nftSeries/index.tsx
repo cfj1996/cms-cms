@@ -79,7 +79,6 @@ const Index = function () {
           nft_id: id,
           name: values.name,
           desc: values.desc,
-          title: values.title,
           price: String(values.price!),
         }).catch((err) => {
           message.error('修改失败,稍后重试。');

@@ -1,4 +1,4 @@
-import type { PageParams, Resolve, PageResolve } from '..';
+import type { PageParams, PageResolve, Resolve } from '..';
 import Server from '..';
 
 /**
@@ -90,7 +90,6 @@ export interface IUpdateNft {
   name: string;
   price: string;
   desc: string;
-  title: string;
 }
 
 /**
