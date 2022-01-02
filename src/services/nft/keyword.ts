@@ -3,7 +3,7 @@
  * @user: cfj
  * @date: 2021/12/24 21:25
  */
-import type { PageParams, PageResolve } from '@/services';
+import type { PageParams, PageResolve, Resolve } from '@/services';
 import Server from '@/services';
 
 export interface IAddKeyword {
@@ -24,7 +24,7 @@ export interface IKeyword {
  * @param dara
  */
 export const addKeyword = function (dara: IAddKeyword) {
-  return Server.post('/keywords/add', dara);
+  return Server.post<Resolve>('/keywords/add', dara);
 };
 /**
  * 获取关键词列表
@@ -42,7 +42,7 @@ export const getKeywordPage = function (params: PageParams & { keywords: string 
  * @param id
  */
 export const deleteKeyword = function (id: string) {
-  return Server.post('/keywords/delete', { keywords_id: id });
+  return Server.post<Resolve>('/keywords/delete', { keywords_id: id });
 };
 /**
  * 修改关键词权重

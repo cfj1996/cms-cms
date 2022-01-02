@@ -26,7 +26,7 @@ export interface PageParams {
 }
 
 // 响应数据结构
-export interface Resolve<T> {
+export interface Resolve<T = any> {
   data: T;
   msg: string;
   code: string | 'ok';

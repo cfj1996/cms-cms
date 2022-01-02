@@ -67,9 +67,18 @@ const Index = function () {
       content: <Set />,
       async onOK(name, info) {
         const values = info?.values as IAddKeyword;
-        await addKeyword(values);
-        message.success('添加成功');
-        actionRef.current?.reload();
+        try {
+          const res = await addKeyword(values);
+          if (res.code === 'ok') {
+            message.success('添加成功');
+            actionRef.current?.reload();
+          } else {
+            throw new Error(res.msg);
+          }
+        } catch (error: any) {
+          message.error(error.message);
+          return Promise.reject();
+        }
       },
     });
   }
@@ -78,12 +87,19 @@ const Index = function () {
     Modal.confirm({
       title: '确定上架吗?',
       async onOk() {
-        await deleteKeyword(id).catch((error) => {
-          message.error('操作失败,稍后重试。');
-          throw error;
-        });
-        message.success('删除成功');
-        actionRef.current?.reload();
+        try {
+          const res = await deleteKeyword(id);
+          if (res.code === 'ok') {
+            message.success('删除成功');
+            actionRef.current?.reload();
+            return true;
+          } else {
+            throw new Error(res.msg);
+          }
+        } catch (error: any) {
+          message.error(error.message);
+          return Promise.reject();
+        }
       },
     });
   }

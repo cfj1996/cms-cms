@@ -16,7 +16,7 @@ import {
   orderToCompleted,
   orderToReceived,
 } from '@/services/oredr';
-import { Button, message } from 'antd';
+import { Button, message, Modal } from 'antd';
 import Dialog from '@/components/Dialog';
 import { AddSet } from './set';
 
@@ -52,22 +52,23 @@ const Index = function () {
   }
 
   function finish(id: string) {
-    Dialog.open({
-      title: '完成订单',
-      content: <p>是否完成订单</p>,
-      async onOK() {
+    Modal.confirm({
+      title: '是否完成订单?',
+      async onOk() {
         try {
           const res = await getCompletedHash({ order_id: id });
           if (res.data?.hash) {
             const res2 = await orderToCompleted({ order_id: id, hash: res.data.hash });
             if (res2.code === 'ok') {
               message.success('订单已完成');
+              actionRef.current?.reload();
             } else {
               throw new Error(res.msg);
             }
           } else {
             throw new Error(res.msg);
           }
+          return true;
         } catch (error: any) {
           message.error(error.message);
           return Promise.reject();
@@ -83,7 +84,7 @@ const Index = function () {
       dataIndex: 'buyer_name',
     },
     {
-      title: '联系人名称',
+      title: '联系人姓名',
       hideInSearch: true,
       dataIndex: 'contact_name',
     },

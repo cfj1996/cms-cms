@@ -3,7 +3,7 @@
  * @user: cfj
  * @date: 2021/12/16 15:46
  */
-import type { PageParams, PageResolve } from '@/services';
+import type { PageParams, PageResolve, Resolve } from '@/services';
 import Server from '@/services';
 
 export interface IContent {
@@ -42,5 +42,5 @@ export const getContentList = function (params: PageParams & IContentReq) {
 };
 
 export const updateContent = function (id: string, state: 'passed' | 'offsell') {
-  return Server.post('/audit/state/update', { audit_id: id, state });
+  return Server.post<Resolve<any>>('/audit/state/update', { audit_id: id, state });
 };

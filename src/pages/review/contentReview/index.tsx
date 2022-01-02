@@ -115,12 +115,19 @@ const Index = function () {
               Modal.confirm({
                 title: '确定通过吗?',
                 async onOk() {
-                  await updateContent(row.id, 'passed').catch((error) => {
-                    message.error('操作失败,稍后重试。');
-                    throw error;
-                  });
-                  message.success('操作成功');
-                  actionRef.current?.reload();
+                  try {
+                    const res = await updateContent(row.id, 'passed');
+                    if (res.code === 'ok') {
+                      message.success('操作成功');
+                      actionRef.current?.reload();
+                    } else {
+                      throw new Error(res.msg);
+                    }
+                    return true;
+                  } catch (e: any) {
+                    message.error(e.message);
+                    return Promise.reject();
+                  }
                 },
               });
             }}
@@ -136,12 +143,19 @@ const Index = function () {
               Modal.confirm({
                 title: '确定下架吗?',
                 async onOk() {
-                  await updateContent(row.id, 'passed').catch((error) => {
-                    message.error('操作失败,稍后重试。');
-                    throw error;
-                  });
-                  message.success('下架成功');
-                  actionRef.current?.reload();
+                  try {
+                    const res = await updateContent(row.id, 'passed');
+                    if (res.code === 'ok') {
+                      message.success('下架成功');
+                      actionRef.current?.reload();
+                    } else {
+                      throw new Error(res.msg);
+                    }
+                    return true;
+                  } catch (e: any) {
+                    message.error(e.message);
+                    return Promise.reject();
+                  }
                 },
               });
             }}
