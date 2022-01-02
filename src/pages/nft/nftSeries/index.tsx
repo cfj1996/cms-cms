@@ -6,13 +6,15 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable, { TableDropdown } from '@ant-design/pro-table';
-import type { IAddNft, INft } from '@/services/nft/nfts';
+import type { IAddNft, INft, Purchase } from '@/services/nft/nfts';
 import {
   addNft,
+  editNftPurchase,
   getNftList,
   nftStateEnum,
   NftType,
   platform,
+  purchaseEnum,
   updateNft,
   updateNftState,
 } from '@/services/nft/nfts';
@@ -23,6 +25,7 @@ import Dialog from '@/components/Dialog';
 import { useRef } from 'react';
 import GlobalLoad from '@/components/GlobalLoad';
 import Show from '@/pages/nft/nftSeries/show';
+import PurchaseSet from '@/pages/nft/nftSeries/purchaseSet';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
@@ -146,6 +149,20 @@ const Index = function () {
       hideInSearch: true,
     },
     {
+      dataIndex: 'is_purchase',
+      title: '限购',
+      hideInSearch: true,
+      valueType: 'radio',
+      fieldProps: {
+        options: purchaseEnum,
+      },
+    },
+    {
+      dataIndex: 'limit_number',
+      title: '限购数量',
+      hideInSearch: true,
+    },
+    {
       dataIndex: 'price',
       title: '价格',
       hideInSearch: true,
@@ -222,6 +239,31 @@ const Index = function () {
               console.log('key', key);
               if (key === '2') {
                 edit(record.id);
+              } else if (key === '5') {
+                Dialog.open({
+                  title: '编辑限购信息',
+                  content: (
+                    <PurchaseSet
+                      is_purchase={record.is_purchase}
+                      limit_number={record.limit_number}
+                    />
+                  ),
+                  async onOK(name, info) {
+                    try {
+                      const values = info?.values as Purchase;
+                      const res = await editNftPurchase({ nft_id: record.id, ...values });
+                      if (res.code === 'ok') {
+                        message.success('编辑成功');
+                        actionRef.current?.reload();
+                      } else {
+                        throw new Error(res.msg);
+                      }
+                    } catch (error: any) {
+                      message.error(error.message);
+                      throw error;
+                    }
+                  },
+                });
               } else if (key === '3') {
                 Modal.confirm({
                   title: '确定上架吗?',
@@ -248,6 +290,7 @@ const Index = function () {
             }}
             menus={[
               { key: '2', name: '编辑', disabled: record.state === 'onsale' },
+              { key: '5', name: '编辑限购' },
               {
                 key: '3',
                 name: '上架',

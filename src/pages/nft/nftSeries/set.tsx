@@ -58,7 +58,6 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
       form.submit();
     },
   }));
-  console.log('form');
   return (
     <Form form={form} initialValues={initialValues} {...formItemLayout}>
       <ProFormSelect

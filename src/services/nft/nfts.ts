@@ -7,6 +7,11 @@ export enum NftType {
   collectionEntity = '藏品+实体',
 }
 
+export const purchaseEnum = [
+  { value: true, label: '开启' },
+  { value: false, label: '关闭' },
+];
+
 // TODO 为了年前上的阉割功能 临时增加的权限
 export const nftTypeEnum = {
   collection: {
@@ -56,6 +61,8 @@ export interface INft {
   state: string;
   token_id: number;
   total: number;
+  is_purchase: boolean;
+  limit_number: number;
   sale: number;
   desc: string;
   heat: number;
@@ -76,6 +83,8 @@ export interface AddSku {
 
 export interface Sku extends AddSku {
   id: string;
+  is_purchase: boolean;
+  limit_number: number;
   created_at: string;
   updated_at: string;
 }
@@ -138,11 +147,11 @@ export interface IUpdateNft {
 export const updateNft = function (data: {
   title: string;
   nft_id: string;
-  price: string;
-  name: string;
+  price?: string;
+  name?: string;
   start_time: Date | undefined;
   end_time: Date | undefined;
-  desc: string;
+  desc?: string;
 }) {
   return Server.post<Resolve<boolean>>(`/nft/edit`, data);
 };
@@ -214,4 +223,17 @@ export const addSku = function (data: AddSku) {
 
 export const delSku = function (id: string) {
   return Server.post<Resolve<boolean>>('/sku/delete', { sku_id: id });
+};
+
+export interface Purchase {
+  is_purchase: boolean;
+  limit_number: number;
+}
+
+export const editNftPurchase = function (data: Purchase & { nft_id: string }) {
+  return Server.post<Resolve<boolean>>('/nft/purchase', data);
+};
+
+export const skuNftPurchase = function (data: Purchase & { sku_id: string }) {
+  return Server.post<Resolve<boolean>>('/sku/purchase', data);
 };

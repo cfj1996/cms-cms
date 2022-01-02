@@ -7,12 +7,13 @@ import { Button, Divider, Input, List, message, Popconfirm, Skeleton, Tooltip } 
 import { css } from '@emotion/css';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useCallback, useEffect, useState } from 'react';
-import type { AddSku, INft, Sku } from '@/services/nft/nfts';
-import { addSku, delSku, getSkuList } from '@/services/nft/nfts';
+import type { AddSku, INft, Purchase, Sku } from '@/services/nft/nfts';
+import { addSku, delSku, getSkuList, skuNftPurchase } from '@/services/nft/nfts';
 import TableImgCall from '@/components/tableImgCall';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import Dialog from '@/components/Dialog';
 import { AddSkuSet } from '@/pages/nft/nftSeries/SkuSet';
+import PurchaseSet from '@/pages/nft/nftSeries/purchaseSet';
 
 interface IProps {
   data: INft;
@@ -36,6 +37,9 @@ const imgCall = css({
 });
 const amountCss = css({
   paddingRight: '15px',
+});
+const editBtn = css({
+  marginRight: 15,
 });
 const SkuDetail = function (props: IProps) {
   const { id, total, state } = props.data;
@@ -211,9 +215,42 @@ const SkuDetail = function (props: IProps) {
                   </div>
                 }
                 title={item.attribute}
-                description={`售价: $ ${Number(item.price).toLocaleString()};总数: ${
+                description={`售价: $ ${Number(item.price).toLocaleString()}, 总数: ${
                   item.amount
-                } 个`}
+                } 个${item.is_purchase ? `, 限购: ${item.limit_number}个` : ''}`}
+              />
+              <Button
+                type="primary"
+                shape="circle"
+                className={editBtn}
+                icon={<EditOutlined />}
+                onClick={() => {
+                  Dialog.open({
+                    title: '编辑限购信息',
+                    content: (
+                      <PurchaseSet
+                        is_purchase={item.is_purchase}
+                        limit_number={item.limit_number}
+                      />
+                    ),
+                    async onOK(name, info) {
+                      console.log('info?.values', info?.values);
+                      try {
+                        const values = info?.values as Purchase;
+                        const res = await skuNftPurchase({ sku_id: item.id, ...values });
+                        if (res.code === 'ok') {
+                          message.success('编辑成功');
+                          fetchPage(1);
+                        } else {
+                          throw new Error(res.msg);
+                        }
+                      } catch (error: any) {
+                        message.error(error.message);
+                        throw error;
+                      }
+                    },
+                  });
+                }}
               />
               <div className={amountCss}>
                 <Popconfirm
