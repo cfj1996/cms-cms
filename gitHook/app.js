@@ -1,7 +1,9 @@
 const express = require('express');
 const shell = require('shelljs');
 const app = express();
-
+app.get('/', function (req, res) {
+  res.send('api hook');
+});
 app.get('/apiHook', function (req, res) {
   console.log('请求1');
   console.log('req1', req.headers);
