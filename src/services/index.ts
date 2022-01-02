@@ -29,7 +29,7 @@ export interface PageParams {
 export interface Resolve<T> {
   data: T;
   msg: string;
-  code: string;
+  code: string | 'ok';
 }
 
 export type PageResolve<T> = Resolve<{ list: T[]; total: number }>;

@@ -4,12 +4,22 @@
  * @date: 2021/12/16 16:46
  */
 
-import type { PageParams, PageResolve } from '..';
+import type { PageParams, PageResolve, Resolve } from '..';
 import Server from '..';
 
 export interface IOrder {
   id: string;
   state: string;
+  buyer_name: string;
+  address: string;
+  contact_mobile: string;
+  contact_name: string;
+  created_at: string;
+  deal_at: string;
+  nft_number: string;
+  price: string;
+  seller_name: string;
+  updated_at: string;
 }
 
 export const OrderStatusEnum = {
@@ -30,4 +40,32 @@ export const getOrderList = function (params: PageParams & IOrder) {
     data: res.data.list,
     total: res.data.total,
   }));
+};
+
+// 发货
+interface IOrderToReceived {
+  order_id: string;
+  contact_name: string;
+  contact_mobile: string;
+  track_number: string;
+  address: string;
+}
+
+export const orderToReceived = function (data: IOrderToReceived) {
+  return Server.post<Resolve<boolean>>('/platfrom/delivery', data);
+};
+
+// 获取已完成交易hash
+export const getCompletedHash = function (data: { order_id: string }) {
+  return Server.post<Resolve<{ hash: string }>>('/platfrom/shipment', data);
+};
+
+// 已完成订单
+interface IOrderToCompleted {
+  order_id: string;
+  hash: string;
+}
+
+export const orderToCompleted = function (data: IOrderToCompleted) {
+  return Server.post<Resolve<any>>('/platfrom/completed', data);
 };
