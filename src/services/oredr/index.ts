@@ -52,7 +52,7 @@ interface IOrderToReceived {
 }
 
 export const orderToReceived = function (data: IOrderToReceived) {
-  return Server.post<Resolve<boolean>>('/platfrom/delivery', data);
+  return Server.post<Resolve<boolean>>('/orders/delivery', data);
 };
 
 // 获取已完成交易hash
@@ -67,5 +67,5 @@ interface IOrderToCompleted {
 }
 
 export const orderToCompleted = function (data: IOrderToCompleted) {
-  return Server.post<Resolve<any>>('/platfrom/completed', data);
+  return Server.post<Resolve<any>>('/orders/completed', data);
 };
