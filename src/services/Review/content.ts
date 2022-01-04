@@ -41,6 +41,6 @@ export const getContentList = function (params: PageParams & IContentReq) {
   }));
 };
 
-export const updateContent = function (id: string, state: 'passed' | 'offsell') {
+export const updateContent = function (id: string, state: 'passed' | 'offsell' | 'failed') {
   return Server.post<Resolve<any>>('/audit/state/update', { audit_id: id, state });
 };

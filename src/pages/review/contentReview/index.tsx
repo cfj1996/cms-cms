@@ -2,6 +2,7 @@ import type { IContent } from '@/services/Review/content';
 import { ContentStateEnum, getContentList, updateContent } from '@/services/Review/content';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
+import { TableDropdown } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { useRef } from 'react';
 import { Button, Dropdown, Menu, message, Modal } from 'antd';
@@ -109,34 +110,6 @@ const Index = function () {
           <Button
             style={{ padding: 0 }}
             type="link"
-            key={1}
-            disabled={row.state !== 'pending'}
-            onClick={() => {
-              Modal.confirm({
-                title: '确定通过吗?',
-                async onOk() {
-                  try {
-                    const res = await updateContent(row.id, 'passed');
-                    if (res.code === 'ok') {
-                      message.success('操作成功');
-                      actionRef.current?.reload();
-                    } else {
-                      throw new Error(res.msg);
-                    }
-                    return true;
-                  } catch (e: any) {
-                    message.error(e.message);
-                    return Promise.reject();
-                  }
-                },
-              });
-            }}
-          >
-            通过
-          </Button>,
-          <Button
-            style={{ padding: 0 }}
-            type="link"
             key={2}
             disabled={row.state !== 'passed'}
             onClick={() => {
@@ -162,6 +135,54 @@ const Index = function () {
           >
             下架
           </Button>,
+          <TableDropdown
+            key={3}
+            onSelect={(key) => {
+              if (key === '1') {
+                Modal.confirm({
+                  title: '审核通过吗?',
+                  async onOk() {
+                    try {
+                      const res = await updateContent(row.id, 'passed');
+                      if (res.code === 'ok') {
+                        message.success('操作成功');
+                        actionRef.current?.reload();
+                      } else {
+                        throw new Error(res.msg);
+                      }
+                      return true;
+                    } catch (e: any) {
+                      message.error(e.message);
+                      return Promise.reject();
+                    }
+                  },
+                });
+              } else if (key === '2') {
+                Modal.confirm({
+                  title: '审核不通过吗?',
+                  async onOk() {
+                    try {
+                      const res = await updateContent(row.id, 'failed');
+                      if (res.code === 'ok') {
+                        message.success('操作成功');
+                        actionRef.current?.reload();
+                      } else {
+                        throw new Error(res.msg);
+                      }
+                      return true;
+                    } catch (e: any) {
+                      message.error(e.message);
+                      return Promise.reject();
+                    }
+                  },
+                });
+              }
+            }}
+            menus={[
+              { key: '1', name: '通过', disabled: row.state !== 'pending' },
+              { key: '2', name: '不通过', disabled: row.state !== 'pending' },
+            ]}
+          />,
         ];
       },
     },
