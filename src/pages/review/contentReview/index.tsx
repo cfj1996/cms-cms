@@ -117,7 +117,7 @@ const Index = function () {
                 title: '确定下架吗?',
                 async onOk() {
                   try {
-                    const res = await updateContent(row.id, 'passed');
+                    const res = await updateContent(row.id, 'offsell');
                     if (res.code === 'ok') {
                       message.success('下架成功');
                       actionRef.current?.reload();
