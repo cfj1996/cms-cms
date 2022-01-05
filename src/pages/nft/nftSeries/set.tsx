@@ -68,7 +68,7 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
     <Form form={form} initialValues={initialValues} {...formItemLayout}>
       <ProFormSelect
         name={'category_id'}
-        label={'nft分类'}
+        label={'nft系列'}
         disabled={disabled}
         required={true}
         rules={[{ required: true }]}
