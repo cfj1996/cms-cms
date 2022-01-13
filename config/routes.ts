@@ -83,7 +83,25 @@
         path: 'nftOrder',
         component: './order',
       },
-      { exact: true, redirect: '/nftOrder/ProfileOutlined' },
+      { exact: true, redirect: '/order/nftOrder' },
+    ],
+  },
+  {
+    name: '前台配置',
+    path: '/front',
+    icon: 'AppstoreOutlined',
+    routes: [
+      {
+        name: 'banner管理',
+        path: 'banner',
+        component: './banner',
+      },
+      {
+        name: '活动管理',
+        path: 'activity',
+        component: './activity',
+      },
+      { exact: true, redirect: '/front/banner' },
     ],
   },
   {

@@ -61,12 +61,10 @@ export default class Dialog extends React.Component<IProps> {
     iSFinish: false,
     loading: false,
   };
-  componentWillUnmount() {
-    console.log(1111111);
-  }
+
+  componentWillUnmount() {}
 
   onCancel() {
-    console.log(1111111111111111111);
     this.setState({
       visible: false,
     });

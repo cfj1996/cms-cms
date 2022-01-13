@@ -47,8 +47,8 @@ export interface INft {
 }
 
 export interface INftReq {
-  name: string;
-  categoryId: string;
+  name?: string;
+  categoryId?: string;
 }
 
 /**
