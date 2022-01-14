@@ -110,7 +110,7 @@ const Index = function () {
     {
       dataIndex: 'token_id',
       title: '作品id',
-      hideInSearch: false,
+      hideInSearch: true,
     },
     {
       dataIndex: 'title',

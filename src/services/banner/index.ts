@@ -38,7 +38,7 @@ export interface AddBanner {
 }
 
 export interface Banner extends AddBanner {
-  in: string;
+  id: string;
   state: keyof typeof bannerState;
   created_at: string;
   updated_at: string;
@@ -52,6 +52,13 @@ export const addBanner = function (data: AddBanner) {
   return Server.post<Resolve<boolean>>('/banner/create', data);
 };
 
+interface EditAccount extends AddBanner {
+  banner_id: string;
+}
+
+export const editBanner = function (data: EditAccount) {
+  return Server.post<Resolve<boolean>>('/banner/edit', data);
+};
 export const getBannerPage = function (
   params: PageParams & { state?: keyof typeof bannerState; keywords: string },
 ) {
@@ -62,4 +69,12 @@ export const getBannerPage = function (
       total: res.data.total,
     };
   });
+};
+
+export const updateBannerState = function (id: string, state: keyof typeof bannerState) {
+  return Server.post<Resolve<boolean>>('/banner/state/update', { banner_id: id, state });
+};
+
+export const delBanner = function (id: string) {
+  return Server.post<Resolve<boolean>>('/banner/delete', { banner_id: id });
 };

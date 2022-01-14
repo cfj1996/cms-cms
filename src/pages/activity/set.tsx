@@ -44,9 +44,6 @@ const Set = forwardRef(function (props: { data?: Activity }, ref) {
       <ProFormText name="title" label="活动标题" required={true} rules={[{ required: true }]} />
       <ProFormText name="content" label="活动内容" required={true} rules={[{ required: true }]} />
       <ProFormText name="number" label="活动编号" required={true} rules={[{ required: true }]} />
-      <Form.Item name="images" label={'活动图片'} required={true} rules={[{ required: true }]}>
-        <Upload multiple={true} />
-      </Form.Item>
       <ProFormDateTimeRangePicker
         label={'起至时间'}
         name={'time'}
@@ -65,6 +62,7 @@ const Set = forwardRef(function (props: { data?: Activity }, ref) {
           getNftList({
             current: 1,
             pageSize: 10000,
+            state: 'onsale',
           }).then((res) => res.data.map((item) => ({ value: item.id, label: item.name })))
         }
         params={() => {}}
@@ -73,6 +71,9 @@ const Set = forwardRef(function (props: { data?: Activity }, ref) {
         required={true}
         rules={[{ required: true }]}
       />
+      <Form.Item name="images" label={'活动图片'} required={true} rules={[{ required: true }]}>
+        <Upload multiple={true} />
+      </Form.Item>
     </Form>
   );
 });

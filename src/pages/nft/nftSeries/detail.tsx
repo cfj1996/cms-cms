@@ -11,6 +11,7 @@ import TypographyItem from '@/components/TypographyItem';
 import type { INft } from '@/services/nft/nfts';
 import { getNft, NftState } from '@/services/nft/nfts';
 import { dateFormat } from '@/utils';
+import TableImgCall from '@/components/tableImgCall';
 
 interface IProps {
   id: string;
@@ -24,17 +25,22 @@ const Detail = function (props: IProps & PageService<INft>) {
     { label: '类别名称：', value: data.category_name },
     { label: '作品id：', value: data.token_id },
     {
-      label: '源文件地址：',
+      label: '图片：',
       value: (
-        <ol style={{ margin: 0, padding: 0 }}>
+        <div style={{ margin: 0, padding: 0 }}>
           {data.images.map((i) => (
-            <li key={i}>
-              <a href={i} target="_blank">
-                {i}
-              </a>
-            </li>
+            <div key={i}>
+              <TableImgCall
+                images={data.images.map((img) => ({
+                  alt: data.name,
+                  src: img,
+                }))}
+                alt={data.name}
+                src={i}
+              />
+            </div>
           ))}
-        </ol>
+        </div>
       ),
     },
     { label: '热度：', value: `${data.heat}%` },

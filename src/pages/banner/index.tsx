@@ -6,14 +6,22 @@
 
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import { Button, message } from 'antd';
+import ProTable, { TableDropdown } from '@ant-design/pro-table';
+import { Button, message, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useRef } from 'react';
 import Dialog from '@/components/Dialog';
-import Set from './set';
+import { AddSet, EditSet } from './set';
 import type { Banner } from '@/services/banner';
-import { addBanner, bannerState, getBannerPage, LinkType } from '@/services/banner';
+import {
+  addBanner,
+  bannerState,
+  delBanner,
+  editBanner,
+  getBannerPage,
+  LinkType,
+  updateBannerState,
+} from '@/services/banner';
 import TableImgCall from '@/components/tableImgCall';
 
 const Index = function () {
@@ -79,20 +87,57 @@ const Index = function () {
             style={{ padding: 0 }}
             type={'link'}
             disabled={record.state === 'onsale'}
+            key={0}
+            onClick={() => {
+              edit(record);
+            }}
+          >
+            编辑
+          </Button>,
+          <TableDropdown
+            onSelect={(key) => {
+              if (key === '1') {
+                Modal.confirm({
+                  title: '确定上架吗?',
+                  async onOk() {
+                    await updateBannerState(record.id, 'onsale').catch((error) => {
+                      message.error('操作失败,稍后重试。');
+                      throw error;
+                    });
+                    actionRef.current?.reload();
+                  },
+                });
+              } else if (key === '2') {
+                Modal.confirm({
+                  title: '确定下架吗?',
+                  async onOk() {
+                    await updateBannerState(record.id, 'offsale').catch((error) => {
+                      message.error('操作失败,稍后重试。');
+                      throw error;
+                    });
+                    actionRef.current?.reload();
+                  },
+                });
+              } else {
+                Modal.confirm({
+                  title: '确定删除吗?',
+                  async onOk() {
+                    await delBanner(record.id).catch((error) => {
+                      message.error('操作失败,稍后重试。');
+                      throw error;
+                    });
+                    actionRef.current?.reload();
+                  },
+                });
+              }
+            }}
+            menus={[
+              { key: '1', name: '上架', disabled: record.state === 'onsale' },
+              { key: '2', name: '下架', disabled: record.state !== 'onsale' },
+              { key: '3', name: '删除' },
+            ]}
             key={1}
-            onClick={() => {}}
-          >
-            上架
-          </Button>,
-          <Button
-            style={{ padding: 0 }}
-            type={'link'}
-            disabled={record.state !== 'onsale'}
-            key={2}
-            onClick={() => {}}
-          >
-            下架
-          </Button>,
+          />,
         ];
       },
     },
@@ -101,13 +146,37 @@ const Index = function () {
   function create() {
     Dialog.open({
       title: '新增banner',
-      content: <Set />,
+      content: <AddSet />,
       async onOK(name, info) {
         const values = info?.values as any;
         try {
           const res = await addBanner({ ...values, image: values.image[0] });
           if (res.code === 'ok') {
             message.success('添加成功');
+            actionRef.current?.reload();
+          } else {
+            throw new Error(res.msg);
+          }
+        } catch (error: any) {
+          message.error(error.message);
+          return Promise.reject();
+        }
+      },
+    });
+  }
+
+  function edit(data: Banner) {
+    Dialog.open({
+      title: '编辑banner',
+      content: <EditSet data={data} />,
+      async onOK(name, info) {
+        const { image, ...other } = info?.values as any;
+        other.image = image[0];
+        other.banner_id = data.id;
+        try {
+          const res = await editBanner(other);
+          if (res.code === 'ok') {
+            message.success('编辑成功');
             actionRef.current?.reload();
           } else {
             throw new Error(res.msg);

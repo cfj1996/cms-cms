@@ -182,7 +182,7 @@ const Index = function () {
       content: <EditSet data={data} />,
       async onOK(name, info) {
         const { time, ...other } = info?.values as any;
-        other.id = data.id;
+        other.activity_id = data.id;
         other.start_time = (time[0] as Moment).toDate();
         other.end_time = (time[0] as Moment).toDate();
         console.log('other', other);

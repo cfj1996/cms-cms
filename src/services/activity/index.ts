@@ -57,7 +57,7 @@ export const delActivity = function (id: string) {
 };
 
 export interface EditAccount extends AddActivity {
-  id: string;
+  activity_id: string;
 }
 
 export const editAccount = function (data: EditAccount) {

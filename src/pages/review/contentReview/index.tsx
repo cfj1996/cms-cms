@@ -2,10 +2,10 @@ import type { IContent } from '@/services/Review/content';
 import { ContentStateEnum, getContentList, updateContent } from '@/services/Review/content';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
-import { TableDropdown } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
+import ProTable, { TableDropdown } from '@ant-design/pro-table';
 import { useRef } from 'react';
-import { Button, Dropdown, Menu, message, Modal } from 'antd';
+import { Button, message, Modal } from 'antd';
+import TableImgCall from '@/components/tableImgCall';
 
 /**
  * @name: index
@@ -62,29 +62,20 @@ const Index = function () {
       hideInSearch: true,
     },
     {
-      title: '文件地址',
+      title: '图片',
       dataIndex: 'images',
       hideInSearch: true,
       render(text, row) {
-        const menu = (
-          <Menu>
-            {row?.images.map((i, k) => (
-              <Menu.Item key={k}>
-                <a target="_blank" href={i}>
-                  文件{k + 1}
-                </a>
-              </Menu.Item>
-            ))}
-          </Menu>
+        return (
+          <TableImgCall
+            alt={row.content}
+            src={row.images?.[0]}
+            images={row.images?.map((i) => ({
+              alt: row.content,
+              src: i,
+            }))}
+          />
         );
-        if (row.images?.length) {
-          return (
-            <Dropdown overlay={menu} placement="bottomLeft" arrow>
-              <Button type={'link'}>文件</Button>
-            </Dropdown>
-          );
-        }
-        return '-';
       },
     },
     {

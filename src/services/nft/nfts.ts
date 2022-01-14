@@ -47,8 +47,7 @@ export interface INft {
 }
 
 export interface INftReq {
-  name?: string;
-  categoryId?: string;
+  state: keyof typeof nftStateEnum;
 }
 
 /**
