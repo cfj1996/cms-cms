@@ -214,7 +214,7 @@ const Index = function () {
                 name: '上架',
                 disabled: !(
                   record.state === 'draf' ||
-                  (record.state === 'offsale' && record.sale > 0)
+                  (record.state === 'offsale' && record.sale === 0)
                 ),
               },
               { key: '4', name: '下架', disabled: record.state !== 'onsale' },
