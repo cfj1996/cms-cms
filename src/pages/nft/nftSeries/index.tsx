@@ -103,8 +103,7 @@ const Index = function () {
     {
       dataIndex: 'name',
       title: '名称',
-      key: 'name',
-      hideInSearch: true,
+      key: 'keywords',
       ellipsis: true,
     },
     {
@@ -210,7 +209,14 @@ const Index = function () {
             }}
             menus={[
               { key: '2', name: '编辑', disabled: record.state === 'onsale' },
-              { key: '3', name: '上架', disabled: record.state !== 'draf' },
+              {
+                key: '3',
+                name: '上架',
+                disabled: !(
+                  record.state === 'draf' ||
+                  (record.state === 'offsale' && record.sale > 0)
+                ),
+              },
               { key: '4', name: '下架', disabled: record.state !== 'onsale' },
             ]}
           />,
