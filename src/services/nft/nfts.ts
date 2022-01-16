@@ -1,5 +1,11 @@
+import type { Moment } from 'moment';
 import type { PageParams, PageResolve, Resolve } from '..';
 import Server from '..';
+
+export enum NftType {
+  collection = '数字藏品',
+  collectionNumber = '实物+数字藏品',
+}
 
 /**
  * @name: nfts
@@ -31,6 +37,7 @@ export interface INft {
   id: string;
   name: string;
   title: string;
+  type: string;
   category_id: string;
   category_name: string;
   images: string[];
@@ -42,6 +49,22 @@ export interface INft {
   desc: string;
   heat: number;
   transaction_hash: string;
+  start_time: string;
+  end_time: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AddSku {
+  nft_id: string;
+  price: string;
+  attribute: string;
+  images: string[];
+  amount: number;
+}
+
+export interface Sku extends AddSku {
+  id: string;
   created_at: string;
   updated_at: string;
 }
@@ -67,6 +90,7 @@ export const getNftList = function (params: PageParams & INftReq) {
 export interface IAddNft {
   category_id: string;
   name: string;
+  type: string;
   title: string;
   desc: string;
   transaction_hash: string;
@@ -74,6 +98,9 @@ export interface IAddNft {
   token_id?: number;
   total?: number;
   price?: string;
+  start_time: string;
+  end_time: string;
+  time?: Moment[];
 }
 
 /**
@@ -96,7 +123,7 @@ export interface IUpdateNft {
  * @param data
  */
 export const updateNft = function (data: IUpdateNft) {
-  return Server.post(`/nft/edit`, data);
+  return Server.post<Resolve<boolean>>(`/nft/edit`, data);
 };
 /**
  * 修改nft状态
@@ -148,4 +175,16 @@ export interface IPlatform {
 
 export const platform = function (data: IPlatform) {
   return Server.post<Resolve<{ transaction_hash: string }>>('/nft/mint/platform', data);
+};
+
+export const getSkuList = function (params: PageParams & { nft_id: string; attribute?: string }) {
+  return Server.get<PageResolve<Sku>>('/sku/search', params).then((res) => ({
+    success: res.code === 'ok',
+    data: res.data.list,
+    total: res.data.total,
+  }));
+};
+
+export const addSku = function (data: AddSku) {
+  return Server.post<Resolve<boolean>>('/sku/create', data);
 };

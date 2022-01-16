@@ -19,16 +19,17 @@ import {
 import { Button, message, Modal } from 'antd';
 import Dialog from '@/components/Dialog';
 import { AddSet } from './set';
+import { NftType } from '@/services/nft/nfts';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
 
   function ship(row: IOrder) {
-    Dialog.open({
-      title: '发货',
-      content: <AddSet />,
-      async onOK(name, info) {
-        try {
+    if (row.type === 'collectionNumber') {
+      Dialog.open({
+        title: '实物发货',
+        content: <AddSet />,
+        async onOK(name, info) {
           const values = info?.values;
           const res = await orderToReceived({
             track_number: values!.track_number,
@@ -36,6 +37,28 @@ const Index = function () {
             contact_name: row.contact_name,
             contact_mobile: row.contact_mobile,
             address: row.address,
+          }).catch((error) => {
+            message.error(error.message);
+            return Promise.reject();
+          });
+          if (res.code === 'ok') {
+            message.success('实物发货成功');
+            actionRef.current?.reload();
+          } else {
+            throw new Error(res.msg);
+          }
+        },
+      });
+    } else {
+      Modal.confirm({
+        title: '数字产品发货',
+        content: '是否确定发货',
+        async onOk() {
+          const res = await orderToReceived({
+            order_id: row.id,
+          }).catch((error) => {
+            message.error(error.message);
+            return Promise.reject();
           });
           if (res.code === 'ok') {
             message.success('发货成功');
@@ -43,12 +66,9 @@ const Index = function () {
           } else {
             throw new Error(res.msg);
           }
-        } catch (error: any) {
-          message.error(error.message);
-          return Promise.reject();
-        }
-      },
-    });
+        },
+      });
+    }
   }
 
   function finish(id: string) {
@@ -79,12 +99,12 @@ const Index = function () {
 
   const columns: ProColumns<IOrder>[] = [
     {
-      title: '买家名称',
+      title: '买家',
       hideInSearch: true,
       dataIndex: 'buyer_name',
     },
     {
-      title: '联系人姓名',
+      title: '联系人',
       hideInSearch: true,
       dataIndex: 'contact_name',
     },
@@ -92,11 +112,15 @@ const Index = function () {
       title: '联系方式',
       hideInSearch: true,
       dataIndex: 'contact_mobile',
+      ellipsis: true,
+      copyable: true,
     },
     {
       title: '联系地址',
       hideInSearch: true,
       dataIndex: 'address',
+      ellipsis: true,
+      copyable: true,
     },
     {
       title: '卖家名称',
@@ -119,7 +143,13 @@ const Index = function () {
       hideInSearch: true,
       dataIndex: 'price',
     },
-
+    {
+      dataIndex: 'type',
+      title: '作品类型',
+      valueType: 'select',
+      valueEnum: NftType,
+      hideInSearch: true,
+    },
     {
       dataIndex: 'deal_at',
       title: '交易时间',

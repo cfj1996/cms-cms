@@ -43,7 +43,9 @@ export interface Activity extends AddActivity {
   updated_at: string;
 }
 
-export const getActivityPage = function (params: PageParams & { keywords: string }) {
+export const getActivityPage = function (
+  params: PageParams & { keywords?: string; state?: keyof typeof activityState },
+) {
   return Server.get<PageResolve<Activity>>('/activity/search', params).then((res) => {
     return {
       success: res.code === 'ok',

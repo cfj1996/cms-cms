@@ -49,6 +49,9 @@ const Set = forwardRef(function (props: { data?: Activity }, ref) {
         name={'time'}
         required={true}
         rules={[{ required: true }]}
+        fieldProps={{
+          disabledDate: (d) => !d || d.isBefore(moment()),
+        }}
       />
       <ProFormText
         name="list_title"
@@ -65,7 +68,6 @@ const Set = forwardRef(function (props: { data?: Activity }, ref) {
             state: 'onsale',
           }).then((res) => res.data.map((item) => ({ value: item.id, label: item.name })))
         }
-        params={() => {}}
         name="associate"
         label="关联nft作品"
         required={true}

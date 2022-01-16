@@ -5,6 +5,7 @@
  */
 import React, { forwardRef, useImperativeHandle } from 'react';
 import {
+  ProFormDateTimeRangePicker,
   ProFormDigit,
   ProFormMoney,
   ProFormSelect,
@@ -15,16 +16,17 @@ import { Form } from 'antd';
 import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
 import { getNftTypeList } from '@/services/nft/nftType';
-import type { IAddNft, INft } from '@/services/nft/nfts';
-import { getNft } from '@/services/nft/nfts';
+import type { INft } from '@/services/nft/nfts';
+import { getNft, NftType } from '@/services/nft/nfts';
 import Upload from '@/components/upload';
+import moment from 'moment';
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 4 },
+    xs: { span: 6 },
   },
   wrapperCol: {
-    xs: { span: 20 },
+    xs: { span: 18 },
   },
 };
 
@@ -36,28 +38,21 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
   const { id } = props;
   const disabled = !!id;
   const [form] = Form.useForm();
-  const initialValues: Omit<IAddNft, 'transaction_hash'> = {
-    category_id: '',
-    name: '',
-    title: '',
-    desc: '',
-    images: [],
-    token_id: undefined,
-    total: undefined,
-    price: undefined,
-  };
-  if (id && props.data?.data) {
-    const data = props.data?.data;
-    initialValues.category_id = data.category_id;
-    initialValues.name = data.name;
-    initialValues.title = data.title;
-    initialValues.desc = data.title;
-    initialValues.images = data.images;
-    initialValues.token_id = data.token_id;
-    initialValues.total = data.total;
-    initialValues.price = data.price;
-  }
-  console.log('images', initialValues.images);
+  const data = props.data?.data || ({} as INft);
+  const initialValues = props.data?.data
+    ? {
+        category_id: data.category_id,
+        type: data.type,
+        name: data.name,
+        title: data.title,
+        desc: data.desc,
+        images: data.images,
+        token_id: data.token_id,
+        total: data.total,
+        price: data.price,
+        time: [moment(data.start_time), moment(data.end_time)],
+      }
+    : undefined;
   useImperativeHandle(ref, () => ({
     submit() {
       form.submit();
@@ -80,6 +75,15 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
             res.data.map((i) => ({ value: i.id, label: i.name })),
           );
         }}
+      />
+      <ProFormSelect
+        name="type"
+        label="nft类型"
+        disabled={disabled}
+        placeholder="请选择nft类型"
+        required={true}
+        rules={[{ required: true }]}
+        valueEnum={NftType}
       />
       <ProFormText
         name="name"
@@ -122,6 +126,16 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         required={true}
         rules={[{ required: true }]}
         fieldProps={{ precision: 2 }}
+      />
+      <ProFormDateTimeRangePicker
+        name="time"
+        label="售卖起止时间"
+        disabled={disabled}
+        required={true}
+        fieldProps={{
+          disabledDate: (d) => !d || d.isBefore(moment()),
+        }}
+        rules={[{ required: true }]}
       />
       <Form.Item name="images" label={'图片'} required={true} rules={[{ required: true }]}>
         <Upload multiple={true} disabled={disabled} />

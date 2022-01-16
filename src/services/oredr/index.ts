@@ -18,6 +18,7 @@ export interface IOrder {
   deal_at: string;
   nft_number: string;
   price: string;
+  type: string;
   seller_name: string;
   updated_at: string;
 }
@@ -45,10 +46,10 @@ export const getOrderList = function (params: PageParams & IOrder) {
 // 发货
 interface IOrderToReceived {
   order_id: string;
-  contact_name: string;
-  contact_mobile: string;
-  track_number: string;
-  address: string;
+  contact_name?: string;
+  contact_mobile?: string;
+  track_number?: string;
+  address?: string;
 }
 
 export const orderToReceived = function (data: IOrderToReceived) {

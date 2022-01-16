@@ -11,6 +11,7 @@ import {
   addNft,
   getNftList,
   nftStateEnum,
+  NftType,
   platform,
   updateNft,
   updateNftState,
@@ -20,8 +21,8 @@ import { PlusOutlined } from '@ant-design/icons';
 import { AddSet, EditSet } from './set';
 import Dialog from '@/components/Dialog';
 import { useRef } from 'react';
-import Detail from './detail';
 import GlobalLoad from '@/components/GlobalLoad';
+import Show from '@/pages/nft/nftSeries/show';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
@@ -34,7 +35,7 @@ const Index = function () {
         const id = GlobalLoad.open({ tip: '铸币中，请稍后....' });
         try {
           const values = info?.values as IAddNft;
-          const { total, ...other } = values;
+          const { total, price, time, ...other } = values;
           const { data, code, msg } = await platform({
             category_id: values.category_id,
             token_id: values.token_id,
@@ -44,10 +45,14 @@ const Index = function () {
             if (data.transaction_hash) {
               await addNft(
                 Object.assign(
-                  { transaction_hash: data.transaction_hash },
+                  {
+                    transaction_hash: data.transaction_hash,
+                    price: String(price),
+                    start_time: time?.[0].toDate(),
+                    end_time: time?.[1].toDate(),
+                  },
                   {
                     ...other,
-                    price: String(other.price),
                   },
                 ),
               );
@@ -75,7 +80,7 @@ const Index = function () {
       content: <EditSet id={id} />,
       async onOK(name, info) {
         const values = info?.values as IAddNft;
-        await updateNft({
+        const res = await updateNft({
           nft_id: id,
           name: values.name,
           desc: values.desc,
@@ -84,18 +89,26 @@ const Index = function () {
           message.error('修改失败,稍后重试。');
           throw err;
         });
-        message.success('修改成功');
-        actionRef.current?.reload();
+        if (res.code === 'ok') {
+          message.success('修改成功');
+          actionRef.current?.reload();
+        } else {
+          message.error(res.msg);
+          throw new Error(res.msg);
+        }
       },
     });
   }
 
-  function show(id: string) {
+  function show(id: string, total: number) {
     Dialog.open({
       type: 'view',
       title: 'nft详情',
-      content: <Detail id={id} />,
+      content: <Show id={id} total={total} />,
       footer: null,
+      bodyStyle: {
+        paddingTop: 0,
+      },
     });
   }
 
@@ -113,7 +126,7 @@ const Index = function () {
     },
     {
       dataIndex: 'title',
-      title: 'title',
+      title: '标题',
       hideInSearch: true,
     },
     {
@@ -157,6 +170,25 @@ const Index = function () {
       },
     },
     {
+      dataIndex: 'type',
+      title: '类型',
+      valueType: 'select',
+      valueEnum: NftType,
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'start_time',
+      title: '售卖开始时间',
+      valueType: 'dateTime',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'end_time',
+      title: '售卖结束时间',
+      valueType: 'dateTime',
+      hideInSearch: true,
+    },
+    {
       dataIndex: 'created_at',
       title: '创建时间',
       valueType: 'dateTime',
@@ -174,7 +206,7 @@ const Index = function () {
       valueType: 'option',
       render(text, record) {
         return [
-          <a key={'onsale'} onClick={() => show(record.id)}>
+          <a key={'onsale'} onClick={() => show(record.id, record.total)}>
             查看
           </a>,
           <TableDropdown
