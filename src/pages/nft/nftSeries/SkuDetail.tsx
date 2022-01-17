@@ -3,14 +3,14 @@
  * @user: cfj
  * @date: 2022/1/16 16:24
  */
-import { Button, Divider, Input, List, message, Skeleton, Tooltip } from 'antd';
+import { Button, Divider, Input, List, message, Popconfirm, Skeleton, Tooltip } from 'antd';
 import { css } from '@emotion/css';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useCallback, useEffect, useState } from 'react';
 import type { AddSku, INft, Sku } from '@/services/nft/nfts';
-import { addSku, getSkuList } from '@/services/nft/nfts';
+import { addSku, delSku, getSkuList } from '@/services/nft/nfts';
 import TableImgCall from '@/components/tableImgCall';
-import { PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import Dialog from '@/components/Dialog';
 import { AddSkuSet } from '@/pages/nft/nftSeries/SkuSet';
 
@@ -89,6 +89,27 @@ const SkuDetail = function (props: IProps) {
       return;
     }
     fetchPage(config.current);
+  }
+
+  function deleteSku(id: string) {
+    delSku(id)
+      .then((res) => {
+        if (res.code === 'ok') {
+          message.success('删除成功');
+          setConfig((state) => ({
+            ...state,
+            attribute: '',
+            current: 1,
+          }));
+          fetchPage(1);
+        } else {
+          message.error(res.msg);
+          throw new Error(res.msg);
+        }
+      })
+      .catch((err) => {
+        message.error(err.msg);
+      });
   }
 
   function create() {
@@ -190,9 +211,25 @@ const SkuDetail = function (props: IProps) {
                   </div>
                 }
                 title={item.attribute}
-                description={`售价: $ ${Number(item.price).toLocaleString()}`}
+                description={`售价: $ ${Number(item.price).toLocaleString()};总数: ${
+                  item.amount
+                } 个`}
               />
-              <div className={amountCss}>总数: {item.amount} 个</div>
+              <div className={amountCss}>
+                <Popconfirm
+                  title="确定删除？"
+                  onConfirm={() => deleteSku(item.id)}
+                  okText="确定"
+                  cancelText="取消"
+                >
+                  <Button
+                    disabled={state === 'onsale'}
+                    type="primary"
+                    shape="circle"
+                    icon={<DeleteOutlined />}
+                  />
+                </Popconfirm>
+              </div>
             </List.Item>
           ))}
         </List>

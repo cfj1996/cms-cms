@@ -188,3 +188,7 @@ export const getSkuList = function (params: PageParams & { nft_id: string; attri
 export const addSku = function (data: AddSku) {
   return Server.post<Resolve<boolean>>('/sku/create', data);
 };
+
+export const delSku = function (id: string) {
+  return Server.post<Resolve<boolean>>('/sku/delete', { sku_id: id });
+};
