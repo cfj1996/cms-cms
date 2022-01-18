@@ -7,7 +7,7 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, message, Modal } from 'antd';
+import { Button, InputNumber, message, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useRef } from 'react';
 import type { IAddKeyword, IKeyword } from '@/services/nft/keyword';
@@ -29,6 +29,10 @@ const Index = function () {
       dataIndex: 'weight',
       valueType: 'progress',
       hideInSearch: true,
+      width: 150,
+      renderFormItem(item, props) {
+        return <InputNumber {...props} min={0} max={100} />;
+      },
     },
     {
       dataIndex: 'created_at',
@@ -85,7 +89,7 @@ const Index = function () {
 
   function del(id: string) {
     Modal.confirm({
-      title: '确定上架吗?',
+      title: '确定删除吗?',
       async onOk() {
         try {
           const res = await deleteKeyword(id);
@@ -123,9 +127,13 @@ const Index = function () {
         editable={{
           type: 'multiple',
           async onSave(key, row, originRow) {
-            console.log(key, row, originRow, originRow);
             if (originRow.weight !== row.weight) {
-              await updateKeyword(row.id, row.weight);
+              if (row.weight >= 0 && row.weight <= 100) {
+                await updateKeyword(row.id, row.weight);
+              } else {
+                message.error('请输入0~100的数字');
+                throw new Error('请输入0~100的数字');
+              }
             }
           },
         }}
