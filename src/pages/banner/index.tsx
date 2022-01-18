@@ -198,7 +198,7 @@ const Index = function () {
           return getBannerPage(params as any);
         }}
         columnsState={{
-          persistenceKey: 'pro-table-singe-demos-3',
+          persistenceKey: 'pro-table-singe-demos-4',
           persistenceType: 'localStorage',
         }}
         rowKey="id"

@@ -113,7 +113,7 @@ const Index = function () {
           return getKeywordPage(params as any);
         }}
         columnsState={{
-          persistenceKey: 'pro-table-singe-demos-3',
+          persistenceKey: 'pro-table-singe-demos-5',
           persistenceType: 'localStorage',
         }}
         rowKey="id"

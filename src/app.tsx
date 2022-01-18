@@ -6,6 +6,7 @@ import RightContent from '@/components/RightContent';
 import type { IUserInfo } from '@/services/user/login';
 import { userGetInfo } from '@/services/user/login';
 import { getToken } from '@/utils';
+import 'moment/locale/zh-cn';
 
 const loginPath = '/user/login';
 

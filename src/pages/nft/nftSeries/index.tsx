@@ -165,6 +165,7 @@ const Index = function () {
       title: '热度',
       dataIndex: 'heat',
       hideInSearch: true,
+      width: 110,
       valueType: {
         type: 'progress',
       },
@@ -265,7 +266,7 @@ const Index = function () {
           return getNftList(params as any);
         }}
         columnsState={{
-          persistenceKey: 'pro-table-singe-demos-4',
+          persistenceKey: 'pro-table-singe-demos-6',
           persistenceType: 'localStorage',
         }}
         rowKey="id"

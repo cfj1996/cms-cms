@@ -4,7 +4,7 @@
  * @date: 2021/12/24 22:19
  */
 import type { FC } from 'react';
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { forwardRef, useImperativeHandle } from 'react';
 import { Form } from 'antd';
 import { ProFormRadio, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import Upload from '@/components/upload';
@@ -22,16 +22,15 @@ const formItemLayout = {
 };
 const Set = forwardRef(function (props: { data?: Banner }, ref) {
   const [form] = Form.useForm();
-  const [linkType, setLinkType] = useState('outlink');
   const initialValues = props.data
     ? {
         title: props.data.title,
         number: props.data.number,
         link_type: props.data.link_type,
-        link: props.data.link,
+        link: props.data.link || undefined,
         image: [props.data.image],
       }
-    : { link_type: linkType };
+    : { link_type: 'outlink' };
   useImperativeHandle(ref, () => ({
     submit() {
       form.submit();
@@ -45,7 +44,7 @@ const Set = forwardRef(function (props: { data?: Banner }, ref) {
       {...formItemLayout}
       onValuesChange={(changedFields) => {
         if (changedFields.link_type) {
-          setLinkType(changedFields.link_type);
+          form.setFieldsValue({ link: undefined });
         }
       }}
     >
@@ -57,24 +56,43 @@ const Set = forwardRef(function (props: { data?: Banner }, ref) {
         rules={[{ required: true }]}
         valueEnum={LinkType}
       />
-      {linkType === 'outlink' ? (
-        <ProFormText name="link" label="外部链接" required={true} rules={[{ required: true }]} />
-      ) : (
-        <ProFormSelect
-          name="link"
-          label="活动地址"
-          required={true}
-          rules={[{ required: true }]}
-          request={() =>
-            getActivityPage({
-              current: 1,
-              pageSize: 10000,
-              state: 'onsale',
-            }).then((res) => res.data.map((item) => ({ value: item.id, label: item.title })))
+      <Form.Item
+        noStyle
+        shouldUpdate={(prevValues: any, curValues: any) =>
+          prevValues.link_type !== curValues.link_type
+        }
+      >
+        {({ getFieldValue }) => {
+          if (getFieldValue('link_type') === 'outlink') {
+            return (
+              <ProFormText
+                name="link"
+                label="外部链接"
+                placeholder={'请输入跳转链接'}
+                required={true}
+                rules={[{ required: true }]}
+              />
+            );
+          } else {
+            return (
+              <ProFormSelect
+                name="link"
+                label="活动地址"
+                placeholder={'请选择关联活动'}
+                required={true}
+                rules={[{ required: true }]}
+                request={() =>
+                  getActivityPage({
+                    current: 1,
+                    pageSize: 10000,
+                    state: 'onsale',
+                  }).then((res) => res.data.map((item) => ({ value: item.id, label: item.title })))
+                }
+              />
+            );
           }
-        />
-      )}
-
+        }}
+      </Form.Item>
       <Form.Item name="image" label={'banner图'} required={true} rules={[{ required: true }]}>
         <Upload maxCount={1} multiple={false} />
       </Form.Item>

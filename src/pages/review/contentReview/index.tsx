@@ -185,7 +185,7 @@ const Index = function () {
         columns={columns}
         request={(params: any) => getContentList(params)}
         columnsState={{
-          persistenceKey: 'pro-table-singe-demos-7',
+          persistenceKey: 'pro-table-singe-demos-9',
           persistenceType: 'localStorage',
         }}
         rowKey="id"

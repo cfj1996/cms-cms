@@ -49,7 +49,7 @@ const Index = function () {
         columns={columns}
         request={(params: any) => getPlatLIst(params)}
         columnsState={{
-          persistenceKey: 'pro-table-singe-demos-6',
+          persistenceKey: 'pro-table-singe-demos-1',
           persistenceType: 'localStorage',
         }}
         rowKey="id"

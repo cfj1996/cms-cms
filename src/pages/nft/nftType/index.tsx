@@ -132,7 +132,7 @@ const Index = function () {
           return getNftTypeList(params as any);
         }}
         columnsState={{
-          persistenceKey: 'pro-table-singe-demos-1',
+          persistenceKey: 'pro-table-singe-demos-7',
           persistenceType: 'localStorage',
         }}
         rowKey="id"

@@ -10,6 +10,7 @@ import ProTable from '@ant-design/pro-table';
 import { useRef } from 'react';
 import type { IOrder } from '@/services/oredr';
 import {
+  DeliveryType,
   getCompletedHash,
   getOrderList,
   OrderStatusEnum,
@@ -19,13 +20,12 @@ import {
 import { Button, message, Modal } from 'antd';
 import Dialog from '@/components/Dialog';
 import { AddSet } from './set';
-import { NftType } from '@/services/nft/nfts';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
 
   function ship(row: IOrder) {
-    if (row.type === 'collectionNumber') {
+    if (row.delivery_type === 'in_kine') {
       Dialog.open({
         title: '实物发货',
         content: <AddSet />,
@@ -49,7 +49,7 @@ const Index = function () {
           }
         },
       });
-    } else {
+    } else if (row.delivery_type === 'online') {
       Modal.confirm({
         title: '数字产品发货',
         content: '是否确定发货',
@@ -144,10 +144,15 @@ const Index = function () {
       dataIndex: 'price',
     },
     {
-      dataIndex: 'type',
-      title: '作品类型',
+      title: '购买数量',
+      hideInSearch: true,
+      dataIndex: 'amount',
+    },
+    {
+      dataIndex: 'delivery_type',
+      title: '订单类型',
       valueType: 'select',
-      valueEnum: NftType,
+      valueEnum: DeliveryType,
       hideInSearch: true,
     },
     {
@@ -204,7 +209,7 @@ const Index = function () {
         columns={columns}
         request={(params: any) => getOrderList(params)}
         columnsState={{
-          persistenceKey: 'pro-table-singe-demos-5',
+          persistenceKey: 'pro-table-singe-demos-8',
           persistenceType: 'localStorage',
         }}
         rowKey="id"

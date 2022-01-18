@@ -34,7 +34,11 @@ interface IAccessListReq {
 }
 
 export const getAccountList = function (params: PageParams & IAccessListReq) {
-  return Server.get<PageResolve<IAccess>>('/accounts', params);
+  return Server.get<PageResolve<IAccess>>('/accounts', params).then((res) => ({
+    success: res.code === 'ok',
+    data: res.data.list,
+    total: res.data.total,
+  }));
 };
 /**
  * 获取单个用户信息

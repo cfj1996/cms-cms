@@ -3,8 +3,8 @@ import type { PageParams, PageResolve, Resolve } from '..';
 import Server from '..';
 
 export enum NftType {
-  collection = '数字藏品',
-  collectionNumber = '实物+数字藏品',
+  collection = '藏品',
+  collectionEntity = '藏品+实体',
 }
 
 /**

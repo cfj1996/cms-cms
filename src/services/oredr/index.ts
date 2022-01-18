@@ -7,6 +7,11 @@
 import type { PageParams, PageResolve, Resolve } from '..';
 import Server from '..';
 
+export enum DeliveryType {
+  online = '线上',
+  in_kine = '实物',
+}
+
 export interface IOrder {
   id: string;
   state: string;
@@ -18,7 +23,8 @@ export interface IOrder {
   deal_at: string;
   nft_number: string;
   price: string;
-  type: string;
+  delivery_type: string;
+  amount: number;
   seller_name: string;
   updated_at: string;
 }
