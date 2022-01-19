@@ -9,15 +9,8 @@ import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { useRef } from 'react';
 import type { IOrder } from '@/services/oredr';
-import {
-  DeliveryType,
-  getCompletedHash,
-  getOrderList,
-  OrderStatusEnum,
-  orderToCompleted,
-  orderToReceived,
-} from '@/services/oredr';
-import { Button, message, Modal } from 'antd';
+import { DeliveryType, getOrderList, OrderStatusEnum, orderToReceived } from '@/services/oredr';
+import { Button, message } from 'antd';
 import Dialog from '@/components/Dialog';
 import { AddSet } from './set';
 
@@ -25,73 +18,26 @@ const Index = function () {
   const actionRef = useRef<ActionType>();
 
   function ship(row: IOrder) {
-    if (row.delivery_type === 'in_kine') {
-      Dialog.open({
-        title: '实物发货',
-        content: <AddSet />,
-        async onOK(name, info) {
-          const values = info?.values;
-          const res = await orderToReceived({
-            track_number: values!.track_number,
-            order_id: row.id,
-            contact_name: row.contact_name,
-            contact_mobile: row.contact_mobile,
-            address: row.address,
-          }).catch((error) => {
-            message.error(error.message);
-            return Promise.reject();
-          });
-          if (res.code === 'ok') {
-            message.success('实物发货成功');
-            actionRef.current?.reload();
-          } else {
-            throw new Error(res.msg);
-          }
-        },
-      });
-    } else if (row.delivery_type === 'online') {
-      Modal.confirm({
-        title: '数字产品发货',
-        content: '是否确定发货',
-        async onOk() {
-          const res = await orderToReceived({
-            order_id: row.id,
-          }).catch((error) => {
-            message.error(error.message);
-            return Promise.reject();
-          });
-          if (res.code === 'ok') {
-            message.success('发货成功');
-            actionRef.current?.reload();
-          } else {
-            throw new Error(res.msg);
-          }
-        },
-      });
-    }
-  }
-
-  function finish(id: string) {
-    Modal.confirm({
-      title: '是否完成订单?',
-      async onOk() {
-        try {
-          const res = await getCompletedHash({ order_id: id });
-          if (res.data?.hash) {
-            const res2 = await orderToCompleted({ order_id: id, hash: res.data.hash });
-            if (res2.code === 'ok') {
-              message.success('订单已完成');
-              actionRef.current?.reload();
-            } else {
-              throw new Error(res.msg);
-            }
-          } else {
-            throw new Error(res.msg);
-          }
-          return true;
-        } catch (error: any) {
+    Dialog.open({
+      title: '实物发货',
+      content: <AddSet />,
+      async onOK(name, info) {
+        const values = info?.values;
+        const res = await orderToReceived({
+          track_number: values!.track_number,
+          order_id: row.id,
+          contact_name: row.contact_name,
+          contact_mobile: row.contact_mobile,
+          address: row.address,
+        }).catch((error) => {
           message.error(error.message);
           return Promise.reject();
+        });
+        if (res.code === 'ok') {
+          message.success('实物发货成功');
+          actionRef.current?.reload();
+        } else {
+          throw new Error(res.msg);
         }
       },
     });
@@ -132,6 +78,13 @@ const Index = function () {
       valueType: 'select',
       dataIndex: 'state',
       valueEnum: OrderStatusEnum,
+    },
+    {
+      title: '快递单号',
+      hideInSearch: true,
+      dataIndex: 'track_number',
+      ellipsis: true,
+      copyable: true,
     },
     {
       title: '作品id',
@@ -183,20 +136,11 @@ const Index = function () {
           <Button
             key={1}
             onClick={() => ship(row)}
-            disabled={row.state !== 'shipped'}
+            disabled={!(row.state === 'shipped' && row.delivery_type === 'in_kine')}
             style={{ padding: 0 }}
             type={'link'}
           >
             发货
-          </Button>,
-          <Button
-            key={2}
-            onClick={() => finish(row.id)}
-            disabled={row.state !== 'received'}
-            style={{ padding: 0 }}
-            type={'link'}
-          >
-            完成
           </Button>,
         ];
       },

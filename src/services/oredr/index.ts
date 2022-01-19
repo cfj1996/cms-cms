@@ -16,6 +16,7 @@ export interface IOrder {
   id: string;
   state: string;
   buyer_name: string;
+  track_number: string;
   address: string;
   contact_mobile: string;
   contact_name: string;

@@ -133,7 +133,7 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         disabled={disabled}
         required={true}
         fieldProps={{
-          disabledDate: (d) => !d || d.isBefore(moment()),
+          disabledDate: (d) => !d || d.isBefore(moment().startOf('day')),
         }}
         rules={[{ required: true }]}
       />

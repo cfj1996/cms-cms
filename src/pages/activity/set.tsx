@@ -50,7 +50,7 @@ const Set = forwardRef(function (props: { data?: Activity }, ref) {
         required={true}
         rules={[{ required: true }]}
         fieldProps={{
-          disabledDate: (d) => !d || d.isBefore(moment()),
+          disabledDate: (d) => !d || d.isBefore(moment().startOf('day')),
         }}
       />
       <ProFormText
