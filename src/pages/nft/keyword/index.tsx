@@ -31,7 +31,7 @@ const Index = function () {
       hideInSearch: true,
       width: 150,
       renderFormItem(item, props) {
-        return <InputNumber {...props} min={0} max={100} />;
+        return <InputNumber {...props} min={1} max={100} />;
       },
     },
     {
@@ -131,8 +131,8 @@ const Index = function () {
               if (row.weight >= 0 && row.weight <= 100) {
                 await updateKeyword(row.id, row.weight);
               } else {
-                message.error('请输入0~100的数字');
-                throw new Error('请输入0~100的数字');
+                message.error('请输入1~100的数字');
+                throw new Error('请输入1~100的数字');
               }
             }
           },
