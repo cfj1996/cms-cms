@@ -69,6 +69,8 @@
   {
     name: '审核管理',
     path: '/review',
+    // TODO 为了年前上的阉割功能 临时增加的权限
+    access: 'castrated',
     icon: 'FileDoneOutlined',
     routes: [
       {
@@ -107,6 +109,8 @@
   },
   {
     name: '前台配置',
+    // TODO 为了年前上的阉割功能 临时增加的权限
+    access: 'castrated',
     path: '/front',
     icon: 'AppstoreOutlined',
     routes: [

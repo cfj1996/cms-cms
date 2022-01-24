@@ -17,7 +17,7 @@ import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
 import { getNftTypeList } from '@/services/nft/nftType';
 import type { INft } from '@/services/nft/nfts';
-import { getNft, NftType } from '@/services/nft/nfts';
+import { getNft, nftTypeEnum } from '@/services/nft/nfts';
 import Upload from '@/components/upload';
 import moment from 'moment';
 
@@ -83,7 +83,7 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         placeholder="请选择nft类型"
         required={true}
         rules={[{ required: true }]}
-        valueEnum={NftType}
+        valueEnum={nftTypeEnum}
       />
       <ProFormText
         name="name"

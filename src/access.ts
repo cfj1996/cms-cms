@@ -8,9 +8,10 @@ import type { IUserInfo } from '@/services/user/login';
 
 export default function (initialState: { currentUser: IUserInfo }) {
   const { role } = initialState.currentUser || {};
-  console.log('access', initialState);
   return {
     admin: role === 'admin',
     staff: role === 'staff',
+    // TODO 为了年前上的阉割功能 临时增加的权限
+    castrated: false,
   };
 }

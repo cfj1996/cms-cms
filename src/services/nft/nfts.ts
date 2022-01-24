@@ -7,6 +7,17 @@ export enum NftType {
   collectionEntity = '藏品+实体',
 }
 
+// TODO 为了年前上的阉割功能 临时增加的权限
+export const nftTypeEnum = {
+  collection: {
+    text: '藏品',
+  },
+  collectionEntity: {
+    text: '藏品+实体',
+    disabled: true,
+  },
+};
+
 /**
  * @name: nfts
  * @user: cfj
