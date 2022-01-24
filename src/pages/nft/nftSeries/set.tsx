@@ -140,7 +140,13 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
       <Form.Item name="images" label={'图片'} required={true} rules={[{ required: true }]}>
         <Upload multiple={true} disabled={disabled} />
       </Form.Item>
-      <ProFormTextArea name="desc" label="NFT描述" placeholder="请输入描述" />
+      <ProFormTextArea
+        name="desc"
+        label="NFT描述"
+        placeholder="请输入描述"
+        required={true}
+        rules={[{ required: true }]}
+      />
     </Form>
   );
 });
