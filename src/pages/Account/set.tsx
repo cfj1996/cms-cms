@@ -4,11 +4,9 @@
  * @date: 2021/12/11 22:30
  */
 import React, { forwardRef, useImperativeHandle } from 'react';
-import { ProFormSelect, ProFormSwitch, ProFormText } from '@ant-design/pro-form';
+import { ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import { Form } from 'antd';
-import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
-import type { IAccess } from '@/services/Account';
 import { getAccount, roleEnum } from '@/services/Account';
 
 const formItemLayout = {
@@ -19,25 +17,12 @@ const formItemLayout = {
     xs: { span: 20 },
   },
 };
+
 interface IProps {
   id?: string;
 }
-const Set = forwardRef(function (props: IProps & PageService<IAccess>, ref) {
-  const initialValues = {
-    account: '',
-    password: '',
-    secondPassword: '',
-    role: '',
-    isDisable: false,
-  };
-  if (props.id && props.data) {
-    const { data } = props.data;
-    initialValues.account = data.account;
-    initialValues.password = '';
-    initialValues.secondPassword = '';
-    initialValues.role = data.role;
-    initialValues.isDisable = data.isDisable;
-  }
+
+const Set = forwardRef(function (props: IProps, ref) {
   const [form] = Form.useForm();
   useImperativeHandle(ref, () => ({
     submit() {
@@ -45,60 +30,64 @@ const Set = forwardRef(function (props: IProps & PageService<IAccess>, ref) {
     },
   }));
   return (
-    <Form form={form} initialValues={initialValues} {...formItemLayout}>
+    <Form form={form} {...formItemLayout}>
       <ProFormText
-        name="username"
-        label="用户名"
-        placeholder="请输入名称"
+        name="full_name"
+        label="员工名字"
+        placeholder="请输入名字"
         required={true}
         rules={[{ required: true }]}
       />
       <ProFormSelect
         name="role"
         label="角色"
-        placeholder="请选择角色"
         required={true}
-        options={roleEnum}
+        valueEnum={roleEnum}
+        fieldProps={{
+          placeholder: '请选择角色',
+        }}
         rules={[{ required: true }]}
       />
-      <ProFormSwitch
-        name="isDisable"
-        label="是否关闭"
+      <ProFormText
+        name={'email'}
+        label="注册邮箱"
+        placeholder={'请输入邮箱号'}
         required={true}
-        rules={[{ required: true }]}
+        rules={[
+          {
+            required: true,
+            type: 'email',
+            message: '请输入正确的邮箱号',
+          },
+        ]}
       />
-      {!props.id && (
-        <>
-          <ProFormText.Password
-            name="password"
-            label="密码"
-            placeholder="请输入密码"
-            required={true}
-            rules={[{ required: true }]}
-          />
-          <ProFormText.Password
-            name="secondPassword"
-            label="确定密码"
-            placeholder="请输入密码"
-            required={true}
-            rules={[
-              { required: true },
-              {
-                validator: (rule, value) => {
-                  const password = form.getFieldValue('password');
-                  console.log(password);
-                  console.log(value);
+      <ProFormText.Password
+        name="password"
+        label="密码"
+        placeholder="请输入密码"
+        required={true}
+        rules={[{ required: true, min: 6 }]}
+      />
+      <ProFormText.Password
+        label="确定密码"
+        placeholder="请输入密码"
+        required={true}
+        rules={[
+          { required: true },
+          {
+            validator: (rule, value) => {
+              const password = form.getFieldValue('password');
+              console.log(password);
+              console.log(value);
 
-                  if (password && password === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject('两次密码不一致');
-                },
-              },
-            ]}
-          />
-        </>
-      )}
+              if (password && password === value) {
+                return Promise.resolve();
+              }
+              return Promise.reject('两次密码不一致');
+            },
+          },
+        ]}
+      />
     </Form>
   );
 });

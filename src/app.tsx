@@ -7,6 +7,7 @@ import type { IUserInfo } from '@/services/user/login';
 import { userGetInfo } from '@/services/user/login';
 import { getToken } from '@/utils';
 import 'moment/locale/zh-cn';
+import packageConfig from '../package.json';
 
 const loginPath = '/user/login';
 
@@ -53,9 +54,10 @@ export async function getInitialState(): Promise<{
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
     rightContentRender: () => <RightContent />,
+    name: packageConfig.description,
     disableContentMargin: false,
     waterMarkProps: {
-      content: '鸭嘴兽',
+      content: packageConfig.description,
     },
     onPageChange: () => {
       const { location } = history;

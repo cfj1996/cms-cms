@@ -19,10 +19,29 @@
     ],
   },
   {
-    name: '账户管理',
-    path: '/account',
+    name: '主页',
+    path: '/home',
+    icon: 'HomeOutlined',
+    component: './home',
+  },
+  {
+    name: '系统管理',
+    path: '/system',
     icon: 'UsergroupAddOutlined',
-    component: './Account',
+    access: 'admin',
+    routes: [
+      {
+        name: '账户管理',
+        path: 'account',
+        component: './Account',
+      },
+      {
+        name: '操作日志',
+        path: 'logs',
+        component: './logs',
+      },
+      { exact: true, redirect: '/system/account' },
+    ],
   },
   {
     path: '/nft',
@@ -106,7 +125,7 @@
   },
   {
     path: '/',
-    redirect: '/account',
+    redirect: '/home',
   },
   {
     component: './404',

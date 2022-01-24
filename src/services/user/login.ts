@@ -8,6 +8,8 @@ import type { Resolve } from '..';
 import Server from '..';
 import { removeToken } from '@/utils';
 import request from 'umi-request';
+import type { roleEnum } from '@/services/Account';
+
 export interface ILoginReq {
   email: string;
   password: string;
@@ -53,7 +55,7 @@ export function logout() {
 export interface IUserInfo {
   id: string;
   full_name: string;
-  role: string;
+  role: keyof typeof roleEnum;
   is_disable: boolean;
 }
 

@@ -6,90 +6,93 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type { IAccess, IAddAccountReq, IUpdateAccountReq } from '@/services/Account';
-import {
-  addAccount,
-  deleteAccount,
-  getAccountList,
-  roleEnum,
-  updateAccount,
-} from '@/services/Account';
+import type { Access, IAddAccess, IRePassword } from '@/services/Account';
+import { addAccount, disableAccount, getAccountList, rePass, roleEnum } from '@/services/Account';
 import { Badge, Button, message, Popconfirm } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { AddSet, EditSet } from './set';
+import { AddSet } from './set';
 import Dialog from '@/components/Dialog';
 import { useRef } from 'react';
-import Detail from './detail';
+import RePassword from '@/pages/Account/rePassword';
+import { useModel } from 'umi';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
+  const { initialState } = useModel('@@initialState');
 
   function create() {
     Dialog.open({
       title: '新增用户',
       content: <AddSet />,
       async onOK(name, info) {
-        const values = info!.values as IAddAccountReq;
-        await addAccount({
-          account: values.account,
-          role: values.role,
-          password: values.password,
-          isDisable: values.isDisable,
-        });
-        message.success('添加成功');
-        actionRef.current?.reload();
+        try {
+          const values = info!.values as IAddAccess;
+          const res = await addAccount(values).catch((err) => {
+            console.log('err', err);
+            throw new Error(err.message);
+          });
+          if (res.code === 'ok') {
+            message.success('添加成功');
+            actionRef.current?.reload();
+          } else {
+            throw new Error(res.msg);
+          }
+        } catch (error: any) {
+          message.error(error.message);
+          throw error;
+        }
       },
     });
   }
 
-  function update(id: string) {
+  function rePassword(row: Access) {
     Dialog.open({
-      title: '修改用户',
-      content: <EditSet id={id} />,
+      title: `重置${row.full_name}的密码`,
+      content: <RePassword id={row.id} />,
       async onOK(name, info) {
-        const values = info!.values as IUpdateAccountReq;
-        await updateAccount(id, {
-          account: values.account,
-          role: values.role,
-          isDisable: values.isDisable,
-        });
-        message.success('修改成功');
-        actionRef.current?.reload();
+        try {
+          const values = info!.values as IRePassword;
+          const res = await rePass(values).catch((err) => {
+            throw new Error(err.message);
+          });
+          if (res.code === 'ok') {
+            message.success('重置成功');
+            actionRef.current?.reload();
+          } else {
+            throw new Error(res.msg);
+          }
+        } catch (error: any) {
+          message.error(error.message);
+          throw error;
+        }
       },
     });
   }
 
-  function show(id: string) {
-    Dialog.open({
-      type: 'view',
-      title: '用户信息',
-      content: <Detail id={id} />,
-      footer: null,
-    });
-  }
-
-  const columns: ProColumns<IAccess>[] = [
+  const columns: ProColumns<Access>[] = [
     {
-      dataIndex: 'account',
+      dataIndex: 'full_name',
       title: '用户名',
-      key: 'account',
+      key: 'keywords',
+    },
+    {
+      dataIndex: 'email',
+      title: 'email',
+      hideInSearch: true,
     },
     {
       dataIndex: 'role',
       title: '角色',
-      key: 'role',
       valueType: 'select',
-      fieldProps: {
-        options: roleEnum,
-      },
+      valueEnum: roleEnum,
     },
     {
-      dataIndex: 'isDisable',
+      dataIndex: 'is_disable',
       title: '是否禁用',
       valueType: 'radio',
       initialValue: undefined,
       render(text, row) {
-        return <Badge text={text} status={row.isDisable ? 'error' : 'success'} />;
+        return <Badge text={text} status={row.is_disable ? 'error' : 'success'} />;
       },
       fieldProps: {
         options: [
@@ -99,25 +102,16 @@ const Index = function () {
       },
     },
     {
-      dataIndex: 'createAt',
+      dataIndex: 'create_at',
       title: '创建时间',
       valueType: 'dateTime',
-      sorter: true,
       hideInSearch: true,
     },
     {
-      title: '创建时间',
-      dataIndex: 'createAt',
-      valueType: 'dateRange',
-      hideInTable: true,
-      search: {
-        transform: (value) => {
-          return {
-            startTime: value[0],
-            endTime: value[1],
-          };
-        },
-      },
+      dataIndex: 'update_at',
+      title: '更新时间',
+      valueType: 'dateTime',
+      hideInSearch: true,
     },
     {
       title: '操作',
@@ -128,26 +122,39 @@ const Index = function () {
           <a
             key="editable"
             onClick={() => {
-              update(record.id);
+              rePassword(record);
             }}
           >
-            编辑
-          </a>,
-          <a target="_blank" onClick={() => show(record.id)} rel="noopener noreferrer" key="view">
-            查看
+            重置密码
           </a>,
           <Popconfirm
             key={'delete'}
-            title="您确定要删除此条记录吗？"
+            title={`您确定要${record.is_disable ? '启用' : '禁用'}${record.full_name}用户吗？`}
             onConfirm={async () => {
-              await deleteAccount(record.id);
-              message.success('删除成功');
-              actionRef.current?.reload();
+              try {
+                const res = await disableAccount(record.id).catch((err) => {
+                  throw new Error(err.message);
+                });
+                if (res.code === 'ok') {
+                  message.success(`${record.is_disable ? '启用' : '禁用'}成功`);
+                  actionRef.current?.reload();
+                } else {
+                  throw new Error(res.msg);
+                }
+              } catch (error: any) {
+                message.error(error.message);
+              }
             }}
             okText="确定"
             cancelText="取消"
           >
-            <a href="#">删除</a>
+            <Button
+              disabled={initialState?.currentUser?.id === record.id}
+              type="link"
+              key={'disable'}
+            >
+              {record.is_disable ? '启用' : '禁用'}
+            </Button>
           </Popconfirm>,
         ];
       },
@@ -155,7 +162,7 @@ const Index = function () {
   ];
   return (
     <PageContainer>
-      <ProTable<IAccess>
+      <ProTable<Access>
         actionRef={actionRef}
         columns={columns}
         request={async (params = {}) => {

@@ -1,4 +1,5 @@
 import { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import packageConfig from '../package.json';
 
 const Settings: LayoutSettings & {
   pwa?: boolean;
@@ -12,9 +13,9 @@ const Settings: LayoutSettings & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Ant Design Pro',
+  title: packageConfig.description,
   pwa: false,
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  logo: '/logo.png',
   iconfontUrl: '',
 };
 

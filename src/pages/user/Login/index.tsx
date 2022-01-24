@@ -5,9 +5,9 @@ import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
 import { history, useModel } from 'umi';
 import type { ILoginReq } from '@/services/user/login';
 import { login } from '@/services/user/login';
-
 import styles from './index.less';
 import { setToken } from '@/utils';
+import packageConfig from '../../../../package.json';
 
 const LoginMessage: React.FC<{
   content: string;
@@ -61,9 +61,9 @@ const Login: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <LoginForm
-          logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
-          subTitle={'Ant Design'}
+          logo={<img alt="logo" src="/logo.png" />}
+          title={packageConfig.description}
+          subTitle={' '}
           initialValues={{
             autoLogin: true,
             email: 'setup@tiancai.pro',

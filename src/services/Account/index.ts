@@ -6,35 +6,41 @@
 import type { PageParams, PageResolve, Resolve } from '@/services';
 import Server from '@/services';
 
-export enum Role {
-  admin = '管理员',
-}
-
-export const roleEnum = Object.keys(Role).map((key) => ({
-  value: key,
-  label: Role[key],
-}));
-
-export interface IAccess {
-  id: string;
-  account: string;
-  role: string;
-  isDisable: boolean;
-  createAt: string;
-  updateAt: string;
-}
+export const roleEnum = {
+  admin: {
+    text: '管理员',
+  },
+  staff: {
+    text: '职员',
+  },
+};
 
 /**
  * 查询用户列表
  */
+
 interface IAccessListReq {
-  username: string;
-  startTime: number;
-  endTime: number;
+  role: string;
+  keywords: string;
+  is_disable: boolean;
+}
+
+export interface IAddAccess {
+  full_name: string;
+  email: string;
+  password: string;
+  role: string;
+}
+
+export interface Access extends Omit<IAddAccess, 'password'> {
+  id: string;
+  is_disable: boolean;
+  create_at: string;
+  update_at: string;
 }
 
 export const getAccountList = function (params: PageParams & IAccessListReq) {
-  return Server.get<PageResolve<IAccess>>('/accounts', params).then((res) => ({
+  return Server.get<PageResolve<Access>>('/staff/search', params).then((res) => ({
     success: res.code === 'ok',
     data: res.data.list,
     total: res.data.total,
@@ -45,39 +51,25 @@ export const getAccountList = function (params: PageParams & IAccessListReq) {
  * @param id
  */
 export const getAccount = function (id: string) {
-  return Server.get<Resolve<IAccess>>('/accounts/' + id);
+  return Server.get<Resolve<Access>>('/accounts/' + id);
 };
 
-/**
- * 新增用户
- * @param data
- */
-export interface IAddAccountReq {
-  account: string;
+export const addAccount = function (data: IAddAccess) {
+  return Server.post<Resolve<boolean>>('/staff/add', data);
+};
+
+export interface IRePassword {
+  staff_id: string;
   password: string;
-  role: string;
-  isDisable: boolean;
 }
 
-export const addAccount = function (data: IAddAccountReq) {
-  return Server.post<Resolve<boolean>>('/accounts', data);
+export const rePass = function (data: IRePassword) {
+  return Server.post<Resolve<boolean>>('/staff/pwd/reset', data);
 };
 
 /**
- * 修改用户
+ * 禁用用户
  */
-export interface IUpdateAccountReq {
-  account: string;
-  role: string;
-  isDisable: boolean;
-}
-
-export const updateAccount = function (id: string, data: IUpdateAccountReq) {
-  return Server.put(`/accounts/${id}`, data);
-};
-/**
- * 删除用户
- */
-export const deleteAccount = function (id: string) {
-  return Server.delete(`/accounts/${id}`);
+export const disableAccount = function (id: string) {
+  return Server.post<Resolve<boolean>>(`/staff/disable/update`, { staff_id: id });
 };
