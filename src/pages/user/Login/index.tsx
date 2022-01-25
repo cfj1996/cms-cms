@@ -52,8 +52,8 @@ const Login: React.FC = () => {
         return;
       }
       setLoginError(data.message!);
-    } catch (error) {
-      message.error('登录失败，请重试！');
+    } catch (error: any) {
+      message.error(error.data?.msg || '登录失败，请重试！');
     }
   };
 
@@ -66,8 +66,8 @@ const Login: React.FC = () => {
           subTitle={' '}
           initialValues={{
             autoLogin: true,
-            email: 'setup@tiancai.pro',
-            password: 'tiancai001',
+            email: '',
+            password: '',
           }}
           onFinish={async (values: ILoginReq) => {
             await handleSubmit({
@@ -76,14 +76,14 @@ const Login: React.FC = () => {
             });
           }}
         >
-          {loginError && <LoginMessage content={'账户或密码错误(admin/ant.design)'} />}
+          {loginError && <LoginMessage content={'账户或密码错误'} />}
           <ProFormText
             name="email"
             fieldProps={{
               size: 'large',
               prefix: <UserOutlined className={styles.prefixIcon} />,
             }}
-            placeholder={'用户名: admin'}
+            placeholder={'用户名'}
             rules={[
               {
                 required: true,
@@ -97,7 +97,7 @@ const Login: React.FC = () => {
               size: 'large',
               prefix: <LockOutlined className={styles.prefixIcon} />,
             }}
-            placeholder={'密码: 123456'}
+            placeholder={'密码'}
             rules={[
               {
                 required: true,
