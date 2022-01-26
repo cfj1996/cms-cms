@@ -180,12 +180,14 @@ export const getContractAddress = function () {
  */
 export interface IPlatform {
   category_id: string;
-  token_id?: number;
-  total?: number;
+  total: number;
 }
 
 export const platform = function (data: IPlatform) {
-  return Server.post<Resolve<{ transaction_hash: string }>>('/nft/mint/platform', data);
+  return Server.post<Resolve<{ transaction_hash: string; token_id: number }>>(
+    '/nft/mint/platform',
+    data,
+  );
 };
 
 export const getSkuList = function (params: PageParams & { nft_id: string; attribute?: string }) {

@@ -100,15 +100,6 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         required={true}
         rules={[{ required: true }]}
       />
-      <ProFormText
-        disabled={disabled}
-        name="token_id"
-        label="nft id"
-        placeholder="请输 id，每个系列下的 id 请保持唯一。"
-        required={true}
-        normalize={(value) => (isNaN(value) ? value : Number(value))}
-        rules={[{ required: true }, { type: 'number' }]}
-      />
       <ProFormDigit
         disabled={disabled}
         name="total"

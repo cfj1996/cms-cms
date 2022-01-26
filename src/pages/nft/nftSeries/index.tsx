@@ -38,16 +38,16 @@ const Index = function () {
           const { total, price, time, ...other } = values;
           const { data, code, msg } = await platform({
             category_id: values.category_id,
-            token_id: values.token_id,
-            total: total,
+            total: total!,
           });
           if (code === 'ok') {
-            if (data.transaction_hash) {
+            if (data.transaction_hash && data.token_id) {
               await addNft(
                 Object.assign(
                   {
                     transaction_hash: data.transaction_hash,
                     price: String(price),
+                    token_id: data.token_id,
                     start_time: time?.[0].toDate(),
                     end_time: time?.[1].toDate(),
                   },
@@ -148,10 +148,12 @@ const Index = function () {
     },
     {
       dataIndex: 'total',
-      title: '剩余数量',
-      renderText(text: any, record: { total: number; sale: number }) {
-        return `${record.total - record.sale}=${record.total}-${record.sale}`;
-      },
+      title: '总数',
+      hideInSearch: true,
+    },
+    {
+      dataIndex: 'sale',
+      title: '已售出',
       hideInSearch: true,
     },
     {
