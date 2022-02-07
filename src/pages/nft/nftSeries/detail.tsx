@@ -59,7 +59,6 @@ const Detail = function (props: IProps) {
         </div>
       ),
     },
-    { label: '热度：', value: `${data.heat}%` },
     { label: '状态：', value: NftState[data.state] },
     { label: '价格：', value: data.price },
     { label: '总数：', value: data.total },

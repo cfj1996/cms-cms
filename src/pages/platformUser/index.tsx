@@ -15,6 +15,11 @@ const Index = function () {
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<IPlat>[] = [
     {
+      title: '图像',
+      dataIndex: 'avatar',
+      valueType: 'avatar',
+    },
+    {
       title: '名称',
       dataIndex: 'nick_name',
       key: 'keywords',
@@ -25,8 +30,8 @@ const Index = function () {
       hideInSearch: true,
     },
     {
-      title: 'open id',
-      dataIndex: 'open_id',
+      title: '手机号',
+      dataIndex: 'mobile',
       hideInSearch: true,
     },
     {

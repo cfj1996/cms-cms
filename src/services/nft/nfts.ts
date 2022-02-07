@@ -127,13 +127,23 @@ export interface IUpdateNft {
   name: string;
   price: string;
   desc: string;
+  start_time: string;
+  end_time: string;
 }
 
 /**
  * 修改nft基本信息
  * @param data
  */
-export const updateNft = function (data: IUpdateNft) {
+export const updateNft = function (data: {
+  title: string;
+  nft_id: string;
+  price: string;
+  name: string;
+  start_time: Date | undefined;
+  end_time: Date | undefined;
+  desc: string;
+}) {
   return Server.post<Resolve<boolean>>(`/nft/edit`, data);
 };
 /**

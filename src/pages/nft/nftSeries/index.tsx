@@ -78,13 +78,17 @@ const Index = function () {
     Dialog.open({
       title: '编辑nft',
       content: <EditSet id={id} />,
-      async onOK(name, info) {
+      async onOK(_, info) {
         const values = info?.values as IAddNft;
+        const { title, name, desc, price, time } = values;
         const res = await updateNft({
           nft_id: id,
-          name: values.name,
-          desc: values.desc,
-          price: String(values.price!),
+          title: title,
+          name: name,
+          desc: desc,
+          price: String(price),
+          start_time: time?.[0].toDate(),
+          end_time: time?.[1].toDate(),
         }).catch((err) => {
           message.error('修改失败,稍后重试。');
           throw err;
@@ -247,11 +251,9 @@ const Index = function () {
               {
                 key: '3',
                 name: '上架',
-                disabled: !(
-                  record.state === 'draf' ||
-                  (record.state === 'offsale' && record.sale === 0)
-                ),
+                disabled: !(record.state === 'draf' || record.state === 'offsale'),
               },
+
               { key: '4', name: '下架', disabled: record.state !== 'onsale' },
             ]}
           />,

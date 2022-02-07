@@ -10,6 +10,8 @@ export interface IPlat {
   id: string;
   nick_name: string;
   open_id: string;
+  mobile: string;
+  avatar: string;
   session_key: string;
   created_at: string;
   updated_at: string;
@@ -18,6 +20,7 @@ export interface IPlat {
 export interface IPlatReq {
   keywords: string;
 }
+
 export const getPlatLIst = function (params: PageParams & IPlatReq) {
   return Server.get<PageResolve<IPlat>>('/user/search', params).then((res) => ({
     success: res.code === 'ok',

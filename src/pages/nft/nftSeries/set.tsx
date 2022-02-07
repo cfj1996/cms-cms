@@ -95,7 +95,6 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
       <ProFormText
         name="title"
         label="nft标题"
-        disabled={disabled}
         placeholder="请输入标题"
         required={true}
         rules={[{ required: true }]}
@@ -121,7 +120,6 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
       <ProFormDateTimeRangePicker
         name="time"
         label="售卖起止时间"
-        disabled={disabled}
         required={true}
         fieldProps={{
           disabledDate: (d) => !d || d.isBefore(moment().startOf('day')),
