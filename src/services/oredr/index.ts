@@ -77,3 +77,10 @@ interface IOrderToCompleted {
 export const orderToCompleted = function (data: IOrderToCompleted) {
   return Server.post<Resolve<any>>('/orders/completed', data);
 };
+
+export const onlineGetHash = function (id: string) {
+  return Server.post<Resolve<{ hash: string }>>('/platfrom/shipment', { order_id: id });
+};
+export const onlineSend = function (data: { order_id: string; hash: string }) {
+  return Server.post<Resolve>('/orders/completed', data);
+};

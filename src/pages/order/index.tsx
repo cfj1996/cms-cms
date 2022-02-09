@@ -9,8 +9,15 @@ import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { useRef } from 'react';
 import type { IOrder } from '@/services/oredr';
-import { DeliveryType, getOrderList, OrderStatusEnum, orderToReceived } from '@/services/oredr';
-import { Button, message } from 'antd';
+import {
+  DeliveryType,
+  getOrderList,
+  onlineGetHash,
+  onlineSend,
+  OrderStatusEnum,
+  orderToReceived,
+} from '@/services/oredr';
+import { Button, message, Modal } from 'antd';
 import Dialog from '@/components/Dialog';
 import { AddSet } from './set';
 
@@ -18,29 +25,57 @@ const Index = function () {
   const actionRef = useRef<ActionType>();
 
   function ship(row: IOrder) {
-    Dialog.open({
-      title: '实物发货',
-      content: <AddSet />,
-      async onOK(name, info) {
-        const values = info?.values;
-        const res = await orderToReceived({
-          track_number: values!.track_number,
-          order_id: row.id,
-          contact_name: row.contact_name,
-          contact_mobile: row.contact_mobile,
-          address: row.address,
-        }).catch((error) => {
-          message.error(error.message);
-          return Promise.reject();
-        });
-        if (res.code === 'ok') {
-          message.success('实物发货成功');
-          actionRef.current?.reload();
-        } else {
-          throw new Error(res.msg);
-        }
-      },
-    });
+    if (row.delivery_type === 'online') {
+      Modal.confirm({
+        title: '发货',
+        content: '确认发货吗？',
+        async onOk() {
+          try {
+            const data = await onlineGetHash(row.id);
+            if (data.code === 'ok' && data.data.hash) {
+              const res = await onlineSend({ order_id: row.id, hash: data.data.hash });
+              if (res.code === 'ok') {
+                message.success('发货成功');
+                actionRef.current?.reload();
+              } else {
+                throw new Error(res.msg);
+              }
+            } else {
+              throw new Error(data.msg || '获取hash错误请联系管理员');
+            }
+          } catch (error: any) {
+            message.error(error.message);
+            throw error;
+          }
+        },
+      });
+    } else {
+      Dialog.open({
+        title: '发货',
+        content: <AddSet />,
+        async onOK(name, info) {
+          try {
+            const values = info?.values;
+            const res = await orderToReceived({
+              track_number: values!.track_number,
+              order_id: row.id,
+              contact_name: row.contact_name,
+              contact_mobile: row.contact_mobile,
+              address: row.address,
+            });
+            if (res.code === 'ok') {
+              message.success('实物发货成功');
+              actionRef.current?.reload();
+            } else {
+              throw new Error(res.msg);
+            }
+          } catch (error: any) {
+            message.error(error.message);
+            throw error;
+          }
+        },
+      });
+    }
   }
 
   const columns: ProColumns<IOrder>[] = [
@@ -136,7 +171,7 @@ const Index = function () {
           <Button
             key={1}
             onClick={() => ship(row)}
-            disabled={!(row.state === 'shipped' && row.delivery_type === 'in_kine')}
+            disabled={!(row.state === 'shipped')}
             style={{ padding: 0 }}
             type={'link'}
           >

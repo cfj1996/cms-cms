@@ -9,6 +9,7 @@ import ProTable, { TableDropdown } from '@ant-design/pro-table';
 import type { IAddNft, INft, Purchase } from '@/services/nft/nfts';
 import {
   addNft,
+  delNft,
   editNftPurchase,
   getNftList,
   nftStateEnum,
@@ -268,22 +269,54 @@ const Index = function () {
                 Modal.confirm({
                   title: '确定上架吗?',
                   async onOk() {
-                    await updateNftState(record.id, 'onsale').catch((error) => {
-                      message.error('操作失败,稍后重试。');
+                    try {
+                      const res = await updateNftState(record.id, 'onsale');
+                      if (res.code === 'ok') {
+                        message.success('操作成功');
+                        actionRef.current?.reload();
+                      } else {
+                        throw new Error(res.msg);
+                      }
+                    } catch (error: any) {
+                      message.error(error.message || '操作失败,稍后重试。');
                       throw error;
-                    });
-                    actionRef.current?.reload();
+                    }
                   },
                 });
               } else if (key === '4') {
                 Modal.confirm({
                   title: '确定下架吗?',
                   async onOk() {
-                    await updateNftState(record.id, 'offsale').catch((error) => {
-                      message.error('操作失败,稍后重试。');
+                    try {
+                      const res = await updateNftState(record.id, 'offsale');
+                      if (res.code === 'ok') {
+                        message.success('操作成功');
+                        actionRef.current?.reload();
+                      } else {
+                        throw new Error(res.msg);
+                      }
+                    } catch (error: any) {
+                      message.error(error.message || '操作失败,稍后重试。');
                       throw error;
-                    });
-                    actionRef.current?.reload();
+                    }
+                  },
+                });
+              } else if (key === '6') {
+                Modal.confirm({
+                  title: '确定要删除吗?',
+                  async onOk() {
+                    try {
+                      const res = await delNft(record.id);
+                      if (res.code === 'ok') {
+                        message.success('删除成功');
+                        actionRef.current?.reload();
+                      } else {
+                        throw new Error(res.msg);
+                      }
+                    } catch (error: any) {
+                      message.error(error.message || '操作失败,稍后重试。');
+                      throw error;
+                    }
                   },
                 });
               }
@@ -296,8 +329,8 @@ const Index = function () {
                 name: '上架',
                 disabled: !(record.state === 'draf' || record.state === 'offsale'),
               },
-
               { key: '4', name: '下架', disabled: record.state !== 'onsale' },
+              { key: '6', name: '删除', disabled: record.state !== 'draf' },
             ]}
           />,
         ];

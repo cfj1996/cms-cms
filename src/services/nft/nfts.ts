@@ -161,7 +161,7 @@ export const updateNft = function (data: {
  * @param state
  */
 export const updateNftState = function (id: string, state: string) {
-  return Server.post(`/nft/state/update`, { nft_id: id, state: state });
+  return Server.post<Resolve>(`/nft/state/update`, { nft_id: id, state: state });
 };
 /**
  * 修改nft 热度
@@ -236,4 +236,7 @@ export const editNftPurchase = function (data: Purchase & { nft_id: string }) {
 
 export const skuNftPurchase = function (data: Purchase & { sku_id: string }) {
   return Server.post<Resolve<boolean>>('/sku/purchase', data);
+};
+export const delNft = function (id: string) {
+  return Server.post<Resolve>('/nft/delete', { nft_id: id });
 };
