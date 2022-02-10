@@ -15,6 +15,7 @@ webpack-build-job:
   stage: webpack
   only:
     - prod
+    - test
   script:
     - yarn install
     - yarn run build
