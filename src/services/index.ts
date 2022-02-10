@@ -35,9 +35,9 @@ export interface Resolve<T = any> {
 export type PageResolve<T> = Resolve<{ list: T[]; total: number }>;
 
 export type IServer<S = any, T = any> = (page?: S) => Bluebird<Resolve<T>>;
-
+console.log('HTTP_URL', process.env.HTTP_URL);
 const Request = extend({
-  prefix: 'https://p4010174-u848-6abfd459.app.run.fish/api/v1',
+  prefix: process.env.HTTP_URL + '/api/v1',
   timeout: 120 * 1000,
 });
 Request.interceptors.response.use(async (response) => {
