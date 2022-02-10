@@ -12,7 +12,7 @@ yarn install
 
 echo "build app"
 
-yarn build
+yarn build:test
 echo "打包完成"
 
 
