@@ -19,6 +19,26 @@ webpack-build-job:
     - yarn install
     - yarn run build
 
+deploy-job-test:
+  image: alpine:3.8
+  stage: deploy
+  only:
+    - test
+  before_script:
+    - apk add --update -t deps curl zip
+  script:
+    - mv $BUILD_DIR build
+    - zip -q -r build.zip ./build
+    - >-
+      curl -k --location --request POST 'https://ft-project-deployer-prod.run.fish/deploy'
+      --header 'token:'$CICD_TOKEN
+      --form 'project=@"'$CI_PROJECT_DIR'/build.zip"'
+      --form 'version="'$CI_COMMIT_SHORT_SHA'"'
+      --form 'envs="x=x"'
+  environment:
+    name: test
+
+
 deploy-job-prod:
   image: alpine:3.8
   stage: deploy
