@@ -5,7 +5,7 @@
   "description": "鸭嘴兽后台管理系统",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
-    "build": "cross-env HTML=none umi build",
+    "build": "umi build",
     "deploy": "npm run build && npm run gh-pages",
     "dev": "npm run start:dev",
     "gh-pages": "gh-pages -d dist",
