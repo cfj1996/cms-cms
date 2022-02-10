@@ -122,7 +122,7 @@ const Index = function () {
       copyable: true,
     },
     {
-      title: '作品id',
+      title: '售出ID',
       hideInSearch: true,
       dataIndex: 'nft_number',
     },
