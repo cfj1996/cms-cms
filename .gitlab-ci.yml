@@ -1,7 +1,9 @@
 stages:
+  - webpack
   - deploy
 
 variables:
+  BUILD_DIR: dist
   CI: "false"
 
 deploy-job-test:
@@ -10,13 +12,14 @@ deploy-job-test:
   only:
     - test
   before_script:
-    - apk add --update -t deps curl
+    - apk add --update -t deps curl zip
   script:
-    - ls -lht
+    - mv $BUILD_DIR build
+    - zip -q -r build.zip ./build
     - >-
       curl -k --location --request POST 'https://ft-project-deployer-prod.run.fish/deploy'
       --header 'token:'$CICD_TOKEN
-      --form 'project=@"'$CI_PROJECT_DIR'/dist.zip"'
+      --form 'project=@"'$CI_PROJECT_DIR'/build.zip"'
       --form 'version="'$CI_COMMIT_SHORT_SHA'"'
       --form 'envs="x=x"'
   environment:
