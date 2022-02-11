@@ -27,9 +27,12 @@ import { useRef } from 'react';
 import GlobalLoad from '@/components/GlobalLoad';
 import Show from '@/pages/nft/nftSeries/show';
 import PurchaseSet from '@/pages/nft/nftSeries/purchaseSet';
+import { useAccess } from 'umi';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
+  const access = useAccess();
+  console.log('access', access);
 
   function create() {
     Dialog.open({
@@ -230,6 +233,19 @@ const Index = function () {
       align: 'right',
       valueType: 'option',
       render(text, record) {
+        const menus = [
+          { key: '2', name: '编辑', disabled: record.state === 'onsale' },
+          { key: '5', name: '编辑限购' },
+          {
+            key: '3',
+            name: '上架',
+            disabled: !(record.state === 'draf' || record.state === 'offsale'),
+          },
+          { key: '4', name: '下架', disabled: record.state !== 'onsale' },
+        ];
+        if (access?.admin) {
+          menus.push({ key: '6', name: '删除', disabled: record.state !== 'draf' });
+        }
         return [
           <a key={'onsale'} onClick={() => show(record.id, record.total)}>
             查看
@@ -321,17 +337,7 @@ const Index = function () {
                 });
               }
             }}
-            menus={[
-              { key: '2', name: '编辑', disabled: record.state === 'onsale' },
-              { key: '5', name: '编辑限购' },
-              {
-                key: '3',
-                name: '上架',
-                disabled: !(record.state === 'draf' || record.state === 'offsale'),
-              },
-              { key: '4', name: '下架', disabled: record.state !== 'onsale' },
-              { key: '6', name: '删除', disabled: record.state !== 'draf' },
-            ]}
+            menus={menus}
           />,
         ];
       },

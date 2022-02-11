@@ -14,6 +14,7 @@ export enum DeliveryType {
 
 export interface IOrder {
   id: string;
+  title: string;
   state: string;
   buyer_name: string;
   track_number: string;
