@@ -11,7 +11,7 @@ cache:
     - $BUILD_DIR
 
 webpack-build-job:
-  image: node:14.10.1
+  image: node:16
   stage: webpack
   only:
     - prod
