@@ -1,25 +1,8 @@
 stages:
-  - webpack
   - deploy
 
 variables:
-  BUILD_DIR: dist
   CI: "false"
-
-cache:
-  paths:
-    - $BUILD_DIR
-
-webpack-build-job:
-  image: node:16
-  stage: webpack
-  only:
-    - prod
-    - test
-  script:
-    - node -v
-    - yarn
-    - yarn build
 
 deploy-job-test:
   image: alpine:3.8
@@ -27,14 +10,13 @@ deploy-job-test:
   only:
     - test
   before_script:
-    - apk add --update -t deps curl zip
+    - apk add --update -t deps curl
   script:
-    - mv $BUILD_DIR build
-    - zip -q -r build.zip ./build
+    - ls -lht
     - >-
       curl -k --location --request POST 'https://ft-project-deployer-prod.run.fish/deploy'
       --header 'token:'$CICD_TOKEN
-      --form 'project=@"'$CI_PROJECT_DIR'/build.zip"'
+      --form 'project=@"'$CI_PROJECT_DIR'/dist.zip"'
       --form 'version="'$CI_COMMIT_SHORT_SHA'"'
       --form 'envs="x=x"'
   environment:
