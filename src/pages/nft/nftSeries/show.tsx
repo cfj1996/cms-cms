@@ -23,7 +23,7 @@ const Show = function (props: IProps & PageService<INft>) {
   const { data } = props.data!;
   return (
     <Tabs defaultActiveKey="1">
-      <TabPane tab="nft 详情" key="1">
+      <TabPane tab="藏品详情" key="1">
         <Detail data={data} />
       </TabPane>
       <TabPane tab="SKU" key="2">

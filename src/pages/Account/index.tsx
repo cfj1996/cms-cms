@@ -180,7 +180,7 @@ const Index = function () {
           type: 'multiple',
         }}
         dateFormatter="number"
-        headerTitle="用户表格"
+        headerTitle="用户列表"
         toolBarRender={() => [
           <Button key="button" icon={<PlusOutlined />} type="primary" onClick={() => create()}>
             新建

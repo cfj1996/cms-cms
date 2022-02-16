@@ -45,16 +45,16 @@
   },
   {
     path: '/nft',
-    name: 'NFT管理',
+    name: '藏品管理',
     icon: 'PayCircleOutlined',
     routes: [
       {
-        name: 'NFT系列',
+        name: '藏品系列',
         path: 'nftType',
         component: './nft/nftType',
       },
       {
-        name: 'NFT作品',
+        name: '藏品库',
         path: 'nftSeries',
         component: './nft/nftSeries',
       },

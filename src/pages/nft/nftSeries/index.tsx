@@ -32,12 +32,12 @@ import { useAccess } from 'umi';
 const Index = function () {
   const actionRef = useRef<ActionType>();
   const access = useAccess();
-  console.log('access', access);
 
   function create() {
     Dialog.open({
-      title: '新增nft',
+      title: '新增藏品',
       content: <AddSet />,
+      width: 720,
       async onOK(name, info) {
         const id = GlobalLoad.open({ tip: '铸币中，请稍后....' });
         try {
@@ -83,7 +83,8 @@ const Index = function () {
 
   function edit(id: string) {
     Dialog.open({
-      title: '编辑nft',
+      title: '编辑藏品',
+      width: 720,
       content: <EditSet id={id} />,
       async onOK(_, info) {
         const values = info?.values as IAddNft;
@@ -114,7 +115,7 @@ const Index = function () {
   function show(id: string, total: number) {
     Dialog.open({
       type: 'view',
-      title: 'nft详情',
+      title: '藏品详情',
       content: <Show id={id} total={total} />,
       footer: null,
       bodyStyle: {
@@ -132,7 +133,7 @@ const Index = function () {
     },
     {
       dataIndex: 'token_id',
-      title: '作品id',
+      title: 'id',
       hideInSearch: true,
     },
     {
@@ -363,7 +364,7 @@ const Index = function () {
           type: 'multiple',
         }}
         dateFormatter="number"
-        headerTitle="nft类型表格"
+        headerTitle="藏品库列表"
         toolBarRender={() => [
           <Button key="button" icon={<PlusOutlined />} type="primary" onClick={() => create()}>
             新建

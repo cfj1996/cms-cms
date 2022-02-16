@@ -206,7 +206,7 @@ const Index = function () {
           labelWidth: 'auto',
         }}
         dateFormatter="number"
-        headerTitle="banner 管理"
+        headerTitle="banner管理列表"
         toolBarRender={() => [
           <Button key="button" icon={<PlusOutlined />} type="primary" onClick={() => create()}>
             新建

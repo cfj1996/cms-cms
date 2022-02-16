@@ -190,7 +190,7 @@ const Index = function () {
         }}
         rowKey="id"
         dateFormatter="number"
-        headerTitle="内容审核"
+        headerTitle="内容审核列表"
       />
     </PageContainer>
   );

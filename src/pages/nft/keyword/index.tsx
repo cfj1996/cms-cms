@@ -138,7 +138,7 @@ const Index = function () {
           },
         }}
         dateFormatter="number"
-        headerTitle="nft类型表格"
+        headerTitle="关键字列表"
         toolBarRender={() => [
           <Button key="button" icon={<PlusOutlined />} type="primary" onClick={() => create()}>
             新建

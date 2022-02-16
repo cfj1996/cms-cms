@@ -181,7 +181,7 @@ export const updateNftKeyWords = function (id: string, keyWords: string[]) {
   return Server.put(`/nft/${id}`, { keyWords: keyWords });
 };
 /**
- * 获取nft详情
+ * 获取藏品详情
  * @param id
  */
 export const getNft = function (id: string) {

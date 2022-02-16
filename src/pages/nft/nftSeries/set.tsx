@@ -10,7 +10,6 @@ import {
   ProFormMoney,
   ProFormSelect,
   ProFormText,
-  ProFormTextArea,
 } from '@ant-design/pro-form';
 import { Form } from 'antd';
 import type { PageService } from '@/hoc/withServers';
@@ -20,6 +19,8 @@ import type { INft } from '@/services/nft/nfts';
 import { getNft, nftTypeEnum } from '@/services/nft/nfts';
 import Upload from '@/components/upload';
 import moment from 'moment';
+import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill';
 
 const formItemLayout = {
   labelCol: {
@@ -62,7 +63,7 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
     <Form form={form} initialValues={initialValues} {...formItemLayout}>
       <ProFormSelect
         name={'category_id'}
-        label={'nft系列'}
+        label={'藏品系列'}
         disabled={disabled}
         required={true}
         rules={[{ required: true }]}
@@ -77,24 +78,24 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
       />
       <ProFormSelect
         name="type"
-        label="nft类型"
+        label="藏品类型"
         disabled={disabled}
-        placeholder="请选择nft类型"
+        placeholder="请选择藏品类型"
         required={true}
         rules={[{ required: true }]}
         valueEnum={nftTypeEnum}
       />
       <ProFormText
         name="name"
-        label="nft名称"
-        placeholder="请输入名称"
+        label="藏品名称"
+        placeholder="请输入藏品名称"
         required={true}
         rules={[{ required: true }]}
       />
       <ProFormText
         name="title"
-        label="nft标题"
-        placeholder="请输入标题"
+        label="藏品标题"
+        placeholder="请输入藏品标题"
         required={true}
         rules={[{ required: true }]}
       />
@@ -128,13 +129,9 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
       <Form.Item name="images" label={'图片'} required={true} rules={[{ required: true }]}>
         <Upload multiple={true} disabled={disabled} />
       </Form.Item>
-      <ProFormTextArea
-        name="desc"
-        label="NFT描述"
-        placeholder="请输入描述"
-        required={true}
-        rules={[{ required: true }]}
-      />
+      <Form.Item name="desc" label="藏品描述" required={true} rules={[{ required: true }]}>
+        <ReactQuill id={'ReactQuill'} theme="snow" style={{ height: '120px' }} />
+      </Form.Item>
     </Form>
   );
 });

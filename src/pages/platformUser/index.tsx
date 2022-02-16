@@ -62,7 +62,7 @@ const Index = function () {
           labelWidth: 'auto',
         }}
         dateFormatter="number"
-        headerTitle="用户管理"
+        headerTitle="用户管理列表"
       />
     </PageContainer>
   );

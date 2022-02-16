@@ -69,7 +69,7 @@ const Set = forwardRef(function (props: { data?: Activity }, ref) {
           }).then((res) => res.data.map((item) => ({ value: item.id, label: item.name })))
         }
         name="associate"
-        label="关联nft作品"
+        label="关联藏品库"
         required={true}
         rules={[{ required: true }]}
       />

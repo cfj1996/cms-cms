@@ -21,11 +21,11 @@ const Index = function () {
 
   function create() {
     Dialog.open({
-      title: '新增nft系列',
+      title: '新增藏品系列',
       content: <AddSet />,
       async onOK(name, info) {
         const values = info?.values;
-        const id = GlobalLoad.open({ tip: 'nft系列创建中，请稍后....' });
+        const id = GlobalLoad.open({ tip: '藏品系列创建中，请稍后....' });
         try {
           const { data, code, msg } = await getContractAddress();
           if (code === 'ok') {
@@ -52,7 +52,7 @@ const Index = function () {
 
   // function update(id: string) {
   //   Dialog.open({
-  //     title: '修改nft系列',
+  //     title: '修改藏品系列',
   //     content: <EditSet id={id} />,
   //     async onOK(name, info) {
   //       await updateNftType(id, info?.values as IAddNftType);
@@ -64,7 +64,7 @@ const Index = function () {
   // function show(id: string) {
   //   Dialog.open({
   //     type: 'view',
-  //     title: 'nft详情',
+  //     title: '藏品详情',
   //     content: <Detail id={id} />,
   //     footer: null,
   //   });
@@ -140,7 +140,7 @@ const Index = function () {
           labelWidth: 'auto',
         }}
         dateFormatter="number"
-        headerTitle="nft类型表格"
+        headerTitle="藏品系列列表"
         toolBarRender={() => [
           <Button key="button" icon={<PlusOutlined />} type="primary" onClick={() => create()}>
             新建

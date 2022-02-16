@@ -219,7 +219,7 @@ const Index = function () {
           labelWidth: 'auto',
         }}
         dateFormatter="number"
-        headerTitle="活动管理"
+        headerTitle="活动管理列表"
         toolBarRender={() => [
           <Button key="button" icon={<PlusOutlined />} type="primary" onClick={() => create()}>
             新建

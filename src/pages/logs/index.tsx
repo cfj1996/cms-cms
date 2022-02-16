@@ -51,7 +51,7 @@ const Index = function () {
           labelWidth: 'auto',
         }}
         dateFormatter="number"
-        headerTitle="用户操作日志"
+        headerTitle="用户操作日志列表"
       />
     </PageContainer>
   );
