@@ -36,3 +36,4 @@ screenshot
 
 build
 /.vscode/
+dist/

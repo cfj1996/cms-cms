@@ -6,6 +6,20 @@ variables:
   BUILD_DIR: dist
   CI: "false"
 
+cache:
+  paths:
+    - $BUILD_DIR
+
+webpack-build-job:
+  image: node:16
+  stage: webpack
+  only:
+    - prod
+    - test
+  script:
+    - yarn install
+    - yarn run build
+
 deploy-job-test:
   image: alpine:3.8
   stage: deploy
