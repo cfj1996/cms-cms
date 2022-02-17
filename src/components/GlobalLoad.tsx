@@ -7,7 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import styles from './load.less';
 import { PageLoading } from '@ant-design/pro-layout';
-import { SpinProps } from 'antd';
+import type { SpinProps } from 'antd';
 
 let id = 0;
 class GlobalLoad extends React.Component<SpinProps> {

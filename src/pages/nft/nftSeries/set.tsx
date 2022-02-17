@@ -19,8 +19,7 @@ import type { INft } from '@/services/nft/nfts';
 import { getNft, nftTypeEnum } from '@/services/nft/nfts';
 import Upload from '@/components/upload';
 import moment from 'moment';
-import 'react-quill/dist/quill.snow.css';
-import ReactQuill from 'react-quill';
+import Quill from '@/components/Quill';
 
 const formItemLayout = {
   labelCol: {
@@ -130,7 +129,7 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         <Upload multiple={true} disabled={disabled} />
       </Form.Item>
       <Form.Item name="desc" label="藏品描述" required={true} rules={[{ required: true }]}>
-        <ReactQuill id={'ReactQuill'} theme="snow" style={{ height: '120px' }} />
+        <Quill />
       </Form.Item>
     </Form>
   );

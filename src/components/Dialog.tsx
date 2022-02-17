@@ -104,14 +104,18 @@ export default class Dialog extends React.Component<IProps> {
             afterClose={afterClose}
             title={title}
             visible={visible}
-            onOk={() => {
-              if (type === 'from' || this.props.footer !== null) {
-                this.node?.submit?.();
-              } else {
-                this.setState({ visible: false });
-                onOK?.();
-              }
-            }}
+            onOk={
+              onOK
+                ? () => {
+                    if (type === 'from' || this.props.footer !== null) {
+                      this.node?.submit?.();
+                    } else {
+                      this.setState({ visible: false });
+                      onOK();
+                    }
+                  }
+                : undefined
+            }
             destroyOnClose
             confirmLoading={loading}
             onCancel={() => {

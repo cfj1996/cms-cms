@@ -3,13 +3,14 @@
  * @user: cfj
  * @date: 2021/12/12 2:39
  */
-import { Col, Progress, Row } from 'antd';
+import { Button, Col, Progress, Row } from 'antd';
 import TypographyItem from '@/components/TypographyItem';
 import type { INft } from '@/services/nft/nfts';
 import { NftState, NftType, purchaseEnum } from '@/services/nft/nfts';
 import { dateFormat } from '@/utils';
 import TableImgCall from '@/components/tableImgCall';
 import { css } from '@emotion/css';
+import Dialog from '@/components/Dialog';
 
 interface IProps {
   data: INft;
@@ -67,7 +68,27 @@ const Detail = function (props: IProps) {
     { label: '销售数量：', value: String(data.sale) },
     { label: '交易HASH：', value: data.transaction_hash },
     { label: '作品热度：', value: <Progress percent={data.heat} /> },
-    { label: '作品描述：', value: data.desc },
+    {
+      label: '作品描述：',
+      value: (
+        <Button
+          type={'primary'}
+          onClick={() => {
+            Dialog.open({
+              title: '作品描述',
+              width: '100%',
+              content: (
+                <pre>
+                  <div dangerouslySetInnerHTML={{ __html: data.desc }} />
+                </pre>
+              ),
+            });
+          }}
+        >
+          查看
+        </Button>
+      ),
+    },
     { label: '售卖时间：', value: dateFormat(data.start_time) + ' ~ ' + dateFormat(data.end_time) },
     { label: '创建时间：', value: dateFormat(data.created_at) },
     { label: '更新时间：', value: dateFormat(data.updated_at) },
