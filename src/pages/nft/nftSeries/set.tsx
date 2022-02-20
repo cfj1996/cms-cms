@@ -8,6 +8,7 @@ import {
   ProFormDateTimeRangePicker,
   ProFormDigit,
   ProFormMoney,
+  ProFormRadio,
   ProFormSelect,
   ProFormText,
 } from '@ant-design/pro-form';
@@ -16,10 +17,11 @@ import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
 import { getNftTypeList } from '@/services/nft/nftType';
 import type { INft } from '@/services/nft/nfts';
-import { getNft, nftTypeEnum } from '@/services/nft/nfts';
+import { canSaleEnum, getNft, nftTypeEnum } from '@/services/nft/nfts';
 import Upload from '@/components/upload';
 import moment from 'moment';
 import Quill from '@/components/Quill';
+import { getIssuerList } from '@/services/nft/Issuer';
 
 const formItemLayout = {
   labelCol: {
@@ -41,6 +43,7 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
   const data = props.data?.data || ({} as INft);
   const initialValues = props.data?.data
     ? {
+        issuer_id: data.issuer_id,
         category_id: data.category_id,
         type: data.type,
         name: data.name,
@@ -49,6 +52,8 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         images: data.images,
         token_id: data.token_id,
         total: data.total,
+        available_number: Number(data.available_number) || 0,
+        is_can_sale: Boolean(data.is_can_sale),
         price: data.price,
         time: [moment(data.start_time), moment(data.end_time)],
       }
@@ -61,8 +66,25 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
   return (
     <Form form={form} initialValues={initialValues} {...formItemLayout}>
       <ProFormSelect
+        name={'issuer_id'}
+        label={'发行方'}
+        showSearch={true}
+        disabled={disabled}
+        required={true}
+        rules={[{ required: true }]}
+        fieldProps={{
+          filterOption: false,
+        }}
+        request={() => {
+          return getIssuerList({ current: 1, pageSize: 100000, issuer_name: '' }).then((res) =>
+            res.data.map((i) => ({ value: i.id, label: i.issuer_name })),
+          );
+        }}
+      />
+      <ProFormSelect
         name={'category_id'}
         label={'藏品系列'}
+        showSearch={true}
         disabled={disabled}
         required={true}
         rules={[{ required: true }]}
@@ -116,6 +138,30 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         rules={[{ required: true }]}
         fieldProps={{ precision: 2 }}
       />
+      <ProFormRadio.Group
+        name={'is_can_sale'}
+        label={'可售'}
+        options={canSaleEnum}
+        required={true}
+        rules={[{ required: true }]}
+      />
+      <Form.Item
+        noStyle={true}
+        shouldUpdate={(prevValues: any, curValues: any) => prevValues.total !== curValues.total}
+      >
+        {({ getFieldValue }) => (
+          <ProFormDigit
+            name="available_number"
+            label="可售数量"
+            placeholder="可售数量"
+            fieldProps={{ precision: 0 }}
+            required={true}
+            max={getFieldValue('total')}
+            rules={[{ required: true }]}
+          />
+        )}
+      </Form.Item>
+
       <ProFormDateTimeRangePicker
         name="time"
         label="售卖起止时间"
@@ -125,7 +171,7 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         }}
         rules={[{ required: true }]}
       />
-      <Form.Item name="images" label={'图片'} required={true} rules={[{ required: true }]}>
+      <Form.Item name="images" label={'藏品源图片'} required={true} rules={[{ required: true }]}>
         <Upload multiple={true} disabled={disabled} />
       </Form.Item>
       <Form.Item name="desc" label="藏品描述" required={true} rules={[{ required: true }]}>

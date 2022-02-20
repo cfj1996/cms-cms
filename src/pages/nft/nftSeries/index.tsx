@@ -9,6 +9,7 @@ import ProTable, { TableDropdown } from '@ant-design/pro-table';
 import type { IAddNft, INft, Purchase } from '@/services/nft/nfts';
 import {
   addNft,
+  appendTotal,
   delNft,
   editNftPurchase,
   getNftList,
@@ -28,6 +29,7 @@ import GlobalLoad from '@/components/GlobalLoad';
 import Show from '@/pages/nft/nftSeries/show';
 import PurchaseSet from '@/pages/nft/nftSeries/purchaseSet';
 import { useAccess } from 'umi';
+import AppendTotal from '@/pages/nft/nftSeries/appendTotal';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
@@ -154,6 +156,11 @@ const Index = function () {
       hideInSearch: true,
     },
     {
+      dataIndex: 'issuer_name',
+      title: '发行方名称',
+      hideInSearch: true,
+    },
+    {
       dataIndex: 'is_purchase',
       title: '限购',
       hideInSearch: true,
@@ -247,6 +254,9 @@ const Index = function () {
         if (access?.admin) {
           menus.push({ key: '6', name: '删除', disabled: record.state !== 'draf' });
         }
+        if (record.state === 'onsale') {
+          menus.push({ key: '7', name: '追加总数' });
+        }
         return [
           <a key={'onsale'} onClick={() => show(record.id, record.total)}>
             查看
@@ -262,6 +272,7 @@ const Index = function () {
                   title: '编辑限购信息',
                   content: (
                     <PurchaseSet
+                      interval_time={record.interval_time}
                       is_purchase={record.is_purchase}
                       limit_number={record.limit_number}
                     />
@@ -326,6 +337,29 @@ const Index = function () {
                       const res = await delNft(record.id);
                       if (res.code === 'ok') {
                         message.success('删除成功');
+                        actionRef.current?.reload();
+                      } else {
+                        throw new Error(res.msg);
+                      }
+                    } catch (error: any) {
+                      message.error(error.message || '操作失败,稍后重试。');
+                      throw error;
+                    }
+                  },
+                });
+              } else if (key === '7') {
+                Dialog.open({
+                  title: '追加总数',
+                  content: <AppendTotal append_total={record.total} />,
+                  async onOK(name, info) {
+                    try {
+                      const values = info?.values as any;
+                      const res = await appendTotal({
+                        nft_id: record.id,
+                        append_total: values.append_total,
+                      });
+                      if (res.code === 'ok') {
+                        message.success('追加成功');
                         actionRef.current?.reload();
                       } else {
                         throw new Error(res.msg);

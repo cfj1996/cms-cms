@@ -11,7 +11,10 @@ export const purchaseEnum = [
   { value: true, label: '开启' },
   { value: false, label: '关闭' },
 ];
-
+export const canSaleEnum = [
+  { value: true, label: '开启' },
+  { value: false, label: '关闭' },
+];
 // TODO 为了年前上的阉割功能 临时增加的权限
 export const nftTypeEnum = {
   collection: {
@@ -54,6 +57,8 @@ export interface INft {
   name: string;
   title: string;
   type: string;
+  issuer_id: string;
+  issuer_name: string;
   category_id: string;
   category_name: string;
   images: string[];
@@ -69,6 +74,9 @@ export interface INft {
   transaction_hash: string;
   start_time: string;
   end_time: string;
+  available_number: number;
+  is_can_sale: boolean;
+  interval_time: number;
   created_at: string;
   updated_at: string;
 }
@@ -108,6 +116,7 @@ export const getNftList = function (params: PageParams & INftReq) {
 };
 
 export interface IAddNft {
+  issuer_id: string;
   category_id: string;
   name: string;
   type: string;
@@ -120,6 +129,8 @@ export interface IAddNft {
   price?: string;
   start_time: string;
   end_time: string;
+  available_number: number;
+  is_can_sale: boolean;
   time?: Moment[];
 }
 
@@ -130,15 +141,6 @@ export interface IAddNft {
 export const addNft = function (data: IAddNft) {
   return Server.post<boolean>('/nft/create', data);
 };
-
-export interface IUpdateNft {
-  nft_id: string;
-  name: string;
-  price: string;
-  desc: string;
-  start_time: string;
-  end_time: string;
-}
 
 /**
  * 修改nft基本信息
@@ -228,6 +230,7 @@ export const delSku = function (id: string) {
 export interface Purchase {
   is_purchase: boolean;
   limit_number: number;
+  interval_time: number;
 }
 
 export const editNftPurchase = function (data: Purchase & { nft_id: string }) {
@@ -239,4 +242,7 @@ export const skuNftPurchase = function (data: Purchase & { sku_id: string }) {
 };
 export const delNft = function (id: string) {
   return Server.post<Resolve>('/nft/delete', { nft_id: id });
+};
+export const appendTotal = function (data: { nft_id: string; append_total: number }) {
+  return Server.post<Resolve<boolean>>('/nft/mint/append', data);
 };

@@ -18,12 +18,13 @@ const formItemLayout = {
   },
 };
 const PurchaseSet = forwardRef(function (props: Purchase, ref) {
-  const { is_purchase, limit_number } = props;
+  const { is_purchase, limit_number, interval_time } = props;
   const [form] = Form.useForm();
 
   const initialValues = {
     is_purchase,
     limit_number,
+    interval_time,
   };
   useImperativeHandle(ref, () => ({
     submit() {
@@ -47,6 +48,26 @@ const PurchaseSet = forwardRef(function (props: Purchase, ref) {
             placeholder="请输入限购数量"
             min={1}
             fieldProps={{ precision: 0 }}
+            rules={[{ required: Boolean(getFieldValue('is_purchase')) }]}
+          />
+        )}
+      </Form.Item>
+      <Form.Item
+        noStyle={true}
+        shouldUpdate={(prevValues: any, curValues: any) =>
+          prevValues.is_purchase !== curValues.is_purchase
+        }
+      >
+        {({ getFieldValue }) => (
+          <ProFormDigit
+            name="interval_time"
+            label="间隔时间"
+            tooltip="间隔多少秒后才能再次购买"
+            required={Boolean(getFieldValue('is_purchase'))}
+            placeholder="请输入间隔时间, 以秒为单位"
+            min={1}
+            fieldProps={{ precision: 0 }}
+            addonAfter={'秒'}
             rules={[{ required: Boolean(getFieldValue('is_purchase')) }]}
           />
         )}

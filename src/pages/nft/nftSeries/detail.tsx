@@ -41,6 +41,7 @@ const Detail = function (props: IProps) {
     { label: '类别名称：', value: data.category_name },
     { label: '作品id：', value: data.token_id },
     { label: '作品类型：', value: NftType[data.type] },
+    { label: '发行方名称：', value: data.issuer_name },
     {
       label: '图片：',
       value: (
@@ -65,7 +66,10 @@ const Detail = function (props: IProps) {
     { label: '总数：', value: data.total },
     { label: '限购：', value: purchaseEnum.find((i) => i.value === data.is_purchase)?.label },
     { label: '限购数量：', value: String(data.limit_number) },
+    { label: '限购时间间隔：', value: String(data.interval_time) },
     { label: '销售数量：', value: String(data.sale) },
+    { label: '是否可售：', value: data.is_can_sale },
+    { label: '可售数量：', value: data.available_number },
     { label: '交易HASH：', value: data.transaction_hash },
     { label: '作品热度：', value: <Progress percent={data.heat} /> },
     {

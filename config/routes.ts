@@ -63,6 +63,11 @@
         path: 'keyword',
         component: './nft/keyword',
       },
+      {
+        name: '发行方管理',
+        path: 'issuer',
+        component: './nft/issuer',
+      },
       { exact: true, redirect: '/nft/nftType' },
     ],
   },

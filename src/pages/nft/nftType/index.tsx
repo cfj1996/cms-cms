@@ -50,25 +50,6 @@ const Index = function () {
     });
   }
 
-  // function update(id: string) {
-  //   Dialog.open({
-  //     title: '修改藏品系列',
-  //     content: <EditSet id={id} />,
-  //     async onOK(name, info) {
-  //       await updateNftType(id, info?.values as IAddNftType);
-  //       message.success('修改成功');
-  //       actionRef.current?.reload();
-  //     },
-  //   });
-  // }
-  // function show(id: string) {
-  //   Dialog.open({
-  //     type: 'view',
-  //     title: '藏品详情',
-  //     content: <Detail id={id} />,
-  //     footer: null,
-  //   });
-  // }
   const columns: ProColumns<INftType>[] = [
     {
       dataIndex: 'name',
@@ -102,26 +83,6 @@ const Index = function () {
       valueType: 'dateTime',
       hideInSearch: true,
     },
-    /* {
-       title: '操作',
-       align: 'right',
-       valueType: 'option',
-       render(text, record) {
-         return [
-           <a
-             key="editable"
-             onClick={() => {
-               update(record.id);
-             }}
-           >
-             编辑
-           </a>,
-           <a target="_blank" onClick={() => show(record.id)} rel="noopener noreferrer" key="view">
-             查看
-           </a>,
-         ];
-       },
-     },*/
   ];
   return (
     <PageContainer>
