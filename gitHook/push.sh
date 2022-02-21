@@ -1,19 +1,12 @@
 #! /bin/bash
-cd /root/woerk/174-2 || exit
-
-echo "start git checkout"
-git checkout developer
-
-echo "start git pull"
-git pull
-
-echo "install package"
+cd /root/woerk/cms_cms || exit
+rm -rf /root/woerk/cms_cms/*
+git clone -b developer https://git.tiancai.work/174/174-2.git
+cd /root/woerk/cms_cms/174-2 || exit
 yarn install
-
-echo "build app"
-
 yarn build:test
-echo "打包完成"
-
+cp -r /root/woerk/cms_cms/174-2/dist /root/woerk
+rm -rf /root/woerk/cms_cms/*
+rm -rf /root/woerk/dist || exit
 
 

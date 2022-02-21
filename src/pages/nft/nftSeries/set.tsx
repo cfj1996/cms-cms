@@ -69,7 +69,6 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         name={'issuer_id'}
         label={'发行方'}
         showSearch={true}
-        disabled={disabled}
         required={true}
         rules={[{ required: true }]}
         fieldProps={{
