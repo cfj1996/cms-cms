@@ -14,5 +14,3 @@ if [ -d "/root/woerk/dist/" ]; then
 fi
 cp -r /root/woerk/cms_cms/174-2/dist /root/woerk
 rm -rf /root/woerk/cms_cms/*
-
-
