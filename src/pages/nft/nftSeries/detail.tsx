@@ -68,7 +68,7 @@ const Detail = function (props: IProps) {
     { label: '限购数量：', value: String(data.limit_number) },
     { label: '限购时间间隔：', value: String(data.interval_time) },
     { label: '销售数量：', value: String(data.sale) },
-    { label: '是否可售：', value: data.is_can_sale },
+    { label: '是否可售：', value: data.is_can_sale ? '可售' : '不可售' },
     { label: '可售数量：', value: data.available_number },
     { label: '交易HASH：', value: data.transaction_hash },
     { label: '作品热度：', value: <Progress percent={data.heat} /> },
