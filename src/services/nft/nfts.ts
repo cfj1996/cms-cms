@@ -93,6 +93,7 @@ export interface Sku extends AddSku {
   id: string;
   is_purchase: boolean;
   limit_number: number;
+  interval_time: number;
   created_at: string;
   updated_at: string;
 }

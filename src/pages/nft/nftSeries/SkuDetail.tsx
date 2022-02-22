@@ -231,6 +231,7 @@ const SkuDetail = function (props: IProps) {
                       <PurchaseSet
                         is_purchase={item.is_purchase}
                         limit_number={item.limit_number}
+                        interval_time={item.interval_time}
                       />
                     ),
                     async onOK(name, info) {

@@ -125,6 +125,11 @@
         path: 'activity',
         component: './activity',
       },
+      {
+        name: '盲盒管理',
+        path: 'blindBox',
+        component: './blindBox',
+      },
       { exact: true, redirect: '/front/banner' },
     ],
   },
