@@ -34,6 +34,16 @@ export enum IActivityType {
   addStaff = '添加员工',
   resetStaffPwd = '重置密码',
   updateStaffDisable = '禁用/启用  员工账号',
+  createBlindboxcollection = '创建盲盒藏品',
+  editBlindboxcollection = '编辑盲盒藏品',
+  deleteBlindboxcollection = '删除盲盒藏品',
+  deleteNft = '删除nft作品',
+  appendNftTotal = '追加作品总数',
+  createIssuer = '创建发行方信息',
+  createBlindbox = '创建盲盒',
+  updateBlindState = '更新盲盒上下线状态',
+  editBlindBox = '编辑盲盒',
+  deleteBlindbox = '删除盲盒',
 }
 
 export interface Logs {

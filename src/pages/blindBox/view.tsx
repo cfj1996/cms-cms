@@ -58,10 +58,6 @@ const View = function (props: IProps & PageService<BlindBox>) {
       ),
     },
     {
-      label: '中奖率:',
-      value: data.probability,
-    },
-    {
       label: '玩法介绍:',
       value: data.play_instruction,
     },

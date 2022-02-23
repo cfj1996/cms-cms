@@ -10,6 +10,14 @@ import type { FormFinishInfo } from 'rc-field-form/lib/FormContext';
 import type { ModalProps } from 'antd/lib/modal/Modal';
 import zhCN from 'antd/lib/locale/zh_CN';
 
+export const formItemLayout = {
+  labelCol: {
+    xs: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 20 },
+  },
+};
 export type IProps = {
   type?: 'form' | 'view';
   dialogRef: (ref: Dialog) => void;

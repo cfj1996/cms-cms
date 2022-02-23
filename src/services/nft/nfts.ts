@@ -99,7 +99,7 @@ export interface Sku extends AddSku {
 }
 
 export interface INftReq {
-  state: keyof typeof nftStateEnum;
+  state?: keyof typeof nftStateEnum;
 }
 
 /**
@@ -152,6 +152,7 @@ export const updateNft = function (data: {
   nft_id: string;
   price?: string;
   name?: string;
+  is_can_sale?: boolean;
   start_time: Date | undefined;
   end_time: Date | undefined;
   desc?: string;

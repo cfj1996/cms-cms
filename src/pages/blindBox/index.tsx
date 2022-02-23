@@ -22,6 +22,7 @@ import TableImgCall from '@/components/tableImgCall';
 import Dialog from '@/components/Dialog';
 import View from '@/pages/blindBox/view';
 import { AddSet, EditSet } from '@/pages/blindBox/set';
+import LinkNftView from '@/pages/blindBox/linkNftView';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
@@ -73,6 +74,11 @@ const Index = function () {
       hideInSearch: true,
     },
     {
+      dataIndex: 'amount',
+      title: '总数',
+      hideInSearch: true,
+    },
+    {
       dataIndex: 'created_at',
       title: '创建时间',
       valueType: 'dateTime',
@@ -93,7 +99,7 @@ const Index = function () {
           { key: '0', name: '编辑', disabled: record.state === 'onsale' },
           { key: '1', name: record.state === 'onsale' ? '下架' : '上架' },
           { key: '2', name: '删除' },
-          { key: '4', name: '关联藏品' },
+          { key: '3', name: '关联藏品' },
         ];
         return [
           <a key={'view'} onClick={() => show(record.id)}>
@@ -109,6 +115,8 @@ const Index = function () {
                 updateState(record.id, record.state === 'onsale' ? 'offsale' : 'onsale');
               } else if (key === '2') {
                 del(record.id);
+              } else if (key === '3') {
+                showLinkNft(record.id);
               }
             }}
           />,
@@ -116,6 +124,13 @@ const Index = function () {
       },
     },
   ];
+
+  function showLinkNft(id: string) {
+    Dialog.open({
+      title: '关联藏品',
+      content: <LinkNftView id={id} />,
+    });
+  }
 
   function show(id: string) {
     Dialog.open({

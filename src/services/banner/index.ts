@@ -27,6 +27,9 @@ export const LinkType = {
   innerlink: {
     text: '内部链接',
   },
+  blindboxlink: {
+    text: '盲盒链接',
+  },
 };
 
 export interface AddBanner {

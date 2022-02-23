@@ -36,7 +36,6 @@ export interface AddBlindBox {
   price: string;
   amount: number;
   play_instruction: string;
-  probability: number;
 }
 
 export interface EditBlindBox extends AddBlindBox {
@@ -46,7 +45,9 @@ export interface EditBlindBox extends AddBlindBox {
 export const addBlindBox = function (data: AddBlindBox) {
   return Server.post<Resolve<boolean>>('/blindbox/create', data);
 };
-export const getBlindBoxPage = function (params: PageParams & { blind_name?: string }) {
+export const getBlindBoxPage = function (
+  params: PageParams & { blind_name?: string; state?: keyof typeof blindStateMenu },
+) {
   return Server.get<PageResolve<BlindBox>>('/blindbox/search', params).then((res) => ({
     success: res.code === 'ok',
     data: res.data.list,
@@ -65,4 +66,49 @@ export const delBlindBox = function (blind_id: string) {
 
 export const updateBlindBoxState = function (blind_id: string, state: 'onsale' | 'offsale') {
   return Server.post<Resolve<boolean>>('/blindbox/state/update', { blind_id, state });
+};
+
+export interface BlindLinkNfts extends AddBlindLinkNft {
+  id: string;
+  nft_name: string;
+  sale_amount: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AddBlindLinkNft {
+  blind_box_id: string;
+  nft_id: string;
+  amount: number;
+  weights: number;
+  probability: number;
+}
+
+export interface EditBlindLinkNft {
+  amount: number;
+  weights: number;
+  probability: number;
+  blindcollection_id: string;
+}
+
+export const addBlindLinkNft = function (data: AddBlindLinkNft) {
+  return Server.post<Resolve<boolean>>('/blindboxcollection/create', data);
+};
+
+export const editBlindLinkNft = function (data: EditBlindLinkNft) {
+  return Server.post<Resolve<boolean>>('/blindboxcollection/edit', data);
+};
+
+export const delBlindLinkNft = function (blindcollection_id: string) {
+  return Server.post<Resolve<boolean>>('/blindboxcollection/delete', { blindcollection_id });
+};
+
+export const getBlindLinkNfts = function (params: PageParams & { blind_box_id: string }) {
+  return Server.get<PageResolve<BlindLinkNfts>>('/blindboxcollection/search', params).then(
+    (res) => ({
+      success: res.code === 'ok',
+      data: res.data.list,
+      total: res.data.total,
+    }),
+  );
 };

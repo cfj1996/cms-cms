@@ -6,7 +6,7 @@
 import type { FC } from 'react';
 import { forwardRef, useImperativeHandle } from 'react';
 import { Form } from 'antd';
-import { ProFormDigit, ProFormMoney, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import { ProFormMoney, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import Upload from '@/components/upload';
 import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
@@ -35,7 +35,6 @@ const Set = forwardRef(function (props: IProps & PageService<BlindBox>, ref) {
           blind_name: props.data.data.blind_name,
           price: props.data.data.price,
           amount: props.data.data.amount,
-          probability: props.data.data.probability,
           play_instruction: props.data.data.play_instruction,
           images: props.data.data.images,
         }
@@ -45,7 +44,6 @@ const Set = forwardRef(function (props: IProps & PageService<BlindBox>, ref) {
       form.submit();
     },
   }));
-  console.log('link_type', form.getFieldValue('link_type'));
   return (
     <Form form={form} initialValues={initialValues} {...formItemLayout}>
       <ProFormText name="title" label="盲盒标题" required={true} rules={[{ required: true }]} />
@@ -67,16 +65,6 @@ const Set = forwardRef(function (props: IProps & PageService<BlindBox>, ref) {
         name="amount"
         label="盲盒数量"
         fieldProps={{ precision: 0 }}
-        required={true}
-        rules={[{ required: true }]}
-      />
-      <ProFormDigit
-        name="probability"
-        label="中奖概率"
-        placeholder="请输入中奖概率0~100"
-        addonAfter="%"
-        min={0}
-        max={100}
         required={true}
         rules={[{ required: true }]}
       />

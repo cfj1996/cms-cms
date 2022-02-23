@@ -19,6 +19,9 @@ const Index = function () {
       dataIndex: 'type',
       title: '操作类型',
       valueType: 'select',
+      fieldProps: {
+        showSearch: true,
+      },
       valueEnum: IActivityType,
     },
     {

@@ -10,6 +10,7 @@ import type { IAddNft, INft, Purchase } from '@/services/nft/nfts';
 import {
   addNft,
   appendTotal,
+  canSaleEnum,
   delNft,
   editNftPurchase,
   getNftList,
@@ -90,12 +91,13 @@ const Index = function () {
       content: <EditSet id={id} />,
       async onOK(_, info) {
         const values = info?.values as IAddNft;
-        const { title, name, desc, price, time } = values;
+        const { title, name, desc, price, time, is_can_sale } = values;
         const res = await updateNft({
           nft_id: id,
-          title: title,
-          name: name,
-          desc: desc,
+          title,
+          name,
+          desc,
+          is_can_sale,
           price: String(price),
           start_time: time?.[0].toDate(),
           end_time: time?.[1].toDate(),
@@ -159,6 +161,15 @@ const Index = function () {
       dataIndex: 'issuer_name',
       title: '发行方名称',
       hideInSearch: true,
+    },
+    {
+      dataIndex: 'is_can_sale',
+      title: '可售',
+      hideInSearch: true,
+      valueType: 'radio',
+      fieldProps: {
+        options: canSaleEnum,
+      },
     },
     {
       dataIndex: 'is_purchase',

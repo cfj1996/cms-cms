@@ -88,7 +88,6 @@ const SkuDetail = function (props: IProps) {
   );
 
   function loadMoreData() {
-    console.log(1111);
     if (config.loading) {
       return;
     }

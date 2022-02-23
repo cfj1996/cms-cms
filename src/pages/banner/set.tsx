@@ -11,6 +11,7 @@ import Upload from '@/components/upload';
 import type { Banner } from '@/services/banner';
 import { LinkType } from '@/services/banner';
 import { getActivityPage } from '@/services/activity';
+import { getBlindBoxPage } from '@/services/blindBox';
 
 const formItemLayout = {
   labelCol: {
@@ -63,7 +64,8 @@ const Set = forwardRef(function (props: { data?: Banner }, ref) {
         }
       >
         {({ getFieldValue }) => {
-          if (getFieldValue('link_type') === 'outlink') {
+          const value = getFieldValue('link_type');
+          if (value === 'outlink') {
             return (
               <ProFormText
                 name="link"
@@ -73,7 +75,7 @@ const Set = forwardRef(function (props: { data?: Banner }, ref) {
                 rules={[{ required: true }]}
               />
             );
-          } else {
+          } else if (value === 'innerlink') {
             return (
               <ProFormSelect
                 name="link"
@@ -83,6 +85,23 @@ const Set = forwardRef(function (props: { data?: Banner }, ref) {
                 rules={[{ required: true }]}
                 request={() =>
                   getActivityPage({
+                    current: 1,
+                    pageSize: 10000,
+                    state: 'onsale',
+                  }).then((res) => res.data.map((item) => ({ value: item.id, label: item.title })))
+                }
+              />
+            );
+          } else {
+            return (
+              <ProFormSelect
+                name="link"
+                label="盲盒"
+                placeholder={'请选择盲盒'}
+                required={true}
+                rules={[{ required: true }]}
+                request={() =>
+                  getBlindBoxPage({
                     current: 1,
                     pageSize: 10000,
                     state: 'onsale',
