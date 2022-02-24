@@ -19,6 +19,7 @@ import {
   platform,
   purchaseEnum,
   updateNft,
+  updateNftSell,
   updateNftState,
 } from '@/services/nft/nfts';
 import { Button, message, Modal } from 'antd';
@@ -91,13 +92,14 @@ const Index = function () {
       content: <EditSet id={id} />,
       async onOK(_, info) {
         const values = info?.values as IAddNft;
-        const { title, name, desc, price, time, is_can_sale } = values;
+        const { title, name, desc, price, time, is_can_sale, available_number } = values;
         const res = await updateNft({
           nft_id: id,
           title,
           name,
           desc,
           is_can_sale,
+          available_number,
           price: String(price),
           start_time: time?.[0].toDate(),
           end_time: time?.[1].toDate(),
@@ -165,7 +167,6 @@ const Index = function () {
     {
       dataIndex: 'is_can_sale',
       title: '可售',
-      hideInSearch: true,
       valueType: 'radio',
       fieldProps: {
         options: canSaleEnum,
@@ -261,6 +262,7 @@ const Index = function () {
             disabled: !(record.state === 'draf' || record.state === 'offsale'),
           },
           { key: '4', name: '下架', disabled: record.state !== 'onsale' },
+          { key: '8', name: `设置为${record.is_can_sale ? '不可售' : '可售'}` },
         ];
         if (access?.admin) {
           menus.push({ key: '6', name: '删除', disabled: record.state !== 'draf' });
@@ -371,6 +373,24 @@ const Index = function () {
                       });
                       if (res.code === 'ok') {
                         message.success('追加成功');
+                        actionRef.current?.reload();
+                      } else {
+                        throw new Error(res.msg);
+                      }
+                    } catch (error: any) {
+                      message.error(error.message || '操作失败,稍后重试。');
+                      throw error;
+                    }
+                  },
+                });
+              } else if (key === '8') {
+                Modal.confirm({
+                  title: `确定设置为${record.is_can_sale ? '不可售' : '可售'}吗?`,
+                  async onOk() {
+                    try {
+                      const res = await updateNftSell(record.id, !record.is_can_sale);
+                      if (res.code === 'ok') {
+                        message.success('确定成功');
                         actionRef.current?.reload();
                       } else {
                         throw new Error(res.msg);

@@ -100,6 +100,7 @@ export interface Sku extends AddSku {
 
 export interface INftReq {
   state?: keyof typeof nftStateEnum;
+  is_can_sale?: boolean;
 }
 
 /**
@@ -153,6 +154,7 @@ export const updateNft = function (data: {
   price?: string;
   name?: string;
   is_can_sale?: boolean;
+  available_number?: number;
   start_time: Date | undefined;
   end_time: Date | undefined;
   desc?: string;
@@ -247,4 +249,7 @@ export const delNft = function (id: string) {
 };
 export const appendTotal = function (data: { nft_id: string; append_total: number }) {
   return Server.post<Resolve<boolean>>('/nft/mint/append', data);
+};
+export const updateNftSell = function (id: string, state: boolean) {
+  return Server.post<Resolve<boolean>>('/nft/cansale/update', { nft_id: id, is_can_sale: state });
 };

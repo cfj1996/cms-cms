@@ -138,6 +138,7 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         fieldProps={{ precision: 2 }}
       />
       <ProFormRadio.Group
+        disabled={disabled}
         name={'is_can_sale'}
         label={'可售'}
         options={canSaleEnum}

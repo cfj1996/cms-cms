@@ -66,7 +66,6 @@ const Index = function () {
       title: '盲盒状态',
       valueType: 'select',
       valueEnum: blindStateMenu,
-      hideInSearch: true,
     },
     {
       dataIndex: 'price',

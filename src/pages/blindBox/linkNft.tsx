@@ -3,8 +3,7 @@ import { Form } from 'antd';
 import { formItemLayout } from '@/components/Dialog';
 import { ProFormDigit, ProFormMoney, ProFormSelect } from '@ant-design/pro-form';
 import { getNftList } from '@/services/nft/nfts';
-import type { BlindLinkNfts } from '@/services/blindBox';
-import type { BlindBox } from '@/services/blindBox';
+import type { BlindBox, BlindLinkNfts } from '@/services/blindBox';
 
 /**
  * @name: linkNft
@@ -47,11 +46,13 @@ const LinkNft = forwardRef(function (props: IProps, ref) {
           placeholder: '请选择藏品',
         }}
         request={() =>
-          getNftList({ pageSize: 9999, current: 1 }).then((res) =>
-            res.data.map((i) => ({
-              value: i.id,
-              label: i.name,
-            })),
+          getNftList({ pageSize: 9999, current: 1, state: 'onsale', is_can_sale: false }).then(
+            (res) =>
+              res.data.map((i) => ({
+                value: i.id,
+                label: i.name,
+                disabled: i.is_can_sale,
+              })),
           )
         }
       />

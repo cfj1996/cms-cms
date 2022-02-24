@@ -2,7 +2,6 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { Divider, List, Skeleton } from 'antd';
 import type { ReactNode, Ref } from 'react';
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from 'react';
-import { css } from '@emotion/css';
 
 /**
  * @name: InfiniteScrollBox
@@ -82,29 +81,18 @@ const InfiniteScrollBox = forwardRef(function <T>(props: IProps, ref: Ref<Action
     },
   }));
   return (
-    <div
-      id="scrollableDiv"
-      className={css({
-        height: height,
-        overflow: 'auto',
-      })}
+    <InfiniteScroll
+      dataLength={config.dataSource.length}
+      next={loadMoreData}
+      hasMore={Boolean(config.loading || (config.total && config.dataSource.length < config.total))}
+      height={height}
+      loader={<Skeleton avatar paragraph={{ rows: 1 }} active />} // true
+      endMessage={
+        <Divider plain>{config.total === 0 ? '暂无数据 🤐' : '没有更多数据了 🤐'}</Divider> // false
+      }
     >
-      <InfiniteScroll
-        pullDownToRefresh={false}
-        dataLength={config.dataSource.length}
-        next={loadMoreData}
-        hasMore={Boolean(
-          config.loading || (config.total && config.dataSource.length < config.total),
-        )}
-        loader={<Skeleton avatar paragraph={{ rows: 1 }} active />} // true
-        endMessage={
-          <Divider plain>{config.total === 0 ? '暂无数据 🤐' : '没有更多数据了 🤐'}</Divider> // false
-        }
-        scrollableTarget="scrollableDiv"
-      >
-        <List header={header}>{config.dataSource.map((item) => renderItem(item))}</List>
-      </InfiniteScroll>
-    </div>
+      <List header={header}>{config.dataSource.map((item) => renderItem(item))}</List>
+    </InfiniteScroll>
   );
 });
 export default InfiniteScrollBox;
