@@ -5,7 +5,7 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ConfigProvider, Form, Modal } from 'antd';
+import { Button, ConfigProvider, Form, Modal } from 'antd';
 import type { FormFinishInfo } from 'rc-field-form/lib/FormContext';
 import type { ModalProps } from 'antd/lib/modal/Modal';
 import zhCN from 'antd/lib/locale/zh_CN';
@@ -112,6 +112,20 @@ export default class Dialog extends React.Component<IProps> {
             afterClose={afterClose}
             title={title}
             visible={visible}
+            footer={
+              !onOK
+                ? [
+                    <Button
+                      key={'1'}
+                      onClick={() => {
+                        this.setState({ visible: false });
+                      }}
+                    >
+                      关闭
+                    </Button>,
+                  ]
+                : undefined
+            }
             onOk={
               onOK
                 ? () => {

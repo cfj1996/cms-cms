@@ -45,16 +45,21 @@ const LinkNft = forwardRef(function (props: IProps, ref) {
           filterOption: false,
           placeholder: '请选择藏品',
         }}
-        request={() =>
-          getNftList({ pageSize: 9999, current: 1, state: 'onsale', is_can_sale: false }).then(
-            (res) =>
-              res.data.map((i) => ({
-                value: i.id,
-                label: i.name,
-                disabled: i.is_can_sale,
-              })),
-          )
-        }
+        request={(keyword: string) => {
+          console.log('keyword', keyword);
+          return getNftList({
+            pageSize: 9999,
+            current: 1,
+            state: 'onsale',
+            is_can_sale: false,
+          }).then((res) =>
+            res.data.map((i) => ({
+              value: i.id,
+              label: i.name,
+              disabled: i.is_can_sale,
+            })),
+          );
+        }}
       />
       <ProFormDigit
         name="amount"
