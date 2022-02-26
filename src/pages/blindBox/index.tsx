@@ -7,7 +7,6 @@ import { PageContainer } from '@ant-design/pro-layout';
 import type { AddBlindBox, BlindBox } from '@/services/blindBox';
 import {
   addBlindBox,
-  blindLevel,
   blindStateMenu,
   delBlindBox,
   editBlindBox,
@@ -44,14 +43,6 @@ const Index = function () {
       title: '盲盒标题',
       ellipsis: true,
       hideInSearch: true,
-    },
-    {
-      dataIndex: 'level',
-      title: '盲盒等级',
-      hideInSearch: true,
-      fieldProps: {
-        options: blindLevel,
-      },
     },
     {
       dataIndex: 'images',
