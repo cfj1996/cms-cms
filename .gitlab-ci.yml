@@ -1,6 +1,8 @@
 stages:
   - webpack
   - deploy
+  - dev_build
+  - dev_deploy
 
 variables:
   BUILD_DIR: dist
@@ -15,7 +17,6 @@ webpack-build-job:
   stage: webpack
   only:
     - prod
-    - test
   script:
     - yarn install
     - yarn run build
@@ -51,5 +52,28 @@ deploy-job-prod:
     - chmod +x /usr/local/bin/ossutil64
   script:
     - ossutil64 sync $BUILD_DIR oss://$BUCKET/ -f --delete -e $ENDPOINT -i $ACCESS_KEY_ID -k $ACCESS_KEY_SECRET
+  environment:
+    name: prod
+
+build-dev-job:
+  image: node:16
+  stage: dev_build
+  only:
+    - developer
+  script:
+    - yarn install
+    - yarn run build:test
+
+deploy-dev-job:
+  image: alpine:3.8
+  stage: dev_deploy
+  only:
+    - developer
+  before_script:
+    - apk add --update -t deps curl
+    - curl -L http://gosspublic.alicdn.com/ossutil/1.7.8/ossutil64 -o /usr/local/bin/ossutil64
+    - chmod +x /usr/local/bin/ossutil64
+  script:
+    - ossutil64 sync $BUILD_DIR oss://$DEV_BUCKET/ -f --delete -e $DEV_ENDPOINT -i $DEV_ACCESS_KEY_ID -k $DEV_ACCESS_KEY_SECRET
   environment:
     name: prod

@@ -10,6 +10,7 @@ import ProTable from '@ant-design/pro-table';
 import { useRef } from 'react';
 import type { IOrder } from '@/services/oredr';
 import {
+  commodityType,
   DeliveryType,
   getOrderList,
   onlineGetHash,
@@ -83,6 +84,13 @@ const Index = function () {
       title: '商品名称',
       hideInSearch: true,
       dataIndex: 'title',
+    },
+    {
+      title: '商品类型',
+      hideInSearch: true,
+      dataIndex: 'type',
+      valueType: 'select',
+      valueEnum: commodityType,
     },
     {
       title: '买家',

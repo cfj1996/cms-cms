@@ -6,7 +6,7 @@
 import type { FC } from 'react';
 import { forwardRef, useImperativeHandle } from 'react';
 import { Form } from 'antd';
-import { ProFormMoney, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import { ProFormDigit, ProFormMoney, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import Upload from '@/components/upload';
 import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
@@ -61,9 +61,10 @@ const Set = forwardRef(function (props: IProps & PageService<BlindBox>, ref) {
         rules={[{ required: true }]}
         fieldProps={{ precision: 2 }}
       />
-      <ProFormMoney
+      <ProFormDigit
         name="amount"
         label="盲盒数量"
+        min={0}
         fieldProps={{ precision: 0 }}
         required={true}
         rules={[{ required: true }]}

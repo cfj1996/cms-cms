@@ -70,6 +70,7 @@ const LinkNftView = function (props: IProps & PageService<BlindBox>) {
             blindcollection_id: item.id,
             amount: values.amount,
             weights: values.weights,
+            level: values.level,
             probability: values.probability,
           });
           if (res.code === 'ok') {
@@ -143,7 +144,7 @@ const LinkNftView = function (props: IProps & PageService<BlindBox>) {
           ]}
         >
           <List.Item.Meta
-            title={item.nft_name}
+            title={`${item.nft_name}: ${item.level}`}
             description={`数量:${item.amount}, 销售数量: ${item.sale_amount}, 权重: ${item.weights}%, 中奖率: ${item.probability}%`}
           />
         </List.Item>

@@ -92,12 +92,13 @@ const Index = function () {
       content: <EditSet id={id} />,
       async onOK(_, info) {
         const values = info?.values as IAddNft;
-        const { title, name, desc, price, time, is_can_sale, available_number } = values;
+        const { title, name, desc, price, time, is_can_sale, available_number, issuer_id } = values;
         const res = await updateNft({
           nft_id: id,
           title,
           name,
           desc,
+          issuer_id,
           is_can_sale,
           available_number,
           price: String(price),

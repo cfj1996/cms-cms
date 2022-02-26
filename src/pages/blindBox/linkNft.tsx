@@ -4,6 +4,7 @@ import { formItemLayout } from '@/components/Dialog';
 import { ProFormDigit, ProFormMoney, ProFormSelect } from '@ant-design/pro-form';
 import { getNftList } from '@/services/nft/nfts';
 import type { BlindBox, BlindLinkNfts } from '@/services/blindBox';
+import { blindLikNftLevel } from '@/services/blindBox';
 
 /**
  * @name: linkNft
@@ -25,6 +26,7 @@ const LinkNft = forwardRef(function (props: IProps, ref) {
         amount: props.item.amount,
         weights: props.item.weights,
         probability: props.item.probability,
+        level: props.item.level,
       }
     : undefined;
   useImperativeHandle(ref, () => ({
@@ -89,6 +91,13 @@ const LinkNft = forwardRef(function (props: IProps, ref) {
         max={100}
         required={true}
         rules={[{ required: true }, { type: 'number' }]}
+      />
+      <ProFormSelect
+        name={'level'}
+        label={'藏品等级'}
+        options={blindLikNftLevel}
+        required={true}
+        rules={[{ required: true }]}
       />
     </Form>
   );

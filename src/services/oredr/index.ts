@@ -12,6 +12,18 @@ export enum DeliveryType {
   in_kine = '实物',
 }
 
+export const commodityType = {
+  user: {
+    text: '购买',
+  },
+  platform: {
+    text: '购买',
+  },
+  blind_box: {
+    text: '购买',
+  },
+};
+
 export interface IOrder {
   id: string;
   title: string;
@@ -19,6 +31,7 @@ export interface IOrder {
   buyer_name: string;
   track_number: string;
   address: string;
+  type: keyof typeof commodityType;
   contact_mobile: string;
   contact_name: string;
   created_at: string;

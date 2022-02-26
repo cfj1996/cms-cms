@@ -149,6 +149,7 @@ export const addNft = function (data: IAddNft) {
  * @param data
  */
 export const updateNft = function (data: {
+  issuer_id?: string;
   title: string;
   nft_id: string;
   price?: string;
