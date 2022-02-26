@@ -73,13 +73,7 @@ deploy-dev-job:
     - apk add --update -t deps curl
     - curl -L http://gosspublic.alicdn.com/ossutil/1.7.8/ossutil64 -o /usr/local/bin/ossutil64
     - chmod +x /usr/local/bin/ossutil64
-    - echo $BUILD_DIR
-    - echo $DEV_BUCKET
-    - echo $ENDPOINT
-    - echo $DEV_ENDPOINT
-    - echo $DEV_ACCESS_KEY_ID
-    - echo $DEV_ACCESS_KEY_SECRET
   script:
-    - ossutil64 sync $BUILD_DIR oss://$DEV_BUCKET/ -f --delete -e $ENDPOINT -i $DEV_ACCESS_KEY_ID -k $DEV_ACCESS_KEY_SECRET
+    - ossutil64 sync $BUILD_DIR oss://$DEV_BUCKET/ -f --delete -e $DEV_ENDPOINT -i $DEV_ACCESS_KEY_ID -k $DEV_ACCESS_KEY_SECRET
   environment:
-    name: prod
+    name: developer
