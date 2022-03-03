@@ -148,18 +148,16 @@ const Index = function () {
           ...other,
           price: String(price),
         };
-        try {
-          const res = await addBlindBox(data);
-          if (res.code === 'ok') {
-            message.success('新增成功');
-            actionRef.current?.reload();
-          } else {
-            throw new Error(res.msg);
-          }
-        } catch (error: any) {
-          message.error(error.message || '操作失败,稍后重试。');
-          throw error;
+        const res = await addBlindBox(data);
+        if (res.code === 'ok') {
+          message.success('新增成功');
+          actionRef.current?.reload();
+        } else {
+          throw new Error(res.msg);
         }
+      },
+      onError(error) {
+        message.error(error.message || '操作失败,稍后重试。');
       },
     });
   }

@@ -68,6 +68,11 @@
         path: 'issuer',
         component: './nft/issuer',
       },
+      {
+        name: '合成管理',
+        path: 'synthesis',
+        component: './nft/synthesis',
+      },
       { exact: true, redirect: '/nft/nftType' },
     ],
   },

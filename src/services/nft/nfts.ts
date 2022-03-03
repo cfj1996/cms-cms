@@ -1,4 +1,3 @@
-import type { Moment } from 'moment';
 import type { PageParams, PageResolve, Resolve } from '..';
 import Server from '..';
 
@@ -54,6 +53,7 @@ export const nftStateEnum = {
 
 export interface INft {
   id: string;
+  level: keyof typeof NftLevel;
   name: string;
   title: string;
   type: string;
@@ -103,6 +103,14 @@ export interface INftReq {
   is_can_sale?: boolean;
 }
 
+export enum NftLevel {
+  'B' = 'B',
+  'A' = 'A',
+  'S' = 'S ',
+  'SS' = 'SS',
+  'SSS' = 'SSS',
+}
+
 /**
  * 获取nft列表
  * @param params
@@ -129,11 +137,25 @@ export interface IAddNft {
   token_id?: number;
   total?: number;
   price?: string;
-  start_time: string;
-  end_time: string;
+  start_time: Date;
+  end_time: Date;
   available_number: number;
   is_can_sale: boolean;
-  time?: Moment[];
+  level: keyof typeof NftLevel;
+}
+
+export interface UpdateNft {
+  issuer_id?: string;
+  title: string;
+  nft_id: string;
+  price?: string;
+  name?: string;
+  is_can_sale?: boolean;
+  available_number?: number;
+  start_time: Date;
+  end_time: Date;
+  desc?: string;
+  level: keyof typeof NftLevel;
 }
 
 /**
@@ -148,18 +170,7 @@ export const addNft = function (data: IAddNft) {
  * 修改nft基本信息
  * @param data
  */
-export const updateNft = function (data: {
-  issuer_id?: string;
-  title: string;
-  nft_id: string;
-  price?: string;
-  name?: string;
-  is_can_sale?: boolean;
-  available_number?: number;
-  start_time: Date | undefined;
-  end_time: Date | undefined;
-  desc?: string;
-}) {
+export const updateNft = function (data: UpdateNft) {
   return Server.post<Resolve<boolean>>(`/nft/edit`, data);
 };
 /**

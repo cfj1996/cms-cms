@@ -6,7 +6,7 @@
 import { Button, Col, Progress, Row } from 'antd';
 import TypographyItem from '@/components/TypographyItem';
 import type { INft } from '@/services/nft/nfts';
-import { NftState, NftType, purchaseEnum } from '@/services/nft/nfts';
+import { NftLevel, NftState, NftType, purchaseEnum } from '@/services/nft/nfts';
 import { dateFormat } from '@/utils';
 import TableImgCall from '@/components/tableImgCall';
 import { css } from '@emotion/css';
@@ -66,12 +66,13 @@ const Detail = function (props: IProps) {
     { label: '总数：', value: data.total },
     { label: '限购：', value: purchaseEnum.find((i) => i.value === data.is_purchase)?.label },
     { label: '限购数量：', value: String(data.limit_number) },
-    { label: '限购时间间隔：', value: String(data.interval_time) },
+    { label: '限购时间间隔：', value: data.interval_time },
     { label: '销售数量：', value: String(data.sale) },
     { label: '是否可售：', value: data.is_can_sale ? '可售' : '不可售' },
     { label: '可售数量：', value: data.available_number },
     { label: '交易HASH：', value: data.transaction_hash },
     { label: '作品热度：', value: <Progress percent={data.heat} /> },
+    { label: '藏品等级：', value: NftLevel[data.level] },
     {
       label: '作品描述：',
       value: (

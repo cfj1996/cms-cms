@@ -5,7 +5,6 @@
  */
 import React, { forwardRef, useImperativeHandle } from 'react';
 import {
-  ProFormDateTimeRangePicker,
   ProFormDigit,
   ProFormMoney,
   ProFormRadio,
@@ -17,11 +16,11 @@ import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
 import { getNftTypeList } from '@/services/nft/nftType';
 import type { INft } from '@/services/nft/nfts';
-import { canSaleEnum, getNft, nftTypeEnum } from '@/services/nft/nfts';
+import { canSaleEnum, getNft, NftLevel, nftTypeEnum } from '@/services/nft/nfts';
 import Upload from '@/components/upload';
-import moment from 'moment';
 import Quill from '@/components/Quill';
 import { getIssuerList } from '@/services/nft/Issuer';
+import RangePicker from '@/components/RangePicker';
 
 const formItemLayout = {
   labelCol: {
@@ -55,7 +54,9 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         available_number: Number(data.available_number) || 0,
         is_can_sale: Boolean(data.is_can_sale),
         price: data.price,
-        time: [moment(data.start_time), moment(data.end_time)],
+        level: data.level,
+        start_time: data.start_time,
+        end_time: data.end_time,
       }
     : undefined;
   useImperativeHandle(ref, () => ({
@@ -162,14 +163,18 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         )}
       </Form.Item>
 
-      <ProFormDateTimeRangePicker
-        name="time"
-        label="售卖起止时间"
+      <RangePicker
+        name={['start_time', 'end_time']}
+        label={'售卖起止时间'}
         required={true}
-        fieldProps={{
-          disabledDate: (d) => !d || d.isBefore(moment().startOf('day')),
-        }}
         rules={[{ required: true }]}
+      />
+      <ProFormSelect
+        label={'藏品等级'}
+        name={'level'}
+        required={true}
+        rules={[{ required: true }]}
+        valueEnum={NftLevel}
       />
       <Form.Item name="images" label={'藏品源图片'} required={true} rules={[{ required: true }]}>
         <Upload multiple={true} disabled={disabled} />

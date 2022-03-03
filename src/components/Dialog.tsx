@@ -22,10 +22,11 @@ export type IProps = {
   type?: 'form' | 'view';
   dialogRef: (ref: Dialog) => void;
   title: string;
-  content: React.ReactElement;
+  content?: React.ReactElement;
   onOK?: (name?: string, info?: FormFinishInfo) => Promise<void> | void;
   onCancel?: (iSFinish?: boolean) => void;
-} & Omit<ModalProps, 'visible' | 'title' | 'content' | 'onOK' | 'onCancel'>;
+  onError?: (error: Error) => void;
+} & Omit<ModalProps, 'visible' | 'title' | 'content' | 'onOk' | 'onCancel'>;
 let id = 0;
 export default class Dialog extends React.Component<IProps> {
   static dialogs = new Map<React.Key, Dialog | null>();
@@ -83,12 +84,22 @@ export default class Dialog extends React.Component<IProps> {
   }
 
   render() {
-    const { type = 'from', title, content, onOK, onCancel, afterClose, ...other } = this.props;
+    const {
+      type = this.props.content ? 'from' : 'view',
+      title,
+      content,
+      onOK,
+      onCancel,
+      afterClose,
+      onError,
+      ...other
+    } = this.props;
     const { visible, loading, iSFinish } = this.state;
     const Content =
       type === 'from'
-        ? React.cloneElement(content, { ref: (node: any) => (this.node = node) })
+        ? React.cloneElement(content!, { ref: (node: any) => (this.node = node) })
         : content;
+
     return (
       <ConfigProvider locale={zhCN}>
         <Form.Provider
@@ -100,7 +111,8 @@ export default class Dialog extends React.Component<IProps> {
                 loading: false,
                 visible: false,
               });
-            } catch (e) {
+            } catch (error: any) {
+              onError?.(error);
               this.setState({
                 loading: false,
               });
@@ -128,12 +140,13 @@ export default class Dialog extends React.Component<IProps> {
             }
             onOk={
               onOK
-                ? () => {
-                    if (type === 'from' || this.props.footer !== null) {
+                ? async () => {
+                    console.log('type', type, this.props.footer);
+                    if (type === 'from' || this.props.footer) {
                       this.node?.submit?.();
                     } else {
-                      this.setState({ visible: false });
-                      onOK();
+                      await this.setState({ visible: false, loading: undefined });
+                      await onOK();
                     }
                   }
                 : undefined

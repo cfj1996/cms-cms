@@ -47,8 +47,7 @@ const LinkNft = forwardRef(function (props: IProps, ref) {
           filterOption: false,
           placeholder: '请选择藏品',
         }}
-        request={(keyword: string) => {
-          console.log('keyword', keyword);
+        request={() => {
           return getNftList({
             pageSize: 9999,
             current: 1,

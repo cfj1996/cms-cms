@@ -46,7 +46,7 @@ const Index = function () {
         const id = GlobalLoad.open({ tip: '铸币中，请稍后....' });
         try {
           const values = info?.values as IAddNft;
-          const { total, price, time, ...other } = values;
+          const { total, price, start_time, end_time, level, ...other } = values;
           const { data, code, msg } = await platform({
             category_id: values.category_id,
             total: total!,
@@ -59,8 +59,9 @@ const Index = function () {
                     transaction_hash: data.transaction_hash,
                     price: String(price),
                     token_id: data.token_id,
-                    start_time: time?.[0].toDate(),
-                    end_time: time?.[1].toDate(),
+                    start_time,
+                    end_time,
+                    level,
                   },
                   {
                     ...other,
@@ -92,7 +93,18 @@ const Index = function () {
       content: <EditSet id={id} />,
       async onOK(_, info) {
         const values = info?.values as IAddNft;
-        const { title, name, desc, price, time, is_can_sale, available_number, issuer_id } = values;
+        const {
+          title,
+          name,
+          desc,
+          price,
+          start_time,
+          end_time,
+          is_can_sale,
+          available_number,
+          issuer_id,
+          level,
+        } = values;
         const res = await updateNft({
           nft_id: id,
           title,
@@ -102,8 +114,9 @@ const Index = function () {
           is_can_sale,
           available_number,
           price: String(price),
-          start_time: time?.[0].toDate(),
-          end_time: time?.[1].toDate(),
+          start_time,
+          end_time,
+          level,
         }).catch((err) => {
           message.error('修改失败,稍后重试。');
           throw err;
@@ -234,18 +247,6 @@ const Index = function () {
     {
       dataIndex: 'end_time',
       title: '售卖结束时间',
-      valueType: 'dateTime',
-      hideInSearch: true,
-    },
-    {
-      dataIndex: 'created_at',
-      title: '创建时间',
-      valueType: 'dateTime',
-      hideInSearch: true,
-    },
-    {
-      dataIndex: 'updated_at',
-      title: '更新时间',
       valueType: 'dateTime',
       hideInSearch: true,
     },

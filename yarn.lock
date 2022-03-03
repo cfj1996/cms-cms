@@ -3231,7 +3231,7 @@
     "@umijs/runtime" "3.5.20"
     react-router-config "5.1.1"
 
-"@umijs/route-utils@^2.0.0", "@umijs/route-utils@^2.0.1", "@umijs/route-utils@^2.0.3":
+"@umijs/route-utils@2.0.4", "@umijs/route-utils@^2.0.0", "@umijs/route-utils@^2.0.1":
   version "2.0.4"
   resolved "https://rg.cnpmjs.org/@umijs/route-utils/download/@umijs/route-utils-2.0.4.tgz#951bf55c826d670c3acfff0566ceac63b7b74fea"
   integrity sha512-YWxGHZhIMLrsiydu8P/v2SNuuqRfRbLaZ5mc1K9snTf6yQ+TEGFrpU8uLxp2iRBijMBD0CFyrWNuhlB/bvluUQ==
@@ -15393,10 +15393,10 @@ umi-request@^1.2.14:
     isomorphic-fetch "^2.2.1"
     qs "^6.9.1"
 
-umi-serve@^1.9.10:
+umi-serve@1.9.10:
   version "1.9.10"
-  resolved "https://rg.cnpmjs.org/umi-serve/download/umi-serve-1.9.10.tgz#17656558c1e8fb65f8b8dc826277626b64a8eacc"
-  integrity sha1-F2VlWMHo+2X4uNyCYndia2So6sw=
+  resolved "https://registry.yarnpkg.com/umi-serve/-/umi-serve-1.9.10.tgz#17656558c1e8fb65f8b8dc826277626b64a8eacc"
+  integrity sha512-exX2HSiXyoPDG8YvydlG9QOSKkawhXVrji6yKrmvNEvJ1dDRuJ4Fyv0NrlNhYOsq+TOq8bTUCCsgRCePrGt58w==
   dependencies:
     "@babel/preset-typescript" "7.3.3"
     "@babel/register" "7.4.4"
@@ -15426,10 +15426,10 @@ umi-utils@1.7.2, umi-utils@^1.5.1:
     prettier "1.15.3"
     slash2 "2.0.0"
 
-umi@^3.5.0:
+umi@3.5.20:
   version "3.5.20"
-  resolved "https://rg.cnpmjs.org/umi/download/umi-3.5.20.tgz#7380d4dd62b9b5b3e6da303a3312a7b68a10eb51"
-  integrity sha1-c4DU3WK5tbPm2jA6MxKntooQ61E=
+  resolved "https://registry.yarnpkg.com/umi/-/umi-3.5.20.tgz#7380d4dd62b9b5b3e6da303a3312a7b68a10eb51"
+  integrity sha512-rliZTS2LoudsIelaSipZrPUEjPOi2HDlj1VCNXt63YFxeqSXQkijKmM1+hSVEDDRwPLq4L+RZhuVnCasZA9Nng==
   dependencies:
     "@umijs/bundler-webpack" "3.5.20"
     "@umijs/core" "3.5.20"
