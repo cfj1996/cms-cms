@@ -31,7 +31,6 @@ const divBox = css({
 const imgBox = css({
   padding: '5px',
 });
-console.log('imgBox', imgBox);
 
 const Detail = function (props: IProps) {
   const { data } = props;

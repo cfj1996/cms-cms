@@ -26,8 +26,11 @@ export const commodityType = {
 
 export interface IOrder {
   id: string;
+  order_id: string;
+  desc: string;
   title: string;
   state: string;
+  images: string[];
   buyer_name: string;
   track_number: string;
   address: string;
@@ -72,6 +75,10 @@ interface IOrderToReceived {
   track_number?: string;
   address?: string;
 }
+
+export const getOrder = function (id: string) {
+  return Server.get<Resolve<IOrder>>('/orders/info', { order_id: id });
+};
 
 export const orderToReceived = function (data: IOrderToReceived) {
   return Server.post<Resolve<boolean>>('/orders/delivery', data);

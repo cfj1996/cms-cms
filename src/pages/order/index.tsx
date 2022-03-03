@@ -21,6 +21,7 @@ import {
 import { Button, message, Modal } from 'antd';
 import Dialog from '@/components/Dialog';
 import { AddSet } from './set';
+import View from '@/pages/order/view';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
@@ -181,6 +182,18 @@ const Index = function () {
       hideInSearch: true,
       render(text, row) {
         return [
+          <a
+            key={0}
+            onClick={() => {
+              Dialog.open({
+                title: '订单详情',
+                type: 'view',
+                content: <View id={row.id} />,
+              });
+            }}
+          >
+            查看
+          </a>,
           <Button
             key={1}
             onClick={() => ship(row)}
