@@ -82,11 +82,6 @@ const Index = function () {
 
   const columns: ProColumns<IOrder>[] = [
     {
-      title: '商品名称',
-      hideInSearch: true,
-      dataIndex: 'title',
-    },
-    {
       title: '商品类型',
       hideInSearch: true,
       dataIndex: 'type',
