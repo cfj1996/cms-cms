@@ -70,6 +70,19 @@ export enum SyntheticMethodEnum {
   upgrade = '升级',
 }
 
+export const syntheticMethod = [
+  {
+    value: 'cultivate',
+    label: '养成',
+    help: '同一种合成',
+  },
+  {
+    value: 'upgrade',
+    label: '升级',
+    help: '基础款+属性款 合成',
+  },
+];
+
 // 合成规则
 export interface SynthesisRule extends AddSynthesisRule {
   id: string;

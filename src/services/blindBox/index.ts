@@ -6,7 +6,7 @@ import Server from '..';
  * @user: cfj
  * @date: 2022/2/22 22:08
  */
-export interface BlindBox extends AddBlindBox {
+export interface BlindBox extends AddBlindBox, EditBlindLinkNftPurchase {
   id: string;
   state: keyof typeof blindStateMenu;
   sale_amount: number;
@@ -110,6 +110,18 @@ export const editBlindLinkNft = function (data: EditBlindLinkNft) {
 
 export const delBlindLinkNft = function (blindcollection_id: string) {
   return Server.post<Resolve<boolean>>('/blindboxcollection/delete', { blindcollection_id });
+};
+
+interface EditBlindLinkNftPurchase {
+  interval_time: number;
+  is_purchase: boolean;
+  limit_number: number;
+}
+
+export const editBlindLinkNftPurchase = function (
+  data: EditBlindLinkNftPurchase & { blind_id: string },
+) {
+  return Server.post<Resolve<boolean>>('/blindbox/purchase', data);
 };
 
 export const getBlindLinkNfts = function (params: PageParams & { blind_box_id: string }) {

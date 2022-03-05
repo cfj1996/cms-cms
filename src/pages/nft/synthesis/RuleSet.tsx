@@ -3,11 +3,12 @@
  * @user: cfj
  * @date: 2022/3/3 21:00
  */
-import { Form } from 'antd';
+import { Form, Radio, Tooltip } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { SynthesisRule } from '@/services/nft/synthesis';
-import { SyntheticMethodEnum } from '@/services/nft/synthesis';
+import { syntheticMethod } from '@/services/nft/synthesis';
 import { formItemLayout } from '@/components/Dialog';
-import { ProFormSelect, ProFormTextArea } from '@ant-design/pro-form';
+import { ProFormRadio, ProFormSelect, ProFormTextArea } from '@ant-design/pro-form';
 import { getNftList } from '@/services/nft/nfts';
 import { forwardRef, useImperativeHandle } from 'react';
 
@@ -35,14 +36,22 @@ const RuleSet = forwardRef(function (props: IProps, ref) {
   }));
   return (
     <Form form={form} initialValues={initialValue} {...formItemLayout}>
-      <ProFormSelect
+      <ProFormRadio.Group
         name={'synthetic_method'}
-        label="成长方式"
+        label="合成方式"
         disabled={disabled}
-        valueEnum={SyntheticMethodEnum}
         required={true}
         rules={[{ required: true }]}
-      />
+      >
+        {syntheticMethod.map((item) => (
+          <Radio value={item.value} key={item.value}>
+            {item.label}
+            <Tooltip title={item.help}>
+              <QuestionCircleOutlined style={{ marginLeft: 5 }} size={12} />
+            </Tooltip>
+          </Radio>
+        ))}
+      </ProFormRadio.Group>
       <Form.Item
         noStyle
         shouldUpdate={(prevValues, nextValues) =>

@@ -52,7 +52,7 @@ const Quill = function (props: any) {
         modules={{
           toolbar: [
             ['bold', 'italic', 'underline', 'strike'], // 切换按钮
-            ['blockquote', 'code-block'],
+            ['blockquote'],
             [{ header: 1 }, { header: 2 }], // 用户自定义按钮值
             [{ list: 'ordered' }, { list: 'bullet' }],
             [{ script: 'sub' }, { script: 'super' }], // 上标/下标

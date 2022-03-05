@@ -8,15 +8,8 @@ import { Form } from 'antd';
 import { ProFormDigit, ProFormRadio } from '@ant-design/pro-form';
 import type { Purchase } from '@/services/nft/nfts';
 import { purchaseEnum } from '@/services/nft/nfts';
+import { formItemLayout } from '@/components/Dialog';
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 18 },
-  },
-};
 const PurchaseSet = forwardRef(function (props: Purchase, ref) {
   const { is_purchase, limit_number, interval_time } = props;
   const [form] = Form.useForm();

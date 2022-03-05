@@ -35,7 +35,7 @@ const RangePicker = function (props: IProps) {
           }),
         ]}
       >
-        {({ getFieldValue, setFields, getFieldsError }) => {
+        {({ getFieldValue, setFields, getFieldsError, validateFields }) => {
           const aaa = getFieldsError(name).map((i) => i.errors);
           const errors = [].concat(...(aaa as any)).length
             ? [
@@ -71,6 +71,11 @@ const RangePicker = function (props: IProps) {
                   }
                 }}
                 // value={value}
+                onBlur={() => {
+                  validateFields(name)
+                    .then(() => {})
+                    .catch(() => {});
+                }}
               />
               <Form.ErrorList errors={errors} />
             </div>
@@ -78,11 +83,11 @@ const RangePicker = function (props: IProps) {
         }}
       </Form.Item>
       <main>
-        <Form.Item {...other} noStyle name={name[0]} hidden initialValue={''}>
-          <input type={'hidden'} value={''} />
+        <Form.Item {...other} noStyle name={name[0]} hidden>
+          <p>2</p>
         </Form.Item>
-        <Form.Item {...other} noStyle name={name[1]} hidden initialValue={''}>
-          <input type={'hidden'} value={''} />
+        <Form.Item {...other} noStyle name={name[1]} hidden>
+          <p>1</p>
         </Form.Item>
       </main>
     </>

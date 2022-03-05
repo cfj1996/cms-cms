@@ -10,6 +10,7 @@ import {
   blindStateMenu,
   delBlindBox,
   editBlindBox,
+  editBlindLinkNftPurchase,
   getBlindBoxPage,
   updateBlindBoxState,
 } from '@/services/blindBox';
@@ -23,6 +24,8 @@ import Dialog from '@/components/Dialog';
 import View from '@/pages/blindBox/view';
 import { AddSet, EditSet } from '@/pages/blindBox/set';
 import LinkNftView from '@/pages/blindBox/linkNftView';
+import PurchaseSet from '@/pages/nft/nftSeries/purchaseSet';
+import type { Purchase } from '@/services/nft/nfts';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
@@ -99,6 +102,10 @@ const Index = function () {
           { key: '1', name: record.state === 'onsale' ? '下架' : '上架' },
           { key: '2', name: '删除' },
           { key: '3', name: '关联藏品' },
+          {
+            key: '4',
+            name: '编辑限购',
+          },
         ];
         return [
           <a key={'view'} onClick={() => show(record.id)}>
@@ -116,6 +123,30 @@ const Index = function () {
                 del(record.id);
               } else if (key === '3') {
                 showLinkNft(record.id);
+              } else if (key === '4') {
+                Dialog.open({
+                  title: '编辑限购信息',
+                  content: (
+                    <PurchaseSet
+                      interval_time={record.interval_time}
+                      is_purchase={record.is_purchase}
+                      limit_number={record.limit_number}
+                    />
+                  ),
+                  async onOK(name, info) {
+                    const values = info?.values as Purchase;
+                    const res = await editBlindLinkNftPurchase({ blind_id: record.id, ...values });
+                    if (res.code === 'ok') {
+                      message.success('编辑成功');
+                      actionRef.current?.reload();
+                    } else {
+                      throw new Error(res.msg);
+                    }
+                  },
+                  onError(error) {
+                    message.error(error.message);
+                  },
+                });
               }
             }}
           />,
