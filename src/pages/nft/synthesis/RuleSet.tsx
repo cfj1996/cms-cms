@@ -8,7 +8,7 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { SynthesisRule } from '@/services/nft/synthesis';
 import { syntheticMethod } from '@/services/nft/synthesis';
 import { formItemLayout } from '@/components/Dialog';
-import { ProFormRadio, ProFormSelect, ProFormTextArea } from '@ant-design/pro-form';
+import { ProFormSelect, ProFormTextArea } from '@ant-design/pro-form';
 import { getNftList } from '@/services/nft/nfts';
 import { forwardRef, useImperativeHandle } from 'react';
 
@@ -36,22 +36,23 @@ const RuleSet = forwardRef(function (props: IProps, ref) {
   }));
   return (
     <Form form={form} initialValues={initialValue} {...formItemLayout}>
-      <ProFormRadio.Group
+      <Form.Item
         name={'synthetic_method'}
         label="合成方式"
-        disabled={disabled}
         required={true}
         rules={[{ required: true }]}
       >
-        {syntheticMethod.map((item) => (
-          <Radio value={item.value} key={item.value}>
-            {item.label}
-            <Tooltip title={item.help}>
-              <QuestionCircleOutlined style={{ marginLeft: 5 }} size={12} />
-            </Tooltip>
-          </Radio>
-        ))}
-      </ProFormRadio.Group>
+        <Radio.Group disabled={disabled}>
+          {syntheticMethod.map((item) => (
+            <Radio value={item.value} key={item.value}>
+              {item.label}
+              <Tooltip title={item.help}>
+                <QuestionCircleOutlined style={{ marginLeft: 5 }} size={12} />
+              </Tooltip>
+            </Radio>
+          ))}
+        </Radio.Group>
+      </Form.Item>
       <Form.Item
         noStyle
         shouldUpdate={(prevValues, nextValues) =>
