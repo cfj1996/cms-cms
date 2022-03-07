@@ -1,5 +1,6 @@
 import type { PageParams, PageResolve, Resolve } from '..';
 import Server from '..';
+import type { Tag } from '@/services/nft/tag';
 
 export enum NftType {
   collection = '藏品',
@@ -79,6 +80,7 @@ export interface INft {
   interval_time: number;
   created_at: string;
   updated_at: string;
+  tag_names: string[];
 }
 
 export interface AddSku {
@@ -264,4 +266,14 @@ export const appendTotal = function (data: { nft_id: string; append_total: numbe
 };
 export const updateNftSell = function (id: string, state: boolean) {
   return Server.post<Resolve<boolean>>('/nft/cansale/update', { nft_id: id, is_can_sale: state });
+};
+
+export const addNftTag = (data: { nft_id: string; tag_id: string }) => {
+  return Server.post<Resolve>('/nfttag/add', data);
+};
+export const delNftTag = (nft_tag_id: string) => {
+  return Server.post<Resolve>('/nfttag/delete', { nft_tag_id });
+};
+export const getNftTags = (id: string) => {
+  return Server.get<PageResolve<Tag>>('/nfttag/info?nft_id=' + id);
 };

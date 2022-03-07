@@ -32,6 +32,7 @@ import Show from '@/pages/nft/nftSeries/show';
 import PurchaseSet from '@/pages/nft/nftSeries/purchaseSet';
 import { useAccess } from 'umi';
 import AppendTotal from '@/pages/nft/nftSeries/appendTotal';
+import TagView from '@/pages/nft/nftSeries/TagView';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
@@ -265,6 +266,7 @@ const Index = function () {
           },
           { key: '4', name: '下架', disabled: record.state !== 'onsale' },
           { key: '8', name: `设置为${record.is_can_sale ? '不可售' : '可售'}` },
+          { key: '9', name: '查看标签' },
         ];
         if (access?.admin) {
           menus.push({ key: '6', name: '删除', disabled: record.state !== 'draf' });
@@ -402,6 +404,12 @@ const Index = function () {
                       throw error;
                     }
                   },
+                });
+              } else if (key === '9') {
+                Dialog.open({
+                  title: '查看标签',
+                  type: 'view',
+                  content: <TagView id={record.id} />,
                 });
               }
             }}

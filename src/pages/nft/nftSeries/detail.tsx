@@ -72,6 +72,7 @@ const Detail = function (props: IProps) {
     { label: '交易HASH：', value: data.transaction_hash },
     { label: '作品热度：', value: <Progress percent={data.heat} /> },
     { label: '藏品等级：', value: NftLevel[data.level] },
+    { label: '标签：', value: data.tag_names.join(', ') },
     {
       label: '作品描述：',
       value: (

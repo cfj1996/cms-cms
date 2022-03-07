@@ -64,6 +64,11 @@
         component: './nft/keyword',
       },
       {
+        name: '标签管理',
+        path: 'tag',
+        component: './nft/tag',
+      },
+      {
         name: '发行方管理',
         path: 'issuer',
         component: './nft/issuer',
