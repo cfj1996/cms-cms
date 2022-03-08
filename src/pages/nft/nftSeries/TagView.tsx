@@ -42,22 +42,22 @@ const TagView = function (props: IProps & PageService<{ list: Tag[] }>) {
 
   return (
     <div>
-      {list.length ? (
-        <List
-          header={
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Tooltip title="添加标签">
-                <Button
-                  type="primary"
-                  shape="circle"
-                  icon={<PlusOutlined />}
-                  onClick={() => create()}
-                />
-              </Tooltip>
-            </div>
-          }
-        >
-          {list.map((tag) => (
+      <List
+        header={
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Tooltip title="添加标签">
+              <Button
+                type="primary"
+                shape="circle"
+                icon={<PlusOutlined />}
+                onClick={() => create()}
+              />
+            </Tooltip>
+          </div>
+        }
+      >
+        {list.length ? (
+          list.map((tag) => (
             <List.Item
               key={tag.id}
               actions={[
@@ -81,11 +81,11 @@ const TagView = function (props: IProps & PageService<{ list: Tag[] }>) {
             >
               <div>{tag.tag_name}</div>
             </List.Item>
-          ))}
-        </List>
-      ) : (
-        <Result status="404" title="暂无数据" />
-      )}
+          ))
+        ) : (
+          <Result status="404" title="暂无数据" />
+        )}
+      </List>
     </div>
   );
 };
