@@ -192,7 +192,9 @@ const Index = function () {
           <Button
             key={1}
             onClick={() => ship(row)}
-            disabled={!(row.state === 'shipped')}
+            // disabled={!(row.state === 'shipped')}
+            // TODO 发货功能暂时关闭
+            disabled={true}
             style={{ padding: 0 }}
             type={'link'}
           >

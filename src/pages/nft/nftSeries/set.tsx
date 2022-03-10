@@ -161,6 +161,7 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         valueEnum={NftLevel}
       />
       <ProFormSelect
+        disabled={disabled}
         label={'资源类型'}
         name={'material_type'}
         required={true}
