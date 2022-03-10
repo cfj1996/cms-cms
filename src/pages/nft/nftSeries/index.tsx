@@ -26,7 +26,7 @@ import { Button, message, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { AddSet, EditSet } from './set';
 import Dialog from '@/components/Dialog';
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import GlobalLoad from '@/components/GlobalLoad';
 import Show from '@/pages/nft/nftSeries/show';
 import PurchaseSet from '@/pages/nft/nftSeries/purchaseSet';
@@ -36,6 +36,7 @@ import TagView from '@/pages/nft/nftSeries/TagView';
 
 const Index = function () {
   const actionRef = useRef<ActionType>();
+  const closeId = useRef<React.Key | undefined>();
   const access = useAccess();
 
   function create() {
@@ -43,45 +44,42 @@ const Index = function () {
       title: '新增藏品',
       content: <AddSet />,
       width: 720,
+      onError(error) {
+        GlobalLoad.close(closeId.current!);
+        message.error(error.message || '创建失败,稍后重试。');
+      },
       async onOK(name, info) {
-        const id = GlobalLoad.open({ tip: '铸币中，请稍后....' });
-        try {
-          const values = info?.values as IAddNft;
-          const { total, price, start_time, end_time, level, ...other } = values;
-          const { data, code, msg } = await platform({
-            category_id: values.category_id,
-            total: total!,
-          });
-          if (code === 'ok') {
-            if (data.transaction_hash && data.token_id) {
-              await addNft(
-                Object.assign(
-                  {
-                    transaction_hash: data.transaction_hash,
-                    price: String(price),
-                    token_id: data.token_id,
-                    start_time,
-                    end_time,
-                    level,
-                  },
-                  {
-                    ...other,
-                  },
-                ),
-              );
-              GlobalLoad.close(id);
+        closeId.current = GlobalLoad.open({ tip: '铸币中，请稍后....' });
+        const values = info?.values as IAddNft;
+        const { total, price, ...other } = values;
+        const { data, code, msg } = await platform({
+          category_id: values.category_id,
+          total: total!,
+        });
+        if (code === 'ok') {
+          if (data.transaction_hash && data.token_id) {
+            const res = await addNft(
+              Object.assign(
+                {
+                  transaction_hash: data.transaction_hash,
+                  price: String(price),
+                  token_id: data.token_id,
+                },
+                other,
+              ),
+            );
+            if (res.code === 'ok') {
+              GlobalLoad.close(closeId.current);
               message.success('添加成功');
               actionRef.current?.reload();
             } else {
-              throw new Error(`铸币失败, 为获取到hash`);
+              throw new Error(res.msg);
             }
           } else {
-            throw new Error(`铸币失败,${msg}`);
+            throw new Error(`铸币失败, 未获取到hash`);
           }
-        } catch (error: any) {
-          GlobalLoad.close(id);
-          message.error(error.message || '创建失败,稍后重试。');
-          return Promise.reject();
+        } else {
+          throw new Error(`铸币失败,${msg}`);
         }
       },
     });
@@ -103,7 +101,6 @@ const Index = function () {
           end_time,
           is_can_sale,
           available_number,
-          issuer_id,
           level,
         } = values;
         const res = await updateNft({
@@ -111,7 +108,6 @@ const Index = function () {
           title,
           name,
           desc,
-          issuer_id,
           is_can_sale,
           available_number,
           price: String(price),
@@ -275,7 +271,7 @@ const Index = function () {
           menus.push({ key: '7', name: '追加总数' });
         }
         return [
-          <a key={'onsale'} onClick={() => show(record.id, record.total)}>
+          <a key={'onsale'} onClick={() => show(record.id, record.total!)}>
             查看
           </a>,
           <TableDropdown
@@ -367,7 +363,7 @@ const Index = function () {
               } else if (key === '7') {
                 Dialog.open({
                   title: '追加总数',
-                  content: <AppendTotal append_total={record.total} />,
+                  content: <AppendTotal append_total={record.total!} />,
                   async onOK(name, info) {
                     try {
                       const values = info?.values as any;

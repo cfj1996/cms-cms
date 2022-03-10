@@ -5,13 +5,14 @@
  */
 
 import React, { forwardRef, useImperativeHandle } from 'react';
-import { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import { ProFormSelect, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import { Form } from 'antd';
 import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
-import type { IAddNftType, INftType } from '@/services/nft/nftType';
+import type { INftType } from '@/services/nft/nftType';
 import { getNftType } from '@/services/nft/nftType';
 import type { Resolve } from '@/services';
+import { getIssuerList } from '@/services/nft/Issuer';
 
 const formItemLayout = {
   labelCol: {
@@ -21,25 +22,23 @@ const formItemLayout = {
     xs: { span: 20 },
   },
 };
+
 interface IProps {
   id?: string;
 }
+
 const Set = forwardRef(function (props: IProps & PageService<Resolve<INftType>>, ref) {
   const [form] = Form.useForm();
-
-  const initialValues: IAddNftType = {
-    name: '',
-    symbol: '',
-    desc: '',
-  };
-  if (props.id && props.data) {
-    const {
-      data: { data },
-    } = props.data;
-    initialValues.name = data.name;
-    initialValues.symbol = data.symbol;
-    initialValues.desc = data.desc;
-  }
+  const data = props.data?.data?.data as INftType;
+  const initialValues =
+    props.id && data
+      ? {
+          issuer_id: data.issuer_id,
+          name: data.name,
+          symbol: data.symbol,
+          desc: data.desc,
+        }
+      : undefined;
   useImperativeHandle(ref, () => ({
     submit() {
       form.submit();
@@ -47,6 +46,21 @@ const Set = forwardRef(function (props: IProps & PageService<Resolve<INftType>>,
   }));
   return (
     <Form form={form} initialValues={initialValues} {...formItemLayout}>
+      <ProFormSelect
+        name={'issuer_id'}
+        label={'发行方'}
+        showSearch={true}
+        required={true}
+        rules={[{ required: true }]}
+        fieldProps={{
+          filterOption: false,
+        }}
+        request={() => {
+          return getIssuerList({ current: 1, pageSize: 100000, issuer_name: '' }).then((res) =>
+            res.data.map((i) => ({ value: i.id, label: i.issuer_name })),
+          );
+        }}
+      />
       <ProFormText
         name="name"
         label="标题"

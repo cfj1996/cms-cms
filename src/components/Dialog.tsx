@@ -85,7 +85,7 @@ export default class Dialog extends React.Component<IProps> {
 
   render() {
     const {
-      type = this.props.content ? 'from' : 'view',
+      type = this.props.onOK ? 'from' : 'view',
       title,
       content,
       onOK,

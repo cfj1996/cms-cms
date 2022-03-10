@@ -16,10 +16,9 @@ import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
 import { getNftTypeList } from '@/services/nft/nftType';
 import type { INft } from '@/services/nft/nfts';
-import { canSaleEnum, getNft, NftLevel, nftTypeEnum } from '@/services/nft/nfts';
+import { AssetsType, canSaleEnum, getNft, NftLevel, nftTypeEnum } from '@/services/nft/nfts';
 import Upload from '@/components/upload';
 import Quill from '@/components/Quill';
-import { getIssuerList } from '@/services/nft/Issuer';
 import RangePicker from '@/components/RangePicker';
 
 const formItemLayout = {
@@ -42,12 +41,12 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
   const data = props.data?.data || ({} as INft);
   const initialValues = props.data?.data
     ? {
-        issuer_id: data.issuer_id,
         category_id: data.category_id,
         type: data.type,
         name: data.name,
         title: data.title,
         desc: data.desc,
+        material_type: data.material_type,
         images: data.images,
         token_id: data.token_id,
         total: data.total,
@@ -66,21 +65,6 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
   }));
   return (
     <Form form={form} initialValues={initialValues} {...formItemLayout}>
-      <ProFormSelect
-        name={'issuer_id'}
-        label={'发行方'}
-        showSearch={true}
-        required={true}
-        rules={[{ required: true }]}
-        fieldProps={{
-          filterOption: false,
-        }}
-        request={() => {
-          return getIssuerList({ current: 1, pageSize: 100000, issuer_name: '' }).then((res) =>
-            res.data.map((i) => ({ value: i.id, label: i.issuer_name })),
-          );
-        }}
-      />
       <ProFormSelect
         name={'category_id'}
         label={'藏品系列'}
@@ -176,9 +160,32 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         rules={[{ required: true }]}
         valueEnum={NftLevel}
       />
-      <Form.Item name="images" label={'藏品源图片'} required={true} rules={[{ required: true }]}>
-        <Upload multiple={true} disabled={disabled} />
+      <ProFormSelect
+        label={'资源类型'}
+        name={'material_type'}
+        required={true}
+        rules={[{ required: true }]}
+        valueEnum={AssetsType}
+      />
+      <Form.Item
+        noStyle
+        shouldUpdate={(prevValues: any, nextValues: any) =>
+          prevValues.material_type !== nextValues.material_type
+        }
+      >
+        {({ getFieldValue }) => (
+          <Form.Item
+            hidden={!getFieldValue('material_type')}
+            name="images"
+            label={'上传资源'}
+            required={true}
+            rules={[{ required: true }]}
+          >
+            <Upload multiple={true} disabled={disabled} type={getFieldValue('material_type')} />
+          </Form.Item>
+        )}
       </Form.Item>
+
       <Form.Item name="desc" label="藏品描述" required={true} rules={[{ required: true }]}>
         <Quill />
       </Form.Item>

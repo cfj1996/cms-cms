@@ -12,14 +12,16 @@ import { upFile } from '@/services/user/login';
 import { UploadOutlined } from '@ant-design/icons';
 import type { UploadRequestOption as RcCustomRequestOptions } from 'rc-upload/lib/interface';
 import type { UploadFile } from 'antd/lib/upload/interface';
+import type { AssetsType } from '@/services/nft/nfts';
 
 interface IProps {
   value?: string[];
+  type?: keyof typeof AssetsType;
   onChange?: (value: string[]) => void;
 }
 
 const Upload = function (props: UploadProps & IProps) {
-  const { value, onChange, ...out } = props;
+  const { value, onChange, type = 'image', ...out } = props;
   const defaultFileList: any =
     value?.map((i) => ({
       uid: i,
@@ -32,7 +34,7 @@ const Upload = function (props: UploadProps & IProps) {
   return (
     <UploadFileC
       {...out}
-      accept={'.jpg, .jpeg, .png'}
+      accept={type === 'image' ? 'image/*' : 'video/*'}
       method={'PUT'}
       listType="picture"
       customRequest={async (option: RcCustomRequestOptions) => {

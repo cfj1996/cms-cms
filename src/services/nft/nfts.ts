@@ -26,11 +26,11 @@ export const nftTypeEnum = {
   },
 };
 
-/**
- * @name: nfts
- * @user: cfj
- * @date: 2021/12/12 16:00
- */
+export enum AssetsType {
+  'image' = '图片',
+  'video' = '视频',
+}
+
 export enum NftState {
   draf = '草稿',
   onsale = '上架',
@@ -52,31 +52,15 @@ export const nftStateEnum = {
   },
 };
 
-export interface INft {
+export interface INft extends IAddNft {
   id: string;
-  level: keyof typeof NftLevel;
-  name: string;
-  title: string;
-  type: string;
-  issuer_id: string;
-  issuer_name: string;
-  category_id: string;
-  category_name: string;
-  images: string[];
-  price: string;
   state: string;
-  token_id: number;
-  total: number;
+  category_name: string;
   is_purchase: boolean;
   limit_number: number;
   sale: number;
   desc: string;
   heat: number;
-  transaction_hash: string;
-  start_time: string;
-  end_time: string;
-  available_number: number;
-  is_can_sale: boolean;
   interval_time: number;
   created_at: string;
   updated_at: string;
@@ -128,26 +112,25 @@ export const getNftList = function (params: PageParams & INftReq) {
 };
 
 export interface IAddNft {
-  issuer_id: string;
   category_id: string;
   name: string;
   type: string;
   title: string;
   desc: string;
   transaction_hash: string;
-  images?: string[];
+  images: string[];
   token_id?: number;
-  total?: number;
-  price?: string;
+  total: number;
+  price: string;
   start_time: Date;
   end_time: Date;
   available_number: number;
   is_can_sale: boolean;
   level: keyof typeof NftLevel;
+  material_type: keyof typeof AssetsType;
 }
 
 export interface UpdateNft {
-  issuer_id?: string;
   title: string;
   nft_id: string;
   price?: string;
@@ -164,8 +147,8 @@ export interface UpdateNft {
  * 新增Nft
  * @param data
  */
-export const addNft = function (data: IAddNft) {
-  return Server.post<boolean>('/nft/create', data);
+export const addNft = function (data: Omit<IAddNft, 'category_id' | 'total'>) {
+  return Server.post<Resolve>('/nft/create', data);
 };
 
 /**
@@ -210,8 +193,8 @@ export const getNft = function (id: string) {
 /**
  * 获取合约地址
  */
-export const getContractAddress = function () {
-  return Server.get<Resolve<{ contract_address: string }>>('/nft/contract/deploy');
+export const getContractAddress = function (issuer_id: string) {
+  return Server.get<Resolve<{ contract_address: string }>>('/nft/contract/deploy', { issuer_id });
 };
 
 /**

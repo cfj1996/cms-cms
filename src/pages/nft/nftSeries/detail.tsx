@@ -11,6 +11,9 @@ import { dateFormat } from '@/utils';
 import TableImgCall from '@/components/tableImgCall';
 import { css } from '@emotion/css';
 import Dialog from '@/components/Dialog';
+import { VideoCameraOutlined } from '@ant-design/icons';
+import { BigPlayButton, Player } from 'video-react';
+import 'video-react/dist/video-react.css';
 
 interface IProps {
   data: INft;
@@ -40,21 +43,36 @@ const Detail = function (props: IProps) {
     { label: '类别名称：', value: data.category_name },
     { label: '作品id：', value: data.token_id },
     { label: '作品类型：', value: NftType[data.type] },
-    { label: '发行方名称：', value: data.issuer_name },
     {
-      label: '图片：',
+      label: data.material_type === 'video' ? '视频：' : '图片：',
       value: (
         <div className={divBox}>
           {data.images.map((i) => (
             <div key={i} className={imgBox}>
-              <TableImgCall
-                images={data.images.map((img) => ({
-                  alt: data.name,
-                  src: img,
-                }))}
-                alt={data.name}
-                src={i}
-              />
+              {data.material_type === 'video' ? (
+                <VideoCameraOutlined
+                  onClick={() => {
+                    Dialog.open({
+                      title: '查看视频',
+                      width: '720px',
+                      content: (
+                        <Player src={i}>
+                          <BigPlayButton position="center" />
+                        </Player>
+                      ),
+                    });
+                  }}
+                />
+              ) : (
+                <TableImgCall
+                  images={data.images.map((img) => ({
+                    alt: data.name,
+                    src: img,
+                  }))}
+                  alt={data.name}
+                  src={i}
+                />
+              )}
             </div>
           ))}
         </div>
@@ -101,11 +119,13 @@ const Detail = function (props: IProps) {
   return (
     <div className={containerBox}>
       <Row gutter={24}>
-        {list.map((i, key) => (
-          <Col key={key} span={24}>
-            <TypographyItem label={i.label} value={i.value} />
-          </Col>
-        ))}
+        {list
+          .filter((i) => i)
+          .map((i, key) => (
+            <Col key={key} span={24}>
+              <TypographyItem label={i.label} value={i.value} />
+            </Col>
+          ))}
       </Row>
     </div>
   );
