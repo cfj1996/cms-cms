@@ -171,11 +171,6 @@ const Index = function () {
       hideInSearch: true,
     },
     {
-      dataIndex: 'issuer_name',
-      title: '发行方名称',
-      hideInSearch: true,
-    },
-    {
       dataIndex: 'is_can_sale',
       title: '可售',
       valueType: 'radio',

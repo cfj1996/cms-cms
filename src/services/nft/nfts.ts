@@ -90,11 +90,10 @@ export interface INftReq {
 }
 
 export enum NftLevel {
-  'B' = 'B',
-  'A' = 'A',
-  'S' = 'S ',
-  'SS' = 'SS',
-  'SSS' = 'SSS',
+  'N' = 'N',
+  'R' = 'R',
+  'SR' = 'SR ',
+  'SRR' = 'SRR',
 }
 
 /**

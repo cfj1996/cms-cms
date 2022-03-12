@@ -27,39 +27,45 @@ export type IProps = {
   onCancel?: (iSFinish?: boolean) => void;
   onError?: (error: Error) => void;
 } & Omit<ModalProps, 'visible' | 'title' | 'content' | 'onOk' | 'onCancel'>;
-let id = 0;
+const closeFns: (() => void)[] = [];
+
 export default class Dialog extends React.Component<IProps> {
-  static dialogs = new Map<React.Key, Dialog | null>();
-
   static open(options: Omit<IProps, 'dialogRef'>) {
-    id++;
-    const div = document.createElement('div');
-    const dom = document.documentElement.appendChild(div);
+    const container = document.createDocumentFragment();
     let dialogRef: Dialog | null = null;
-    ReactDOM.render(
-      <Dialog
-        {...options}
-        dialogRef={(ref) => {
-          dialogRef = ref;
-        }}
-        afterClose={() => {
-          document.documentElement.removeChild(dom);
-        }}
-      />,
-      dom,
-    );
-    Dialog.dialogs.set(id, dialogRef);
-    return id;
-  }
+    function destroy() {
+      ReactDOM.unmountComponentAtNode(container);
+      const index = closeFns.findIndex((i) => i === clone);
+      if (index > -1) {
+        closeFns.splice(index, 1);
+      }
+      console.log('destroy', closeFns.length);
+    }
+    function clone() {
+      dialogRef?.onCancel();
+    }
+    setTimeout(() => {
+      closeFns.push(clone);
+      console.log('open', closeFns.length);
 
-  static close(dialogID: React.Key) {
-    console.log(Dialog.dialogs.get(dialogID));
-    Dialog.dialogs.get(dialogID)?.onCancel();
+      ReactDOM.render(
+        <Dialog
+          {...options}
+          dialogRef={(ref) => {
+            dialogRef = ref;
+          }}
+          afterClose={destroy}
+        />,
+        container,
+      );
+    });
+    return clone;
   }
 
   static closeAll() {
-    for (const [key] of Dialog.dialogs) {
-      Dialog.close(key);
+    console.log('closeAll', closeFns.length);
+    for (const fn of closeFns) {
+      fn?.();
     }
   }
 
