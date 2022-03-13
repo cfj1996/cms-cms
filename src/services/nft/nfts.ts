@@ -125,7 +125,7 @@ export interface IAddNft {
   end_time: Date;
   available_number: number;
   is_can_sale: boolean;
-  level: keyof typeof NftLevel;
+  level: string;
   material_type: keyof typeof AssetsType;
 }
 
@@ -139,7 +139,7 @@ export interface UpdateNft {
   start_time: Date;
   end_time: Date;
   desc?: string;
-  level: keyof typeof NftLevel;
+  level: string;
 }
 
 /**

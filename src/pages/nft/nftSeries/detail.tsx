@@ -6,12 +6,12 @@
 import { Button, Col, Progress, Row } from 'antd';
 import TypographyItem from '@/components/TypographyItem';
 import type { INft } from '@/services/nft/nfts';
-import { NftLevel, NftState, NftType, purchaseEnum } from '@/services/nft/nfts';
+import { NftState, NftType, purchaseEnum } from '@/services/nft/nfts';
 import { dateFormat } from '@/utils';
 import TableImgCall from '@/components/tableImgCall';
 import { css } from '@emotion/css';
 import Dialog from '@/components/Dialog';
-import { VideoCameraOutlined } from '@ant-design/icons';
+import { FileOutlined } from '@ant-design/icons';
 import { BigPlayButton, Player } from 'video-react';
 import 'video-react/dist/video-react.css';
 
@@ -47,10 +47,14 @@ const Detail = function (props: IProps) {
       label: data.material_type === 'video' ? '视频：' : '图片：',
       value: (
         <div className={divBox}>
-          {data.images.map((i) => (
+          {data.images.map((i, k) => (
             <div key={i} className={imgBox}>
               {data.material_type === 'video' ? (
-                <VideoCameraOutlined
+                <FileOutlined
+                  style={{
+                    fontSize: 30,
+                  }}
+                  title={`视频${k + 1}`}
                   onClick={() => {
                     Dialog.open({
                       title: '查看视频',
@@ -89,7 +93,7 @@ const Detail = function (props: IProps) {
     { label: '可售数量：', value: data.available_number },
     { label: '交易HASH：', value: data.transaction_hash },
     { label: '作品热度：', value: <Progress percent={data.heat} /> },
-    { label: '藏品等级：', value: NftLevel[data.level] },
+    { label: '藏品等级：', value: data.level },
     { label: '标签：', value: data.tag_names.join(', ') },
     {
       label: '作品描述：',

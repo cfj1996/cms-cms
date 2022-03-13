@@ -16,7 +16,7 @@ import type { PageService } from '@/hoc/withServers';
 import { withServers } from '@/hoc/withServers';
 import { getNftTypeList } from '@/services/nft/nftType';
 import type { INft } from '@/services/nft/nfts';
-import { AssetsType, canSaleEnum, getNft, NftLevel, nftTypeEnum } from '@/services/nft/nfts';
+import { AssetsType, canSaleEnum, getNft, nftTypeEnum } from '@/services/nft/nfts';
 import Upload from '@/components/upload';
 import Quill from '@/components/Quill';
 import RangePicker from '@/components/RangePicker';
@@ -64,7 +64,17 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
     },
   }));
   return (
-    <Form form={form} initialValues={initialValues} {...formItemLayout}>
+    <Form
+      form={form}
+      initialValues={initialValues}
+      onValuesChange={(changedFields) => {
+        console.log('changedFields', changedFields);
+        if (changedFields.material_type) {
+          form.setFieldsValue({ images: undefined });
+        }
+      }}
+      {...formItemLayout}
+    >
       <ProFormSelect
         name={'category_id'}
         label={'藏品系列'}
@@ -153,13 +163,7 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
         required={true}
         rules={[{ required: true }]}
       />
-      <ProFormSelect
-        label={'藏品等级'}
-        name={'level'}
-        required={true}
-        rules={[{ required: true }]}
-        valueEnum={NftLevel}
-      />
+      <ProFormText label={'藏品等级'} name={'level'} required={true} rules={[{ required: true }]} />
       <ProFormSelect
         disabled={disabled}
         label={'资源类型'}
@@ -171,20 +175,23 @@ const Set = forwardRef(function (props: IProps & PageService<INft>, ref) {
       <Form.Item
         noStyle
         shouldUpdate={(prevValues: any, nextValues: any) =>
-          prevValues.material_type !== nextValues.material_type
+          prevValues.material_type !== nextValues.material_type ||
+          prevValues.images !== nextValues.images
         }
       >
-        {({ getFieldValue }) => (
-          <Form.Item
-            hidden={!getFieldValue('material_type')}
-            name="images"
-            label={'上传资源'}
-            required={true}
-            rules={[{ required: true }]}
-          >
-            <Upload multiple={true} disabled={disabled} type={getFieldValue('material_type')} />
-          </Form.Item>
-        )}
+        {({ getFieldValue }) => {
+          return (
+            <Form.Item
+              hidden={!getFieldValue('material_type')}
+              name="images"
+              label={'上传资源'}
+              required={true}
+              rules={[{ required: true }]}
+            >
+              <Upload multiple={true} disabled={disabled} type={getFieldValue('material_type')} />
+            </Form.Item>
+          );
+        }}
       </Form.Item>
 
       <Form.Item name="desc" label="藏品描述" required={true} rules={[{ required: true }]}>

@@ -14,13 +14,7 @@ const RangePicker = function (props: IProps) {
     <>
       <Form.Item
         {...other}
-        shouldUpdate={(prevValues: any, curValues: any) =>
-          !curValues[name[0]] ||
-          !curValues[name[1]] ||
-          prevValues[name[0]] !== curValues[name[0]] ||
-          prevValues[name[1]] !== curValues[name[1]] ||
-          (curValues[name[0]] && curValues[name[1]])
-        }
+        shouldUpdate={true}
         rules={[
           {
             required: true,
@@ -69,27 +63,23 @@ const RangePicker = function (props: IProps) {
                       { name: name[1], value: '' },
                     ]);
                   }
-                }}
-                // value={value}
-                onBlur={() => {
                   validateFields(name)
                     .then(() => {})
                     .catch(() => {});
                 }}
+                value={value}
               />
               <Form.ErrorList errors={errors} />
             </div>
           );
         }}
       </Form.Item>
-      <main>
-        <Form.Item {...other} noStyle name={name[0]} hidden>
-          <p>2</p>
-        </Form.Item>
-        <Form.Item {...other} noStyle name={name[1]} hidden>
-          <p>1</p>
-        </Form.Item>
-      </main>
+      <Form.Item {...other} noStyle name={name[0]} hidden>
+        <p>2</p>
+      </Form.Item>
+      <Form.Item {...other} noStyle name={name[1]} hidden>
+        <p>1</p>
+      </Form.Item>
     </>
   );
 };

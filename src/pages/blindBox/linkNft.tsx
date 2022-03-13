@@ -1,10 +1,9 @@
 import { forwardRef, useImperativeHandle } from 'react';
 import { Form } from 'antd';
 import { formItemLayout } from '@/components/Dialog';
-import { ProFormDigit, ProFormMoney, ProFormSelect } from '@ant-design/pro-form';
+import { ProFormDigit, ProFormMoney, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import { getNftList } from '@/services/nft/nfts';
 import type { BlindBox, BlindLinkNfts } from '@/services/blindBox';
-import { blindLikNftLevel } from '@/services/blindBox';
 
 /**
  * @name: linkNft
@@ -52,12 +51,10 @@ const LinkNft = forwardRef(function (props: IProps, ref) {
             pageSize: 9999,
             current: 1,
             state: 'onsale',
-            is_can_sale: false,
           }).then((res) =>
-            res.data.map((i) => ({
-              value: i.id,
-              label: i.name,
-              disabled: i.is_can_sale,
+            res.data.map((item) => ({
+              value: item.id,
+              label: `${item.name}(${item.is_can_sale ? '可售' : '不可售'})`,
             })),
           );
         }}
@@ -91,13 +88,7 @@ const LinkNft = forwardRef(function (props: IProps, ref) {
         required={true}
         rules={[{ required: true }, { type: 'number' }]}
       />
-      <ProFormSelect
-        name={'level'}
-        label={'藏品等级'}
-        options={blindLikNftLevel}
-        required={true}
-        rules={[{ required: true }]}
-      />
+      <ProFormText label={'藏品等级'} name={'level'} required={true} rules={[{ required: true }]} />
     </Form>
   );
 });

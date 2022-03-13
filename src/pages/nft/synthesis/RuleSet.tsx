@@ -72,12 +72,10 @@ const RuleSet = forwardRef(function (props: IProps, ref) {
                   pageSize: 9999,
                   current: 1,
                   state: 'onsale',
-                  is_can_sale: false,
                 }).then((res) =>
-                  res.data.map((i) => ({
-                    value: i.id,
-                    label: i.name,
-                    disabled: i.is_can_sale,
+                  res.data.map((item) => ({
+                    value: item.id,
+                    label: `${item.name}(${item.is_can_sale ? '可售' : '不可售'})`,
                   })),
                 );
               }}
@@ -96,12 +94,10 @@ const RuleSet = forwardRef(function (props: IProps, ref) {
             pageSize: 9999,
             current: 1,
             state: 'onsale',
-            is_can_sale: false,
           }).then((res) =>
-            res.data.map((i) => ({
-              value: i.id,
-              label: i.name,
-              disabled: i.is_can_sale,
+            res.data.map((item) => ({
+              value: item.id,
+              label: `${item.name}(${item.is_can_sale ? '可售' : '不可售'})`,
             })),
           );
         }}

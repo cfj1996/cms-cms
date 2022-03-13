@@ -147,19 +147,17 @@ const Index = function () {
     Dialog.open({
       title: '新增banner',
       content: <AddSet />,
+      onError(error) {
+        message.error(error.message);
+      },
       async onOK(name, info) {
         const values = info?.values as any;
-        try {
-          const res = await addBanner({ ...values, image: values.image[0] });
-          if (res.code === 'ok') {
-            message.success('添加成功');
-            actionRef.current?.reload();
-          } else {
-            throw new Error(res.msg);
-          }
-        } catch (error: any) {
-          message.error(error.message);
-          return Promise.reject();
+        const res = await addBanner(values);
+        if (res.code === 'ok') {
+          message.success('添加成功');
+          actionRef.current?.reload();
+        } else {
+          throw new Error(res.msg);
         }
       },
     });

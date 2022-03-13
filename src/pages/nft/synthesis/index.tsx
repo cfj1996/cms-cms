@@ -86,7 +86,7 @@ const Index = function () {
       render(text, record) {
         return [
           <Button
-            key={'edit'}
+            key={'1'}
             type="link"
             disabled={record.state === 'onsale'}
             onClick={() => edit(record)}

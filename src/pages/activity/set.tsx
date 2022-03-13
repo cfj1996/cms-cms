@@ -64,9 +64,14 @@ const Set = forwardRef(function (props: { data?: Activity }, ref) {
         request={() =>
           getNftList({
             current: 1,
-            pageSize: 10000,
+            pageSize: 99999,
             state: 'onsale',
-          }).then((res) => res.data.map((item) => ({ value: item.id, label: item.name })))
+          }).then((res) =>
+            res.data.map((item) => ({
+              value: item.id,
+              label: `${item.name}(${item.is_can_sale ? '可售' : '不可售'})`,
+            })),
+          )
         }
         name="associate"
         label="关联藏品库"

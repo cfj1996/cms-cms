@@ -14,13 +14,6 @@ export interface BlindBox extends AddBlindBox, EditBlindLinkNftPurchase {
   updated_at: string;
 }
 
-export const blindLikNftLevel = [
-  { value: 'A', label: 'A' },
-  { value: 'B', label: 'B' },
-  { value: 'S', label: 'S' },
-  { value: 'SS', label: 'SS' },
-  { value: 'SSS', label: 'SSS' },
-];
 export const blindStateMenu = {
   draf: {
     text: '草稿',
