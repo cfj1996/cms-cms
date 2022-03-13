@@ -19,7 +19,7 @@ webpack-build-job:
   only:
     - prod
   script:
-    - npm install -g yarn
+    - yarn -v
     - yarn install
     - yarn run build
 
@@ -63,7 +63,7 @@ build-dev-job:
   only:
     - developer
   script:
-    - npm install -g yarn
+    - yarn -v
     - yarn install
     - yarn run build
 
