@@ -19,8 +19,9 @@ webpack-build-job:
   only:
     - prod
   script:
-    - npm install
-    - npm run build
+    - npm install -g yarn
+    - yarn install
+    - yarn run build
 
 deploy-job-test:
   image: alpine:3.8
@@ -57,15 +58,14 @@ deploy-job-prod:
     name: prod
 
 build-dev-job:
-  image: node:14
+  image: node:16
   stage: dev_build
   only:
     - developer
   script:
-    - npm cache clean -f
-    - npm config set registry  https://registry.npm.taobao.org/
-    - npm install
-    - npm run build
+    - npm install -g yarn
+    - yarn install
+    - yarn run build
 
 deploy-dev-job:
   image: alpine:3.8
